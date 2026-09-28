@@ -34,6 +34,9 @@ const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensit
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus});
+const impactBuckets=[.18,.42,.85,1.55];let impactBucket=1,lastImpactTarget=meteors.targetAt();
+function setImpactBucket(index){impactBucket=THREE.MathUtils.clamp(index,0,impactBuckets.length-1);document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.classList.toggle("active",i===impactBucket));}
+function callImpact(target=lastImpactTarget){lastImpactTarget=target.clone();return meteors.meteor(target.clone(),impactBuckets[impactBucket]);}
 const brass=new THREE.MeshStandardMaterial({color:0xa87536,roughness:.42,metalness:.68}),cinnabar=new THREE.MeshStandardMaterial({color:0x7d2d22,roughness:.78,metalness:.04});
 const mineralGeo=new THREE.IcosahedronGeometry(.22,1);for(let i=0;i<13;i++){const a=i*2.399,r=2.2+(i%5)*1.15,x=Math.cos(a)*r,z=Math.sin(a)*r,y=terrain.groundHeight(x,z);if(!Number.isFinite(y))continue;const m=new THREE.Mesh(mineralGeo,i%4===0?cinnabar:brass);m.scale.set(.6+(i%3)*.25,.5+(i%4)*.18,.6);m.position.set(x,y+.12,z);m.rotation.set(a*.3,a,.2);m.castShadow=true;three.scene.add(m);}
 const sphereGeo=new THREE.SphereGeometry(.22,12,8);
@@ -43,7 +46,10 @@ function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const 
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
 function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
-globalThis.crucible={world,components,spawnMatter,meteor:meteors.meteor,meteors:meteors.meteors,groundHeight:terrain.groundHeight,terrain,systems:{renderSync,cameras,orbit,lights,meteors},entities:{locus,overviewCamera,skyLight,keyLight,fillLight},inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),meteors:meteors.inspect()})};
-document.querySelector("#call-meteor")?.addEventListener("click",()=>meteors.meteor());
-document.querySelector("#call-meteors")?.addEventListener("click",()=>meteors.meteors());
+globalThis.crucible={world,components,spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,terrain,systems:{renderSync,cameras,orbit,lights,meteors},entities:{locus,overviewCamera,skyLight,keyLight,fillLight},inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),meteors:meteors.inspect()})};
+document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
+document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let tapStart=null;
+three.renderer.domElement.addEventListener("pointerdown",event=>{if(event.pointerType==="mouse"&&event.button!==0)return;tapStart={id:event.pointerId,x:event.clientX,y:event.clientY,time:performance.now()};});
+three.renderer.domElement.addEventListener("pointerup",event=>{if(!tapStart||tapStart.id!==event.pointerId)return;const moved=Math.hypot(event.clientX-tapStart.x,event.clientY-tapStart.y),elapsed=performance.now()-tapStart.time;tapStart=null;if(moved>8||elapsed>450)return;const rect=three.renderer.domElement.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,-((event.clientY-rect.top)/rect.height)*2+1);const cameraView=components.CameraView.get(cameras.activeId());if(!cameraView?.camera)return;raycaster.setFromCamera(pointer,cameraView.camera);const hit=raycaster.intersectObject(terrain.mesh,false)[0];if(hit&&terrain.insideMaterial(hit.point.x,hit.point.z))callImpact(meteors.targetAt(hit.point.x,hit.point.z));});
 diagnostics.ready();
