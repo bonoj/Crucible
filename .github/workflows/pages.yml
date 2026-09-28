@@ -1,0 +1,61 @@
+name: Publish Pages
+on:
+  workflow_run:
+    workflows: ["Build candidate"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths: ["index.html",".github/workflows/pages.yml",".github/workflows/promote-candidate.yml"]
+  workflow_dispatch:
+    inputs:
+      candidate: {description: "Optional candidate SHA", required: false, type: string}
+permissions: {contents: read, actions: read, pages: write, id-token: write}
+concurrency: {group: crucible-pages, cancel-in-progress: true}
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Resolve candidate
+        id: refs
+        env: {EVENT_NAME: "${{ github.event_name }}", CANDIDATE_SHA: "${{ github.event.workflow_run.head_sha }}"}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            echo "sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
+            echo "run=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Recover candidate
+        if: steps.refs.outputs.run == ''
+        id: recover
+        uses: actions/github-script@v7
+        env: {REQUESTED: "${{ inputs.candidate }}"}
+        with:
+          script: |
+            const {owner,repo}=context.repo; let sha=process.env.REQUESTED||"";
+            const runs=await github.paginate(github.rest.actions.listWorkflowRuns,{owner,repo,workflow_id:"build-candidate.yml",status:"success",per_page:100});
+            const run=sha?runs.find(r=>r.head_sha===sha):runs.find(r=>r.head_branch==="main");
+            if(!run) core.setFailed("No successful candidate build found");
+            core.setOutput("sha",run.head_sha); core.setOutput("run",String(run.id));
+      - uses: actions/checkout@v4
+        with: {ref: main, path: repo}
+      - run: mkdir -p site && test -s repo/index.html && cp repo/index.html site/index.html
+      - uses: actions/download-artifact@v4
+        with:
+          name: crucible-candidate-${{ steps.refs.outputs.sha || steps.recover.outputs.sha }}
+          path: site/preview
+          run-id: ${{ steps.refs.outputs.run || steps.recover.outputs.run }}
+          github-token: ${{ github.token }}
+      - name: Preserve preview identity
+        env: {SHA: "${{ steps.refs.outputs.sha || steps.recover.outputs.sha }}"}
+        run: |
+          test -s site/preview/index.html
+          printf '%s\n' "$SHA" > site/preview/SOURCE_COMMIT
+          printf '%s\n' "$SHA" > site/PREVIEW_SOURCE_COMMIT
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: site}
+      - uses: actions/deploy-pages@v4
+        id: deployment
