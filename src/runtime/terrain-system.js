@@ -51,7 +51,12 @@ export function createTerrainSystem({THREE,scene}){
     if(![h00,h10,h01,h11].every(Number.isFinite))return Math.max(h00,h10,h01,h11);
     return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h00,h10,tx),THREE.MathUtils.lerp(h01,h11,tx),tz);
   }
-  const SUPPORT_G=72,support=new Float32Array(SUPPORT_G*SUPPORT_G);
+  const SUPPORT_G=72,support=new Float32Array(SUPPORT_G*SUPPORT_G),BEARING_SUPPORT_G=112,bearingSupportField=new Float32Array(BEARING_SUPPORT_G*BEARING_SUPPORT_G);bearingSupportField.fill(-Infinity);
+  function rasterizeBearingSupport(){
+    bearingSupportField.fill(-Infinity);const gx=x=>THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(BEARING_SUPPORT_G-1),0,BEARING_SUPPORT_G-1),gz=z=>THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(BEARING_SUPPORT_G-1),0,BEARING_SUPPORT_G-1),eps=1e-8;
+    for(const chunk of chunks){const a=chunk.geometry.getAttribute("position");if(!a)continue;for(let i=0;i<a.count;i+=3){const A=new THREE.Vector3(a.getX(i),a.getY(i),a.getZ(i)),B=new THREE.Vector3(a.getX(i+1),a.getY(i+1),a.getZ(i+1)),C=new THREE.Vector3(a.getX(i+2),a.getY(i+2),a.getZ(i+2)),den=(B.z-C.z)*(A.x-C.x)+(C.x-B.x)*(A.z-C.z);if(Math.abs(den)<eps)continue;const ix0=Math.max(0,Math.floor(gx(Math.min(A.x,B.x,C.x)))-1),ix1=Math.min(BEARING_SUPPORT_G-1,Math.ceil(gx(Math.max(A.x,B.x,C.x)))+1),iz0=Math.max(0,Math.floor(gz(Math.min(A.z,B.z,C.z)))-1),iz1=Math.min(BEARING_SUPPORT_G-1,Math.ceil(gz(Math.max(A.z,B.z,C.z)))+1);for(let iz=iz0;iz<=iz1;iz++){const z=THREE.MathUtils.lerp(MIN.z,MAX.z,iz/(BEARING_SUPPORT_G-1));for(let ix=ix0;ix<=ix1;ix++){const x=THREE.MathUtils.lerp(MIN.x,MAX.x,ix/(BEARING_SUPPORT_G-1)),wa=((B.z-C.z)*(x-C.x)+(C.x-B.x)*(z-C.z))/den,wb=((C.z-A.z)*(x-C.x)+(A.x-C.x)*(z-C.z))/den,wc=1-wa-wb;if(wa>=-1e-5&&wb>=-1e-5&&wc>=-1e-5){const y=wa*A.y+wb*B.y+wc*C.y,k=ix+BEARING_SUPPORT_G*iz;if(y>bearingSupportField[k])bearingSupportField[k]=y}}}}}
+    for(let pass=0;pass<2;pass++){const copy=bearingSupportField.slice();for(let iz=1;iz<BEARING_SUPPORT_G-1;iz++)for(let ix=1;ix<BEARING_SUPPORT_G-1;ix++){const k=ix+BEARING_SUPPORT_G*iz;if(Number.isFinite(copy[k]))continue;let h=-Infinity;for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++)h=Math.max(h,copy[(ix+dx)+BEARING_SUPPORT_G*(iz+dz)]);if(Number.isFinite(h))bearingSupportField[k]=h}}
+  }
   function rebuildSupport(bounds=null){
     let x0=0,x1=SUPPORT_G-1,z0=0,z1=SUPPORT_G-1;
     if(bounds){x0=Math.max(0,Math.floor((bounds.x0/(NX-1))*(SUPPORT_G-1))-2);x1=Math.min(SUPPORT_G-1,Math.ceil((bounds.x1/(NX-1))*(SUPPORT_G-1))+2);z0=Math.max(0,Math.floor((bounds.z0/(NZ-1))*(SUPPORT_G-1))-2);z1=Math.min(SUPPORT_G-1,Math.ceil((bounds.z1/(NZ-1))*(SUPPORT_G-1))+2);}
@@ -59,7 +64,7 @@ export function createTerrainSystem({THREE,scene}){
   }
   function groundHeightExact(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
   function groundHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),tx=fx-ix,tz=fz-iz,A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];return THREE.MathUtils.lerp(THREE.MathUtils.lerp(A,B,tx),THREE.MathUtils.lerp(C,D,tx),tz);}
-  function bearingGroundHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];return Math.max(A,B,C,D);}
+  function bearingGroundHeight(x,z){if(!insideMaterial(x,z))return insideApparatus(x,z)?APPARATUS_TOP:-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(BEARING_SUPPORT_G-1),0,BEARING_SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(BEARING_SUPPORT_G-1),0,BEARING_SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),A=bearingSupportField[ix+BEARING_SUPPORT_G*iz],B=bearingSupportField[ix+1+BEARING_SUPPORT_G*iz],C=bearingSupportField[ix+BEARING_SUPPORT_G*(iz+1)],D=bearingSupportField[ix+1+BEARING_SUPPORT_G*(iz+1)],h=Math.max(A,B,C,D),terrainY=Number.isFinite(h)?h:-Infinity;return insideApparatus(x,z)?Math.max(terrainY,APPARATUS_TOP):terrainY}
   function bearingApparatusContact(x,y,z,radius){if(y-radius>=APPARATUS_TOP||y+radius<=APPARATUS_BOTTOM)return null;const b=boundary(x,z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return null;return{push:minQ-b.q,nx:b.nx,nz:b.nz};}
 
   function impact(center,{magnitude=1}={}){
@@ -73,11 +78,11 @@ export function createTerrainSystem({THREE,scene}){
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
       if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
     }
-    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
+    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);rasterizeBearingSupport();
     return{magnitude:e,radius,depth,rim};
   }
-  function reset(){field.set(initial);rebuild();rebuildSupport();}
-  function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();rebuildSupport();return seed;}
+  function reset(){field.set(initial);rebuild();rebuildSupport();rasterizeBearingSupport();rasterizeBearingSupport();}
+  function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();rebuildSupport();rasterizeBearingSupport();return seed;}
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();rebuildSupport();
