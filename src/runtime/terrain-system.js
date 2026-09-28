@@ -29,8 +29,20 @@ export function createTerrainSystem({THREE,scene}){
   }
   function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);}
   synthesize(seed);
-  const geometry=new THREE.BufferGeometry(),material=new THREE.MeshStandardMaterial({color:0x785846,roughness:.96,metalness:.02,flatShading:true,side:THREE.DoubleSide}),mesh=new THREE.Mesh(geometry,material);mesh.name="deformable-world-substance";mesh.receiveShadow=true;scene.add(mesh);
+  const material=new THREE.MeshStandardMaterial({color:0x785846,roughness:.96,metalness:.02,flatShading:true,side:THREE.DoubleSide});
+  const CHUNK=10,CX=Math.ceil((NX-1)/CHUNK),CZ=Math.ceil((NZ-1)/CHUNK),chunks=[],mesh=new THREE.Group();mesh.name="deformable-world-substance";scene.add(mesh);
+  for(let cz=0;cz<CZ;cz++)for(let cx=0;cx<CX;cx++){const geometry=new THREE.BufferGeometry(),part=new THREE.Mesh(geometry,material);part.receiveShadow=true;part.name=`terrain-chunk-${cx}-${cz}`;mesh.add(part);chunks.push({cx,cz,geometry,mesh:part,triangles:0});}
   const apparatusMaterial=new THREE.MeshStandardMaterial({color:0x3f4745,roughness:.78,metalness:.22}),apparatus=new THREE.Mesh(new THREE.CylinderGeometry(APPARATUS_RADIUS,APPARATUS_RADIUS,APPARATUS_DEPTH,8,1,false,Math.PI/8),apparatusMaterial);apparatus.position.y=APPARATUS_TOP-APPARATUS_DEPTH*.5;apparatus.name="crucible-octagonal-apparatus";apparatus.receiveShadow=true;scene.add(apparatus);
+  function rebuildChunk(chunk){
+    const raw=[],x0=chunk.cx*CHUNK,x1=Math.min(NX-1,x0+CHUNK),z0=chunk.cz*CHUNK,z1=Math.min(NZ-1,z0+CHUNK);
+    for(let z=z0;z<z1;z++)for(let y=0;y<NY-1;y++)for(let x=x0;x<x1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}
+    const out=clip(raw);out.push(...cutWalls(out));const pos=[];for(const p of out)pos.push(p.x,p.y,p.z);chunk.geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));chunk.geometry.computeVertexNormals();chunk.geometry.computeBoundingSphere();chunk.triangles=out.length/3;
+  }
+  function rebuild(bounds=null){
+    if(!bounds){for(const chunk of chunks)rebuildChunk(chunk);return}
+    const cx0=Math.max(0,Math.floor(Math.max(0,bounds.x0-1)/CHUNK)),cx1=Math.min(CX-1,Math.floor(Math.min(NX-2,bounds.x1+1)/CHUNK)),cz0=Math.max(0,Math.floor(Math.max(0,bounds.z0-1)/CHUNK)),cz1=Math.min(CZ-1,Math.floor(Math.min(NZ-2,bounds.z1+1)/CHUNK));
+    for(let cz=cz0;cz<=cz1;cz++)for(let cx=cx0;cx<=cx1;cx++)rebuildChunk(chunks[cx+CX*cz]);
+  }
   function terrainHeight(x,z){
     if(!insideMaterial(x,z))return-Infinity;
     const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(NX-1),0,NX-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(NZ-1),0,NZ-1.001),x0=Math.floor(fx),z0=Math.floor(fz),tx=fx-x0,tz=fz-z0;
@@ -40,8 +52,6 @@ export function createTerrainSystem({THREE,scene}){
     return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h00,h10,tx),THREE.MathUtils.lerp(h01,h11,tx),tz);
   }
   function groundHeight(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
-  let triangles=0;
-  function rebuild(){const raw=[];for(let z=0;z<NZ-1;z++)for(let y=0;y<NY-1;y++)for(let x=0;x<NX-1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}const out=clip(raw);out.push(...cutWalls(out));const pos=[];for(const p of out)pos.push(p.x,p.y,p.z);geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.computeVertexNormals();geometry.computeBoundingSphere();triangles=out.length/3;}
   function impact(center,{magnitude=1}={}){
     const e=Math.max(.02,magnitude),radius=.72+.62*Math.sqrt(e),depth=.16+.72*Math.pow(e,.82),rim=.035+.16*Math.pow(e,.72);
     const ix0=Math.max(1,Math.floor((center.x-radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1);
@@ -53,7 +63,7 @@ export function createTerrainSystem({THREE,scene}){
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
       if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
     }
-    rebuild();
+    rebuild({x0:ix0,x1:ix1,z0:iz0,z1:iz1});
     return{magnitude:e,radius,depth,rim};
   }
   function reset(){field.set(initial);rebuild();}
@@ -61,5 +71,5 @@ export function createTerrainSystem({THREE,scene}){
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();
-  return{mesh,apparatus,field,rebuild,impact,reset,randomize,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],triangles,seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,reset,randomize,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
