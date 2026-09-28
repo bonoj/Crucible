@@ -15,18 +15,34 @@ export function createTerrainSystem({THREE,scene}){
   const corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,5,1,6],[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6]];
   const interp=(a,b,va,vb)=>a.clone().lerp(b,THREE.MathUtils.clamp(va/(va-vb),0,1));
   function polygonize(ps,vs,out){const inside=[],outside=[];for(let i=0;i<4;i++)(vs[i]>0?inside:outside).push(i);if(!inside.length||inside.length===4)return;if(inside.length===1||inside.length===3){const inv=inside.length===3,A=inv?outside[0]:inside[0],others=inv?inside:outside,p0=interp(ps[A],ps[others[0]],vs[A],vs[others[0]]),p1=interp(ps[A],ps[others[1]],vs[A],vs[others[1]]),p2=interp(ps[A],ps[others[2]],vs[A],vs[others[2]]);out.push(...(inv?[p0,p2,p1]:[p0,p1,p2]));return}const[a,b]=inside,[c,d]=outside,p0=interp(ps[a],ps[c],vs[a],vs[c]),p1=interp(ps[a],ps[d],vs[a],vs[d]),p2=interp(ps[b],ps[c],vs[b],vs[c]),p3=interp(ps[b],ps[d],vs[b],vs[d]);out.push(p0,p1,p2,p2,p1,p3);}
-  for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=SURFACE_Y-p.y;}initial.set(field);
+  function terrainSeedHeight(x,z){
+    const broad=.72*Math.sin(x*.31)+.48*Math.cos(z*.43)+.34*Math.sin((x+z)*.57)+.22*Math.cos((x-z)*.81);
+    const ridge=1.15*Math.exp(-Math.pow((z+.8)-.24*x,2)/3.1)*Math.exp(-(x*x+z*z)/120);
+    const basin=-1.05*Math.exp(-((x+3.7)*(x+3.7)+(z-2.7)*(z-2.7))/5.4);
+    const mesa=.72*Math.exp(-((x-4.2)*(x-4.2)+(z+3.1)*(z+3.1))/8.5);
+    const fine=.13*Math.sin(x*1.73+z*.47)+.09*Math.cos(z*2.11-x*.61);
+    return SURFACE_Y+broad+ridge+basin+mesa+fine;
+  }
+  for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);
   const geometry=new THREE.BufferGeometry(),material=new THREE.MeshStandardMaterial({color:0x785846,roughness:.96,metalness:.02,flatShading:true,side:THREE.DoubleSide}),mesh=new THREE.Mesh(geometry,material);mesh.name="deformable-world-substance";mesh.receiveShadow=true;scene.add(mesh);
   const apparatusMaterial=new THREE.MeshStandardMaterial({color:0x3f4745,roughness:.78,metalness:.22}),apparatus=new THREE.Mesh(new THREE.CylinderGeometry(APPARATUS_RADIUS,APPARATUS_RADIUS,APPARATUS_DEPTH,8,1,false,Math.PI/8),apparatusMaterial);apparatus.position.y=APPARATUS_TOP-APPARATUS_DEPTH*.5;apparatus.name="crucible-octagonal-apparatus";apparatus.receiveShadow=true;scene.add(apparatus);
-  const G=112,support=new Float32Array(G*G);
-  function rasterize(out){support.fill(-Infinity);const gx=x=>THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(G-1),0,G-1),gz=z=>THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(G-1),0,G-1),eps=1e-8;for(let t=0;t<out.length;t+=3){const a=out[t],b=out[t+1],c=out[t+2],den=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);if(Math.abs(den)<eps)continue;for(let iz=Math.max(0,Math.floor(gz(Math.min(a.z,b.z,c.z)))-1);iz<=Math.min(G-1,Math.ceil(gz(Math.max(a.z,b.z,c.z)))+1);iz++){const z=THREE.MathUtils.lerp(MIN.z,MAX.z,iz/(G-1));for(let ix=Math.max(0,Math.floor(gx(Math.min(a.x,b.x,c.x)))-1);ix<=Math.min(G-1,Math.ceil(gx(Math.max(a.x,b.x,c.x)))+1);ix++){const x=THREE.MathUtils.lerp(MIN.x,MAX.x,ix/(G-1)),wa=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/den,wb=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/den,wc=1-wa-wb;if(wa>=-1e-5&&wb>=-1e-5&&wc>=-1e-5){const y=wa*a.y+wb*b.y+wc*c.y,k=ix+G*iz;if(y>support[k])support[k]=y}}}}for(let pass=0;pass<2;pass++){const copy=support.slice();for(let z=1;z<G-1;z++)for(let x=1;x<G-1;x++){const k=x+G*z;if(Number.isFinite(copy[k]))continue;let h=-Infinity;for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++)h=Math.max(h,copy[x+dx+G*(z+dz)]);if(Number.isFinite(h))support[k]=h}}}
-  function terrainHeight(x,z){if(!insideMaterial(x,z))return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(G-1),0,G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(G-1),0,G-1.001),ix=Math.floor(fx),iz=Math.floor(fz);return Math.max(support[ix+G*iz],support[ix+1+G*iz],support[ix+G*(iz+1)],support[ix+1+G*(iz+1)]);}
+  function terrainHeight(x,z){
+    if(!insideMaterial(x,z))return-Infinity;
+    const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(NX-1),0,NX-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(NZ-1),0,NZ-1.001),x0=Math.floor(fx),z0=Math.floor(fz),tx=fx-x0,tz=fz-z0;
+    function column(ix,iz){for(let y=NY-2;y>=0;y--){const a=field[idx(ix,y,iz)],b=field[idx(ix,y+1,iz)];if(a>=0&&b<0){const pa=wp(ix,y,iz),pb=wp(ix,y+1,iz),t=a/(a-b);return THREE.MathUtils.lerp(pa.y,pb.y,t)}}return-Infinity}
+    const h00=column(x0,z0),h10=column(x0+1,z0),h01=column(x0,z0+1),h11=column(x0+1,z0+1);
+    if(![h00,h10,h01,h11].every(Number.isFinite))return Math.max(h00,h10,h01,h11);
+    return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h00,h10,tx),THREE.MathUtils.lerp(h01,h11,tx),tz);
+  }
   function groundHeight(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
   let triangles=0;
-  function rebuild(){const raw=[];for(let z=0;z<NZ-1;z++)for(let y=0;y<NY-1;y++)for(let x=0;x<NX-1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}const out=clip(raw);out.push(...cutWalls(out));rasterize(out);const pos=[];for(const p of out)pos.push(p.x,p.y,p.z);geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.computeVertexNormals();geometry.computeBoundingSphere();triangles=out.length/3;}
+  function rebuild(){const raw=[];for(let z=0;z<NZ-1;z++)for(let y=0;y<NY-1;y++)for(let x=0;x<NX-1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}const out=clip(raw);out.push(...cutWalls(out));const pos=[];for(const p of out)pos.push(p.x,p.y,p.z);geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.computeVertexNormals();geometry.computeBoundingSphere();triangles=out.length/3;}
   function impact(center,{magnitude=1}={}){
     const e=Math.max(.02,magnitude),radius=.72+.62*Math.sqrt(e),depth=.16+.72*Math.pow(e,.82),rim=.035+.16*Math.pow(e,.72);
-    for(let z=1;z<NZ-1;z++)for(let y=1;y<NY-1;y++)for(let x=1;x<NX-1;x++){
+    const ix0=Math.max(1,Math.floor((center.x-radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1);
+    const iz0=Math.max(1,Math.floor((center.z-radius-MIN.z)/(MAX.z-MIN.z)*(NZ-1))-1),iz1=Math.min(NZ-2,Math.ceil((center.z+radius-MIN.z)/(MAX.z-MIN.z)*(NZ-1))+1);
+    const yr=radius*.62,iy0=Math.max(1,Math.floor((center.y-yr-MIN.y)/(MAX.y-MIN.y)*(NY-1))-1),iy1=Math.min(NY-2,Math.ceil((center.y+yr-MIN.y)/(MAX.y-MIN.y)*(NY-1))+1);
+    for(let z=iz0;z<=iz1;z++)for(let y=iy0;y<=iy1;y++)for(let x=ix0;x<=ix1;x++){
       const p=wp(x,y,z),dx=p.x-center.x,dz=p.z-center.z,radial=Math.hypot(dx,dz),dy=p.y-center.y;
       const bowl=Math.hypot(dx,dy*.82,dz);
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
