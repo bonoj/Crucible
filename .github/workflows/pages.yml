@@ -48,12 +48,17 @@ jobs:
           path: site/preview
           run-id: ${{ steps.refs.outputs.run || steps.recover.outputs.run }}
           github-token: ${{ github.token }}
-      - name: Preserve preview identity
+      - name: Preserve immutable candidate identity
         env: {SHA: "${{ steps.refs.outputs.sha || steps.recover.outputs.sha }}"}
         run: |
           test -s site/preview/index.html
+          SHORT="${SHA:0:7}"
+          mkdir -p "site/candidate/$SHORT"
+          cp site/preview/index.html "site/candidate/$SHORT/index.html"
           printf '%s\n' "$SHA" > site/preview/SOURCE_COMMIT
+          printf '%s\n' "$SHA" > "site/candidate/$SHORT/SOURCE_COMMIT"
           printf '%s\n' "$SHA" > site/PREVIEW_SOURCE_COMMIT
+          printf 'Candidate: https://bonoj.github.io/Crucible/candidate/%s/\n' "$SHORT" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: {path: site}
