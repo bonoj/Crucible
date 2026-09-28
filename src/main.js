@@ -80,4 +80,4 @@ requestAnimationFrame(frame);
 globalThis.crucible={world,components:{Transform,Body,Gravity,Support},spawnMatter,groundHeight,inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,build:globalThis.__CRUCIBLE_BUILD__})};
 diagnostics.ready();
 
-// T0 bench checkpoint: candidate machinery installed and ready to observe source.
+// T0 bench checkpoint: candidate machinery installed; Actions enabled.
