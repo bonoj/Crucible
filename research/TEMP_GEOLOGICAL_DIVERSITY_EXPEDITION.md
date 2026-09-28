@@ -10,7 +10,7 @@ Grand Canyon, Zabriskie Point, Chimney Rock, Badlands, Canyonlands, and similar 
 
 ## Constraint — do not build cold
 
-Begin with Foundry's proven signed-density terrain, final clipped terrain geometry, support generation, deformation machinery, and physical-world compatibility.
+Begin with Crucible's current signed-density terrain and preserve its ordinary world representation, support, deformation, and physical compatibility while investigating generation.
 
 Generation produces ordinary terrain truth. There is no separate procedural-scenery representation.
 
@@ -116,14 +116,7 @@ Desired: surprising outcomes.
 Failure: every seed visibly reads as a variation of one procedural terrain algorithm.
 
 ### T8 — Existing-world interference
-Once generated:
-- bombard with meteors
-- deploy Foundry payloads
-- extrude material
-- use gravity modes
-- eventually introduce water
-
-Nothing gets geological special cases. World systems should encounter ordinary terrain truth through shared support, gravity, collision, material, and deformation laws.
+Generated geology must remain ordinary mutable world terrain. Existing Crucible systems exercised against it should encounter the same terrain truth through shared support, collision, material, and deformation laws rather than geological special cases.
 
 ### T9 — Mutation after generation
 Blast through:
@@ -140,7 +133,7 @@ Generated geology must remain ordinary mutable density.
 
 Generation may be expensive because it is discontinuous.
 
-Steady-state generated terrain should cost essentially nothing beyond ordinary Foundry terrain. After compilation, retain resulting density/material fields rather than continuously simulating geological time.
+Steady-state generated terrain should cost essentially nothing beyond Crucible's ordinary terrain. After compilation, retain resulting density/material fields rather than continuously simulating geological time.
 
 ## Human review surface
 
