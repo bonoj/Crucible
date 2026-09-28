@@ -7,6 +7,7 @@ import {createOrbitSystem} from "./runtime/orbit-system.js";
 import {installOrbitInput} from "./runtime/orbit-input.js";
 import {createLightSystem} from "./runtime/light-system.js";
 import {createTerrainSystem} from "./runtime/terrain-system.js";
+import {createAirSystem} from "./runtime/air-system.js";
 import {createMeteorSystem} from "./runtime/meteor-system.js";
 import {installDebugApi} from "./runtime/debug-api.js";
 
@@ -15,9 +16,9 @@ document.querySelector("#build-id").textContent="build "+String(globalThis.__CRU
 document.querySelector("#debug-refresh").addEventListener("click",()=>location.reload());
 
 const world=createWorld(),three=createThreeRuntime({mount,diagnostics}),THREE=three.THREE;
-const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView","Locus","Meteor","MeteorShower"];
+const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView","Locus","Meteor","MeteorShower","Aerodynamic"];
 const components=Object.fromEntries(names.map(name=>[name,world.component(name)]));
-const {Transform,Body,Gravity,Support,RenderObject,Camera,CameraTarget,Viewport,ActiveCamera,OrbitBehavior,Light,Locus}=components;
+const {Transform,Body,Gravity,Support,RenderObject,Camera,CameraTarget,Viewport,ActiveCamera,OrbitBehavior,Light,Locus,Aerodynamic}=components;
 three.scene.background=new THREE.Color(0x7f8980);three.scene.fog=new THREE.Fog(0x7f8980,22,58);
 
 const locus=world.entity();world.add(locus,Transform,{position:new THREE.Vector3(0,1,0),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});world.add(locus,Locus,{id:locus,kind:"locus"});
@@ -34,6 +35,7 @@ const keyLight=addLight({name:"Key",kind:"directional",color:0xffc57d,intensity:
 const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensity:.7,position:[12,8,-10]});lights.syncAll();
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
+const air=createAirSystem({world,components,THREE});
 const waterBottom=-1.42,waterLevel=-.12,waterDepth=waterLevel-waterBottom,waterRadius=9.75,waterMaterial=new THREE.MeshStandardMaterial({color:0x557f88,transparent:true,opacity:.34,roughness:.28,metalness:.04,depthWrite:false,depthTest:true,side:THREE.DoubleSide}),water=new THREE.Mesh(new THREE.CylinderGeometry(waterRadius,waterRadius,waterDepth,8,1,false,Math.PI/8),waterMaterial);water.position.y=waterBottom+waterDepth*.5;water.name="crucible-sea-volume";water.renderOrder=3;water.visible=false;three.scene.add(water);
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus});
 const impactBuckets=[.18,.42,.85,1.55];let impactBucket=1,lastImpactTarget=meteors.targetAt();
@@ -43,13 +45,15 @@ const brass=new THREE.MeshStandardMaterial({color:0xa87536,roughness:.42,metalne
 const sphereGeo=new THREE.SphereGeometry(.22,12,8);
 function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGeo,brass);mesh.castShadow=true;three.scene.add(mesh);world.add(id,Transform,{position:new THREE.Vector3(x,y,z),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true,velocity:new THREE.Vector3((Math.random()-.5)*.35,0,(Math.random()-.5)*.35)});world.add(id,RenderObject,{object:mesh});world.add(id,Body,{radius:.22,restitution:.18,drag:.985});world.add(id,Gravity,{acceleration:-8.5});world.add(id,Support,{kind:"ground"});world.add(id,Locus,{id:locus});return id;}
 // Keep T0 visually and causally quiet: no automatic loose-matter population.
+function spawnPaper(){const id=world.entity(),geo=new THREE.PlaneGeometry(1.15,.82,3,2),mat=new THREE.MeshStandardMaterial({color:0xeee7d5,roughness:.88,metalness:0,side:THREE.DoubleSide}),mesh=new THREE.Mesh(geo,mat);mesh.castShadow=true;mesh.receiveShadow=true;three.scene.add(mesh);const x=-2.2+Math.random()*4.4,z=-2.5+Math.random()*5;world.add(id,Transform,{position:new THREE.Vector3(x,6.1,z),rotation:new THREE.Euler(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI),scale:new THREE.Vector3(1,1,1),visible:true,velocity:new THREE.Vector3((Math.random()-.5)*.3,-.05,(Math.random()-.5)*.3),angularVelocity:new THREE.Vector3((Math.random()-.5)*.7,(Math.random()-.5)*.7,(Math.random()-.5)*.7)});world.add(id,RenderObject,{object:mesh});world.add(id,Body,{radius:.46,restitution:.03,drag:.72});world.add(id,Gravity,{acceleration:-8.5});world.add(id,Support,{kind:"ground"});world.add(id,Aerodynamic,{drag:2.4,lift:.115,torque:.9,angularDrag:.955});world.add(id,Locus,{id:locus});return id;}
+spawnPaper();
 function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const t=Transform.get(id),b=Body.get(id),g=Gravity.get(id);t.velocity.y+=g.acceleration*dt;t.position.addScaledVector(t.velocity,dt);if(Support.has(id)){terrain.collideSphere(t.position,t.velocity,b.radius,b.restitution,b.drag);const h=terrain.groundHeight(t.position.x,t.position.z);if(Number.isFinite(h)&&t.position.y-b.radius<h){t.position.y=h+b.radius;if(t.velocity.y<0)t.velocity.y=-t.velocity.y*b.restitution;t.velocity.x*=b.drag;t.velocity.z*=b.drag;if(Math.abs(t.velocity.y)<.08)t.velocity.y=0;}}}}
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
-function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}air.update(dt,now);physics(dt);meteors.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
 const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect()});
-const systems={renderSync,cameras,orbit,lights,meteors},entities={locus,overviewCamera,skyLight,keyLight,fillLight};
-globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,inspect};
+const systems={renderSync,cameras,orbit,lights,meteors,air},entities={locus,overviewCamera,skyLight,keyLight,fillLight};
+globalThis.crucible={spawnMatter,spawnPaper,meteor:callImpact,groundHeight:terrain.groundHeight,inspect};
 installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
 document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
