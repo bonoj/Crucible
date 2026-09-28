@@ -17,47 +17,7 @@ export function createTerrainSystem({THREE,scene}){
   function polygonize(ps,vs,out){const inside=[],outside=[];for(let i=0;i<4;i++)(vs[i]>0?inside:outside).push(i);if(!inside.length||inside.length===4)return;if(inside.length===1||inside.length===3){const inv=inside.length===3,A=inv?outside[0]:inside[0],others=inv?inside:outside,p0=interp(ps[A],ps[others[0]],vs[A],vs[others[0]]),p1=interp(ps[A],ps[others[1]],vs[A],vs[others[1]]),p2=interp(ps[A],ps[others[2]],vs[A],vs[others[2]]);out.push(...(inv?[p0,p2,p1]:[p0,p1,p2]));return}const[a,b]=inside,[c,d]=outside,p0=interp(ps[a],ps[c],vs[a],vs[c]),p1=interp(ps[a],ps[d],vs[a],vs[d]),p2=interp(ps[b],ps[c],vs[b],vs[c]),p3=interp(ps[b],ps[d],vs[b],vs[d]);out.push(p0,p1,p2,p2,p1,p3);}
   function hash(n){const s=Math.sin(n*127.1+seed*311.7)*43758.5453123;return s-Math.floor(s)}
   function terrainSeedHeight(x,z){
-    // One deliberately legible canyon world: a high plateau cut by a dominant
-    // meandering drainage and progressively smaller tributaries.
-    const plateau=2.75
-      +.16*Math.sin(x*.22+seed*.17)
-      +.12*Math.cos(z*.19-seed*.11);
-
-    const trunkX=1.15*Math.sin(z*.31+.55)+.38*Math.sin(z*.73-1.1);
-    const trunkD=Math.abs(x-trunkX);
-    const trunkDepth=4.25*Math.exp(-Math.pow(trunkD/1.28,2));
-    const innerGorge=1.15*Math.exp(-Math.pow(trunkD/.48,2));
-
-    function segmentCut(ax,az,bx,bz,width,depth){
-      const vx=bx-ax,vz=bz-az,wx=x-ax,wz=z-az;
-      const vv=vx*vx+vz*vz;
-      const t=THREE.MathUtils.clamp((wx*vx+wz*vz)/vv,0,1);
-      const px=ax+vx*t,pz=az+vz*t,d=Math.hypot(x-px,z-pz);
-      const taper=.35+.65*Math.sin(Math.PI*t);
-      return depth*taper*Math.exp(-Math.pow(d/width,2));
-    }
-
-    const txA=1.15*Math.sin(-2.5*.31+.55)+.38*Math.sin(-2.5*.73-1.1);
-    const txB=1.15*Math.sin( 2.1*.31+.55)+.38*Math.sin( 2.1*.73-1.1);
-    const txC=1.15*Math.sin( 5.0*.31+.55)+.38*Math.sin( 5.0*.73-1.1);
-    const txD=1.15*Math.sin(-5.2*.31+.55)+.38*Math.sin(-5.2*.73-1.1);
-
-    const tributaries=
-      segmentCut(-8.8,-7.2,txA,-2.5,1.05,2.65)+
-      segmentCut( 8.4,-4.8,txB, 2.1, .92,2.35)+
-      segmentCut(-8.5, 6.9,txC, 5.0, .82,2.05)+
-      segmentCut( 7.8,-8.0,txD,-5.2, .72,1.75);
-
-    const sideBranches=
-      segmentCut(-8.5, 2.2,-4.5, 4.5,.58,1.35)+
-      segmentCut( 8.2, 6.8, 5.0, 4.4,.52,1.2)+
-      segmentCut(-7.8,-1.0,-5.0,-4.1,.48,1.05);
-
-    // Broad benches make the cuts read as erosion into a mass rather than
-    // smooth tubes stamped into a surface.
-    const bench=1.05*Math.exp(-Math.pow(trunkD/2.25,4));
-    const rimNoise=.10*Math.sin(x*1.35+z*.42)+.07*Math.cos(z*1.55-x*.31);
-    return plateau-trunkDepth-innerGorge-tributaries-sideBranches-bench+rimNoise;
+    return SURFACE_Y;
   }
   function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);}
   synthesize(seed);
