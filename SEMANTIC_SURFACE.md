@@ -22,6 +22,18 @@ Do not prebuild a generic editor, force framework, ownership hierarchy, schedule
 
 ECS is useful as a tiny model-facing semantic substrate. Not everything must be an entity. Dense subordinate populations may remain system-owned state when that is the clearer realization.
 
+### Locus is world state
+
+A locus is a semantic region of shared situated experience, not a camera volume, scene graph group, visibility toggle, or UI device. Entities that can perceive should carry or resolve a locus as part of their world state.
+
+Locus constrains what can in principle be perceived. Perception must then be earned from actual world relationships and material conditions rather than faked with presentation state, hard-coded omniscience, or arbitrary fog-of-war flags. Crossing, joining, leaving, enclosing, connecting, or observing loci should therefore have semantic consequences when those operations are earned.
+
+Do not predefine a complete perception ontology yet. The deep invariant is only that situated perception has a world-owned basis and locus is part of that basis.
+
+### Fog of war is material when it exists
+
+If Crucible later contains fog, smoke, darkness, walls, occlusion, interference, or other phenomena that limit perception, those limitations should arise from real world state and materials participating in perception. A conventional presentation-only fog-of-war layer may exist as a view of knowledge, but it must not be the authority that decides what an entity can perceive.
+
 ### Systems produce world state; the frame owns presentation
 
 Behavioral systems mutate semantic state. Presentation synchronizes afterward. The recurring frame owns rendering.
@@ -36,7 +48,7 @@ Conversation is the ordinary human construction surface. Modular source is the m
 
 ## Current world
 
-T0 is deliberately only a construction bench: a contained warm geological locus, a tiny ECS, a frame-owned Three.js runtime, camera inspection, visible diagnostics, and a small loose-matter gravity probe.
+T0 is deliberately only a construction bench: a contained warm geological locus, locus-aware semantic infrastructure, a tiny ECS, a frame-owned Three.js runtime, camera inspection, visible diagnostics, and a small loose-matter gravity probe.
 
 The loose matter is evidence that a semantic actor can participate in a shared world law. It is not a commitment that bearings, granular matter, terrain editing, or any particular payload belongs in Crucible.
 
@@ -48,7 +60,7 @@ Octonut + dome is a useful recurring instinct for discrete loci, not yet a unive
 
 ## Non-commitments
 
-Crucible does not yet commit to deformable terrain, payload catalogs, logistics, combat, a generic physics engine, runtime model inference, a backend, or Foundry's implementation architecture.
+Crucible does not yet commit to a complete perception model, sensor taxonomy, knowledge model, deformable terrain, payload catalogs, logistics, combat, a generic physics engine, runtime model inference, a backend, or Foundry's implementation architecture.
 
 ## Present finish line
 
