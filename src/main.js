@@ -5,7 +5,8 @@ import {createRenderSyncSystem} from "./runtime/render-sync.js";
 import {createCameraSystem} from "./runtime/camera-system.js";
 import {createOrbitSystem} from "./runtime/orbit-system.js";
 import {installOrbitInput} from "./runtime/orbit-input.js";
-import {createLightSystem} from "./runtime/light-system.js";\nimport {createTerrainSystem} from "./runtime/terrain-system.js";
+import {createLightSystem} from "./runtime/light-system.js";
+import {createTerrainSystem} from "./runtime/terrain-system.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
 document.querySelector("#build-id").textContent="build "+String(globalThis.__CRUCIBLE_BUILD__||"local").slice(0,7);
