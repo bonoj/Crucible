@@ -24,10 +24,20 @@ export function createTerrainSystem({THREE,scene}){
   function groundHeight(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
   let triangles=0;
   function rebuild(){const raw=[];for(let z=0;z<NZ-1;z++)for(let y=0;y<NY-1;y++)for(let x=0;x<NX-1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}const out=clip(raw);out.push(...cutWalls(out));rasterize(out);const pos=[];for(const p of out)pos.push(p.x,p.y,p.z);geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.computeVertexNormals();geometry.computeBoundingSphere();triangles=out.length/3;}
-  function edit(center,kind,radius=1.65){const strength=kind==="raise"?.75:-.85,effective=kind==="smooth"?radius*1.18:radius,copy=kind==="smooth"?field.slice():null;for(let z=1;z<NZ-1;z++)for(let y=1;y<NY-1;y++)for(let x=1;x<NX-1;x++){const p=wp(x,y,z),d=p.distanceTo(center);if(d>effective)continue;if(kind==="smooth"){let sum=0,n=0;for(let dz=-1;dz<=1;dz++)for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){sum+=copy[idx(x+dx,y+dy,z+dz)];n++}field[idx(x,y,z)]=THREE.MathUtils.lerp(copy[idx(x,y,z)],sum/n,(1-d/effective)*.38);}else field[idx(x,y,z)]+=strength*(1-d/effective)**2;}rebuild();}
+  function mutateSphere(center,radius,amount,verticalScale=1){for(let z=1;z<NZ-1;z++)for(let y=1;y<NY-1;y++)for(let x=1;x<NX-1;x++){const p=wp(x,y,z),dx=p.x-center.x,dy=(p.y-center.y)/verticalScale,dz=p.z-center.z,d=Math.hypot(dx,dy,dz);if(d>=radius)continue;const w=1-d/radius;field[idx(x,y,z)]+=amount*w*w;}}
+  function dent(center,{radius=1.5,depth=.42}={}){mutateSphere(center,radius,-depth,.48);rebuild();}
+  function bite(center,{radius=1.45,depth=1.05}={}){mutateSphere(center,radius,-depth,.9);rebuild();}
+  function crater(center,{radius=2.15,depth=1.45,rim=.34}={}){
+    for(let z=1;z<NZ-1;z++)for(let y=1;y<NY-1;y++)for(let x=1;x<NX-1;x++){
+      const p=wp(x,y,z),dx=p.x-center.x,dz=p.z-center.z,radial=Math.hypot(dx,dz),dy=p.y-center.y;
+      const bowl=Math.hypot(dx,dy*.82,dz);if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
+      if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
+    }
+    rebuild();
+  }
   function reset(){field.set(initial);rebuild();}
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();
-  return{mesh,apparatus,field,rebuild,edit,reset,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],triangles,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,dent,bite,crater,reset,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],triangles,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
