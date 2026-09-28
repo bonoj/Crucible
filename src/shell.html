@@ -7,8 +7,10 @@
 <aside id="debug-tools" aria-label="Construction controls">
   <output id="fps-counter" aria-label="Frames per second">fps …</output>
   <output id="build-id">build …</output>
-  <button id="call-meteor" type="button">☄ Meteor</button>
-  <button id="call-meteors" type="button">☄ Meteors</button>
+  <span id="impact-buckets" aria-label="Impact magnitude">
+    <button type="button" data-impact-bucket aria-label="Impact magnitude 1">1</button><button type="button" data-impact-bucket aria-label="Impact magnitude 2">2</button><button type="button" data-impact-bucket aria-label="Impact magnitude 3">3</button><button type="button" data-impact-bucket aria-label="Impact magnitude 4">4</button>
+  </span>
+  <button id="call-meteor" type="button" aria-label="Call meteor">☄</button>
   <button id="debug-refresh" type="button">Refresh</button>
 </aside>
 <pre id="diagnostics" role="alert" hidden></pre>
