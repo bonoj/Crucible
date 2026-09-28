@@ -4,7 +4,7 @@ export function createTerrainSystem({THREE,scene}){
   const APPARATUS_RADIUS=9.75,APPARATUS_APOTHEM=APPARATUS_RADIUS*Math.cos(Math.PI/8),EDGE_REVEAL=.7,MATERIAL_APOTHEM=APPARATUS_APOTHEM-EDGE_REVEAL;
   const APPARATUS_TOP=-1.1,APPARATUS_DEPTH=5,APPARATUS_BOTTOM=APPARATUS_TOP-APPARATUS_DEPTH,SURFACE_Y=.15;
   const PLANES=[[1,0],[-1,0],[0,1],[0,-1],[SQRT1_2,SQRT1_2],[-SQRT1_2,SQRT1_2],[SQRT1_2,-SQRT1_2],[-SQRT1_2,-SQRT1_2]];
-  const field=new Float32Array(NX*NY*NZ),initial=new Float32Array(field.length),idx=(x,y,z)=>x+NX*(y+NY*z);
+  const field=new Float32Array(NX*NY*NZ),initial=new Float32Array(field.length),idx=(x,y,z)=>x+NX*(y+NY*z);let seed=1;
   const wp=(x,y,z)=>new THREE.Vector3(THREE.MathUtils.lerp(MIN.x,MAX.x,x/(NX-1)),THREE.MathUtils.lerp(MIN.y,MAX.y,y/(NY-1)),THREE.MathUtils.lerp(MIN.z,MAX.z,z/(NZ-1)));
   const octagonDistance=(x,z)=>Math.max(Math.abs(x),Math.abs(z),(Math.abs(x)+Math.abs(z))/Math.SQRT2);
   const insideMaterial=(x,z)=>octagonDistance(x,z)<=MATERIAL_APOTHEM+1e-6,insideApparatus=(x,z,pad=0)=>octagonDistance(x,z)<=APPARATUS_APOTHEM+pad;
@@ -15,15 +15,20 @@ export function createTerrainSystem({THREE,scene}){
   const corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,5,1,6],[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6]];
   const interp=(a,b,va,vb)=>a.clone().lerp(b,THREE.MathUtils.clamp(va/(va-vb),0,1));
   function polygonize(ps,vs,out){const inside=[],outside=[];for(let i=0;i<4;i++)(vs[i]>0?inside:outside).push(i);if(!inside.length||inside.length===4)return;if(inside.length===1||inside.length===3){const inv=inside.length===3,A=inv?outside[0]:inside[0],others=inv?inside:outside,p0=interp(ps[A],ps[others[0]],vs[A],vs[others[0]]),p1=interp(ps[A],ps[others[1]],vs[A],vs[others[1]]),p2=interp(ps[A],ps[others[2]],vs[A],vs[others[2]]);out.push(...(inv?[p0,p2,p1]:[p0,p1,p2]));return}const[a,b]=inside,[c,d]=outside,p0=interp(ps[a],ps[c],vs[a],vs[c]),p1=interp(ps[a],ps[d],vs[a],vs[d]),p2=interp(ps[b],ps[c],vs[b],vs[c]),p3=interp(ps[b],ps[d],vs[b],vs[d]);out.push(p0,p1,p2,p2,p1,p3);}
+  function hash(n){const s=Math.sin(n*127.1+seed*311.7)*43758.5453123;return s-Math.floor(s)}
   function terrainSeedHeight(x,z){
-    const broad=.72*Math.sin(x*.31)+.48*Math.cos(z*.43)+.34*Math.sin((x+z)*.57)+.22*Math.cos((x-z)*.81);
-    const ridge=1.15*Math.exp(-Math.pow((z+.8)-.24*x,2)/3.1)*Math.exp(-(x*x+z*z)/120);
-    const basin=-1.05*Math.exp(-((x+3.7)*(x+3.7)+(z-2.7)*(z-2.7))/5.4);
-    const mesa=.72*Math.exp(-((x-4.2)*(x-4.2)+(z+3.1)*(z+3.1))/8.5);
-    const fine=.13*Math.sin(x*1.73+z*.47)+.09*Math.cos(z*2.11-x*.61);
+    const a=hash(1)*Math.PI*2,b=hash(2)*Math.PI*2,c=hash(3)*Math.PI*2;
+    const broad=(.45+hash(4)*.65)*Math.sin((x*Math.cos(a)+z*Math.sin(a))*(.20+hash(5)*.18)+b)+(.25+hash(6)*.5)*Math.cos((x*Math.cos(c)+z*Math.sin(c))*(.32+hash(7)*.28));
+    const ridgeAmp=.45+hash(8)*1.45,ridgeAngle=hash(9)*Math.PI*2,ridgeOffset=(hash(10)-.5)*5,ridgeWidth=1.2+hash(11)*3.6;
+    const ridgeAxis=x*Math.cos(ridgeAngle)+z*Math.sin(ridgeAngle),ridgeCross=-x*Math.sin(ridgeAngle)+z*Math.cos(ridgeAngle)-ridgeOffset;
+    const ridge=ridgeAmp*Math.exp(-(ridgeCross*ridgeCross)/ridgeWidth)*Math.exp(-(ridgeAxis*ridgeAxis)/150);
+    const bx=(hash(12)-.5)*9,bz=(hash(13)-.5)*9,basin=-(.35+hash(14)*1.55)*Math.exp(-((x-bx)*(x-bx)+(z-bz)*(z-bz))/(2.5+hash(15)*8));
+    const mx=(hash(16)-.5)*9,mz=(hash(17)-.5)*9,mesa=(.25+hash(18)*1.25)*Math.exp(-((x-mx)*(x-mx)+(z-mz)*(z-mz))/(3+hash(19)*10));
+    const fine=(.05+hash(20)*.16)*Math.sin(x*(1.1+hash(21)*1.5)+z*(.25+hash(22)*.9)+c)+(.04+hash(23)*.12)*Math.cos(z*(1.2+hash(24)*1.7)-x*(.2+hash(25)*.8));
     return SURFACE_Y+broad+ridge+basin+mesa+fine;
   }
-  for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);
+  function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);}
+  synthesize(seed);
   const geometry=new THREE.BufferGeometry(),material=new THREE.MeshStandardMaterial({color:0x785846,roughness:.96,metalness:.02,flatShading:true,side:THREE.DoubleSide}),mesh=new THREE.Mesh(geometry,material);mesh.name="deformable-world-substance";mesh.receiveShadow=true;scene.add(mesh);
   const apparatusMaterial=new THREE.MeshStandardMaterial({color:0x3f4745,roughness:.78,metalness:.22}),apparatus=new THREE.Mesh(new THREE.CylinderGeometry(APPARATUS_RADIUS,APPARATUS_RADIUS,APPARATUS_DEPTH,8,1,false,Math.PI/8),apparatusMaterial);apparatus.position.y=APPARATUS_TOP-APPARATUS_DEPTH*.5;apparatus.name="crucible-octagonal-apparatus";apparatus.receiveShadow=true;scene.add(apparatus);
   function terrainHeight(x,z){
@@ -52,8 +57,9 @@ export function createTerrainSystem({THREE,scene}){
     return{magnitude:e,radius,depth,rim};
   }
   function reset(){field.set(initial);rebuild();}
+  function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();return seed;}
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();
-  return{mesh,apparatus,field,rebuild,impact,reset,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],triangles,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,reset,randomize,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],triangles,seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
