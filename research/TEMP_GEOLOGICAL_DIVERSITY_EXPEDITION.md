@@ -117,14 +117,13 @@ Failure: every seed visibly reads as a variation of one procedural terrain algor
 
 ### T8 — Existing-world interference
 Once generated:
-- dump 200K bearings
 - bombard with meteors
 - deploy Foundry payloads
 - extrude material
 - use gravity modes
 - eventually introduce water
 
-Nothing gets geological special cases. A bearing does not know it is in a canyon; it knows support, gravity, collision, and other shared laws.
+Nothing gets geological special cases. World systems should encounter ordinary terrain truth through shared support, gravity, collision, material, and deformation laws.
 
 ### T9 — Mutation after generation
 Blast through:
@@ -142,8 +141,6 @@ Generated geology must remain ordinary mutable density.
 Generation may be expensive because it is discontinuous.
 
 Steady-state generated terrain should cost essentially nothing beyond ordinary Foundry terrain. After compilation, retain resulting density/material fields rather than continuously simulating geological time.
-
-200K bearings at the proven Foundry performance envelope remains a regression test.
 
 ## Human review surface
 
