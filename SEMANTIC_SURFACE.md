@@ -42,6 +42,8 @@ Behavioral systems mutate semantic state. Presentation synchronizes afterward. T
 
 Where practical, gravity, support, collision, geometry, material state, and other shared laws should explain behavior across multiple things.
 
+Terrain mutation is world capability, not a human sculpting affordance. Human-facing construction should not expose arbitrary terrain brushes. Situated agents and physical processes may invoke a small legible vocabulary of material consequences such as **dent**, **bite**, and **crater**. These verbs own coherent characteristic shapes; callers should not need to understand the density field. A crater includes displaced material at its rim rather than behaving as a purely subtractive brush.
+
 ### Source, executable, conversation, and Git have different jobs
 
 Conversation is the ordinary human construction surface. Modular source is the model-facing implementation surface. Candidate executables are experienced evidence. Git is durable source and provenance.
