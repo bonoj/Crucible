@@ -7,18 +7,19 @@ import {createOrbitSystem} from "./runtime/orbit-system.js";
 import {installOrbitInput} from "./runtime/orbit-input.js";
 import {createLightSystem} from "./runtime/light-system.js";
 import {createTerrainSystem} from "./runtime/terrain-system.js";
+import {createMeteorSystem} from "./runtime/meteor-system.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
 document.querySelector("#build-id").textContent="build "+String(globalThis.__CRUCIBLE_BUILD__||"local").slice(0,7);
 document.querySelector("#debug-refresh").addEventListener("click",()=>location.reload());
 
 const world=createWorld(),three=createThreeRuntime({mount,diagnostics}),THREE=three.THREE;
-const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView"];
+const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView","Locus","Meteor","MeteorShower"];
 const components=Object.fromEntries(names.map(name=>[name,world.component(name)]));
-const {Transform,Body,Gravity,Support,RenderObject,Camera,CameraTarget,Viewport,ActiveCamera,OrbitBehavior,Light}=components;
+const {Transform,Body,Gravity,Support,RenderObject,Camera,CameraTarget,Viewport,ActiveCamera,OrbitBehavior,Light,Locus}=components;
 three.scene.background=new THREE.Color(0x7f8980);three.scene.fog=new THREE.Fog(0x7f8980,22,58);
 
-const locus=world.entity();world.add(locus,Transform,{position:new THREE.Vector3(0,1,0),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});
+const locus=world.entity();world.add(locus,Transform,{position:new THREE.Vector3(0,1,0),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});world.add(locus,Locus,{id:locus,kind:"locus"});
 function addCamera({name,position,orbit,fov=38}){const id=world.entity();world.add(id,Transform,{position:new THREE.Vector3(...position),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});world.add(id,Camera,{name,projection:"perspective",fov,height:5,near:.1,far:150});world.add(id,CameraTarget,{entity:locus});world.add(id,Viewport,{slot:"primary"});world.add(id,OrbitBehavior,orbit);return id;}
 const limits={minDistance:9,maxDistance:38,minPolar:.25,maxPolar:1.48,minWorldY:.18};
 const overviewCamera=addCamera({name:"Overview",position:[12,13,18],orbit:{azimuth:.65,polar:1.02,distance:24,...limits}});
@@ -32,14 +33,17 @@ const keyLight=addLight({name:"Key",kind:"directional",color:0xffc57d,intensity:
 const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensity:.7,position:[12,8,-10]});lights.syncAll();
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
+const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus});
 const brass=new THREE.MeshStandardMaterial({color:0xa87536,roughness:.42,metalness:.68}),cinnabar=new THREE.MeshStandardMaterial({color:0x7d2d22,roughness:.78,metalness:.04});
 const mineralGeo=new THREE.IcosahedronGeometry(.22,1);for(let i=0;i<13;i++){const a=i*2.399,r=2.2+(i%5)*1.15,x=Math.cos(a)*r,z=Math.sin(a)*r,y=terrain.groundHeight(x,z);if(!Number.isFinite(y))continue;const m=new THREE.Mesh(mineralGeo,i%4===0?cinnabar:brass);m.scale.set(.6+(i%3)*.25,.5+(i%4)*.18,.6);m.position.set(x,y+.12,z);m.rotation.set(a*.3,a,.2);m.castShadow=true;three.scene.add(m);}
 const sphereGeo=new THREE.SphereGeometry(.22,12,8);
-function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGeo,brass);mesh.castShadow=true;three.scene.add(mesh);world.add(id,Transform,{position:new THREE.Vector3(x,y,z),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true,velocity:new THREE.Vector3((Math.random()-.5)*.35,0,(Math.random()-.5)*.35)});world.add(id,RenderObject,{object:mesh});world.add(id,Body,{radius:.22,restitution:.18,drag:.985});world.add(id,Gravity,{acceleration:-8.5});world.add(id,Support,{kind:"ground"});return id;}
+function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGeo,brass);mesh.castShadow=true;three.scene.add(mesh);world.add(id,Transform,{position:new THREE.Vector3(x,y,z),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true,velocity:new THREE.Vector3((Math.random()-.5)*.35,0,(Math.random()-.5)*.35)});world.add(id,RenderObject,{object:mesh});world.add(id,Body,{radius:.22,restitution:.18,drag:.985});world.add(id,Gravity,{acceleration:-8.5});world.add(id,Support,{kind:"ground"});world.add(id,Locus,{id:locus});return id;}
 for(let i=0;i<9;i++){const a=i*.72,r=.4+(i%3)*.42;spawnMatter(Math.cos(a)*r,4.2+i*.28,Math.sin(a)*r);}
 function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const t=Transform.get(id),b=Body.get(id),g=Gravity.get(id);t.velocity.y+=g.acceleration*dt;t.position.addScaledVector(t.velocity,dt);if(Support.has(id)){terrain.collideSphere(t.position,t.velocity,b.radius,b.restitution,b.drag);const h=terrain.groundHeight(t.position.x,t.position.z);if(Number.isFinite(h)&&t.position.y-b.radius<h){t.position.y=h+b.radius;if(t.velocity.y<0)t.velocity.y=-t.velocity.y*b.restitution;t.velocity.x*=b.drag;t.velocity.z*=b.drag;if(Math.abs(t.velocity.y)<.08)t.velocity.y=0;}}}}
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
-function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
-globalThis.crucible={world,components,spawnMatter,groundHeight:terrain.groundHeight,terrain,systems:{renderSync,cameras,orbit,lights},entities:{locus,overviewCamera,skyLight,keyLight,fillLight},inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect()})};
+function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+globalThis.crucible={world,components,spawnMatter,meteor:meteors.meteor,meteors:meteors.meteors,groundHeight:terrain.groundHeight,terrain,systems:{renderSync,cameras,orbit,lights,meteors},entities:{locus,overviewCamera,skyLight,keyLight,fillLight},inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),meteors:meteors.inspect()})};
+document.querySelector("#call-meteor")?.addEventListener("click",()=>meteors.meteor());
+document.querySelector("#call-meteors")?.addEventListener("click",()=>meteors.meteors());
 diagnostics.ready();
