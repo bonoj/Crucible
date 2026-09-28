@@ -8,6 +8,7 @@ import {installOrbitInput} from "./runtime/orbit-input.js";
 import {createLightSystem} from "./runtime/light-system.js";
 import {createTerrainSystem} from "./runtime/terrain-system.js";
 import {createMeteorSystem} from "./runtime/meteor-system.js";
+import {installDebugApi} from "./runtime/debug-api.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
 document.querySelector("#build-id").textContent="build "+String(globalThis.__CRUCIBLE_BUILD__||"local").slice(0,7);
@@ -56,7 +57,10 @@ function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const 
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
 function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);updateBearings(dt);meteors.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
-globalThis.crucible={world,components,spawnMatter,spawnBearings,meteor:callImpact,groundHeight:terrain.groundHeight,terrain,systems:{renderSync,cameras,orbit,lights,meteors},entities:{locus,overviewCamera,skyLight,keyLight,fillLight},water,inspect:()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,bearings:{active:bearingCount,rendered:bearingMesh.count},impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect()})};
+const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,bearings:{active:bearingCount,rendered:bearingMesh.count},impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect()});
+const systems={renderSync,cameras,orbit,lights,meteors},entities={locus,overviewCamera,skyLight,keyLight,fillLight};
+globalThis.crucible={spawnMatter,spawnBearings,meteor:callImpact,groundHeight:terrain.groundHeight,inspect};
+installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
 document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
 document.querySelector("#toggle-water")?.addEventListener("click",event=>{water.visible=!water.visible;event.currentTarget.classList.toggle("active",water.visible);});
