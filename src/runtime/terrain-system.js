@@ -51,7 +51,15 @@ export function createTerrainSystem({THREE,scene}){
     if(![h00,h10,h01,h11].every(Number.isFinite))return Math.max(h00,h10,h01,h11);
     return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h00,h10,tx),THREE.MathUtils.lerp(h01,h11,tx),tz);
   }
-  function groundHeight(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
+  const SUPPORT_G=72,support=new Float32Array(SUPPORT_G*SUPPORT_G);
+  function rebuildSupport(bounds=null){
+    let x0=0,x1=SUPPORT_G-1,z0=0,z1=SUPPORT_G-1;
+    if(bounds){x0=Math.max(0,Math.floor((bounds.x0/(NX-1))*(SUPPORT_G-1))-2);x1=Math.min(SUPPORT_G-1,Math.ceil((bounds.x1/(NX-1))*(SUPPORT_G-1))+2);z0=Math.max(0,Math.floor((bounds.z0/(NZ-1))*(SUPPORT_G-1))-2);z1=Math.min(SUPPORT_G-1,Math.ceil((bounds.z1/(NZ-1))*(SUPPORT_G-1))+2);}
+    for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++){const wx=THREE.MathUtils.lerp(MIN.x,MAX.x,x/(SUPPORT_G-1)),wz=THREE.MathUtils.lerp(MIN.z,MAX.z,z/(SUPPORT_G-1));support[x+SUPPORT_G*z]=groundHeightExact(wx,wz);}
+  }
+  function groundHeightExact(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
+  function groundHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),tx=fx-ix,tz=fz-iz,A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];return THREE.MathUtils.lerp(THREE.MathUtils.lerp(A,B,tx),THREE.MathUtils.lerp(C,D,tx),tz);}
+
   function impact(center,{magnitude=1}={}){
     const e=Math.max(.02,magnitude),radius=.72+.62*Math.sqrt(e),depth=.16+.72*Math.pow(e,.82),rim=.035+.16*Math.pow(e,.72);
     const ix0=Math.max(1,Math.floor((center.x-radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1);
@@ -63,13 +71,13 @@ export function createTerrainSystem({THREE,scene}){
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
       if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
     }
-    rebuild({x0:ix0,x1:ix1,z0:iz0,z1:iz1});
+    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
     return{magnitude:e,radius,depth,rim};
   }
-  function reset(){field.set(initial);rebuild();}
-  function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();return seed;}
+  function reset(){field.set(initial);rebuild();rebuildSupport();}
+  function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();rebuildSupport();return seed;}
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
-  rebuild();
+  rebuild();rebuildSupport();
   return{mesh,apparatus,field,rebuild,impact,reset,randomize,groundHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
