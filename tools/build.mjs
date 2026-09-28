@@ -1,0 +1,12 @@
+import { build } from "esbuild";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+const root=resolve(import.meta.dirname,".."),src=resolve(root,"src"),dist=resolve(root,"dist");
+await mkdir(dist,{recursive:true});
+const js=await build({entryPoints:[resolve(src,"main.js")],bundle:true,write:false,format:"iife",target:["es2022"],minify:false,legalComments:"none"});
+const css=await readFile(resolve(src,"styles.css"),"utf8");
+const shell=await readFile(resolve(src,"shell.html"),"utf8");
+const commit=process.env.GITHUB_SHA||"local";
+const built=shell.replace("<!-- CRUCIBLE:STYLE -->",`<style>\n${css.replaceAll("</style","<\\/style")}</style>`).replace("<!-- CRUCIBLE:SCRIPT -->",`<script>\n${js.outputFiles[0].text.replaceAll("</script","<\\/script")}</script>`).replaceAll("{{BUILD_COMMIT}}",commit);
+await writeFile(resolve(dist,"index.html"),built,"utf8");
+console.log(`Built dist/index.html (${Buffer.byteLength(built)} bytes) from ${commit}`);
