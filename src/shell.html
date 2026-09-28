@@ -2,8 +2,13 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Crucible — a conversationally grown physical world."><title>Crucible</title>
 <!-- CRUCIBLE:STYLE --></head>
-<body><main id="world" aria-label="Crucible world. Drag to orbit; pinch or wheel to zoom."></main>
-<aside id="mark"><b>⚗️ CRUCIBLE</b><span id="build-id">build …</span></aside>
+<body><main id="world" aria-label="Crucible world. Drag to orbit; pinch or use the mouse wheel to change distance."></main>
+<aside id="mark"><b>⚗️ CRUCIBLE</b></aside>
+<aside id="debug-tools" aria-label="Construction controls">
+  <output id="fps-counter" aria-label="Frames per second">fps …</output>
+  <output id="build-id">build …</output>
+  <button id="debug-refresh" type="button">Refresh</button>
+</aside>
 <pre id="diagnostics" role="alert" hidden></pre>
 <script>globalThis.__CRUCIBLE_BUILD__="{{BUILD_COMMIT}}";</script>
 <!-- CRUCIBLE:SCRIPT --></body></html>
