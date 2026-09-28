@@ -19,7 +19,14 @@ export function createTerrainSystem({THREE,scene}){
   function terrainSeedHeight(x,z){
     return SURFACE_Y;
   }
-  function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);}
+  function turnOneDensity(p){
+    const cx=4.6,cz=-.7,base=SURFACE_Y,top=4.75,dx=p.x-cx,dz=p.z-cz,r=Math.hypot(dx,dz),h=THREE.MathUtils.clamp((p.y-base)/(top-base),0,1);
+    const shaftRadius=.62-.13*h+.08*Math.sin(h*Math.PI*2.4);
+    const shaft=Math.min(shaftRadius-r,p.y-base,top-p.y);
+    const foot=Math.min(1.28-r,p.y-base,1.05-p.y)*.72;
+    return Math.max(shaft,foot);
+  }
+  function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z),plain=terrainSeedHeight(p.x,p.z)-p.y;field[idx(x,y,z)]=Math.max(plain,turnOneDensity(p));}initial.set(field);}
   synthesize(seed);
   const material=new THREE.MeshStandardMaterial({color:0x785846,roughness:.96,metalness:.02,flatShading:true,side:THREE.DoubleSide});
   const CHUNK=10,CX=Math.ceil((NX-1)/CHUNK),CZ=Math.ceil((NZ-1)/CHUNK),chunks=[],mesh=new THREE.Group();mesh.name="deformable-world-substance";scene.add(mesh);
