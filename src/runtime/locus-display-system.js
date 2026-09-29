@@ -5,8 +5,11 @@ export function createLocusDisplaySystem({THREE,station}){
   const glow=new THREE.Mesh(new THREE.PlaneGeometry(1.72,1.10),new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));glow.position.z=-.012;root.add(glow);
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));root.add(screen);
   // Persistent JARVIS affordance: pack/deploy the Cinnabar apparatus without undoing its consequences.
+  const bayMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide});
+  const bay=new THREE.Mesh(new THREE.PlaneGeometry(.40,1),bayMat);bay.name="clara-cinnabar-control-bay";bay.position.set(.995,0,.012);root.add(bay);
+  const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.40,1)),new THREE.LineBasicMaterial({color:0xcff6ff,transparent:true,opacity:.86,depthWrite:false}));rim.position.z=.002;bay.add(rim);
   const controlMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide});
-  const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.34,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(.97,.37,.018);root.add(stowButton);
+  const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.30,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(0,.37,.004);bay.add(stowButton);
   const arrowShape=new THREE.Shape();arrowShape.moveTo(-.065,.042);arrowShape.lineTo(.065,.042);arrowShape.lineTo(0,-.062);arrowShape.closePath();
   const arrow=new THREE.Mesh(new THREE.ShapeGeometry(arrowShape),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide}));arrow.position.z=.003;stowButton.add(arrow);
   let cinnabarPacked=false,cinnabarPacking=false;
