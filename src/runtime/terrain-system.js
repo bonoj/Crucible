@@ -29,7 +29,7 @@ export function createTerrainSystem({THREE,scene}){
   // the plinth top, independent of the apparatus' finite rendered depth.
   const belowPlinthOcclusion=new THREE.Plane(new THREE.Vector3(0,1,0),-APPARATUS_TOP);
   function occludeBelowPlinth(object){
-    object.traverse(o=>{if(!o.isMesh||!o.material)return;const materials=Array.isArray(o.material)?o.material:[o.material];for(const mat of materials){const planes=mat.clippingPlanes||[];if(!planes.includes(belowPlinthOcclusion))mat.clippingPlanes=[...planes,belowPlinthOcclusion];mat.needsUpdate=true;}});
+    object.traverse(o=>{if((!o.isMesh&&!o.isLine&&!o.isLineSegments)||!o.material)return;const materials=Array.isArray(o.material)?o.material:[o.material];for(const mat of materials){const planes=mat.clippingPlanes||[];if(!planes.includes(belowPlinthOcclusion))mat.clippingPlanes=[...planes,belowPlinthOcclusion];mat.needsUpdate=true;}});
     return object;
   }
   function rebuildChunk(chunk){
