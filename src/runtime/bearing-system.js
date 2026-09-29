@@ -15,11 +15,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     for(let n=0;n<available;n++){const i=count++,ix=n%cols,iz=Math.floor(n/cols)%cols,iy=Math.floor(n/(cols*cols));bx[i]=center.x+(ix-(cols-1)/2)*spacing+(Math.random()-.5)*.05;bz[i]=center.z+(iz-(cols-1)/2)*spacing+(Math.random()-.5)*.05;by[i]=baseY+iy*spacing+(Math.random()-.5)*.05;bvx[i]=(Math.random()-.5)*.15;bvy[i]=0;bvz[i]=(Math.random()-.5)*.15}
     return available;
   }
+  const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
   function update(dt){
     pile.fill(0);const g=-8.5;let rendered=0;
     for(let i=0;i<count;i++){
       bvy[i]+=g*dt;bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
-      const p=new THREE.Vector3(bx[i],by[i],bz[i]),v=new THREE.Vector3(bvx[i],bvy[i],bvz[i]);terrain.collideSphere(p,v,BALL_R,.28,.86);bx[i]=p.x;by[i]=p.y;bz[i]=p.z;bvx[i]=v.x;bvy[i]=v.y;bvz[i]=v.z;
+      contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
       const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
       dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);
     }
