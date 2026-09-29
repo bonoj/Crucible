@@ -182,3 +182,32 @@ This is a deliberate spatial-understanding probe: determine how much structure c
 ### Steering burden
 
 For this change the human supplied direction only at the research-program level: continue the work and continue observing the collaboration. Sampling layout and representation were model-owned ordinary decisions. The next useful human intervention should be driven by executable/perceptual evidence rather than requested preemptively.
+
+
+## Tools rather than seeded behavior
+
+The human recognized the architectural direction explicitly:
+
+> "Rather than seeding agent behavior we are giving it a set of tools it can attend to. Or ignore entirely, haha."
+
+This sharpens an important distinction. The experiment is not currently defining what a future model-mediated locus should care about. It is constructing bounded ways of knowing that may become available to attention later.
+
+The model proceeded without asking for a behavioral objective.
+
+### Blind observation analysis
+
+A generic observation-analysis system was added. Its dependency is the immutable ECS `Observation` component only. It receives no terrain system, renderer, footprint system, meteor history, or other route back to authoritative world state.
+
+For terrain-profile observations it derives low-level geometry from the recorded samples: relief range, mean height, roughness, center height relative to the outer ring, and the strongest sampled deviation.
+
+It does not label craters, impacts, hazards, targets, or interesting features.
+
+This creates a new epistemic seam:
+
+**world truth -> bounded measurement -> blind derived spatial evidence**
+
+A future locus may use such evidence, combine it with another instrument, attend to something else, or ignore it. No behavior has yet been earned from the existence of the tool.
+
+### Collaboration observation
+
+The human contribution at this step was conceptual rather than corrective: they identified the emerging pattern as provision of optional tools rather than seeded agent behavior. That interpretation materially clarifies the experiment while leaving implementation choices with the model.
