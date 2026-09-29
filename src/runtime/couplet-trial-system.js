@@ -12,7 +12,7 @@ export function createCoupletTrialSystem({world,components,THREE,scene,terrain,f
   for(const t of tokens)for(let i=0;i<11;i++){const link=new THREE.Mesh(linkGeo,linkMat);t.chain.add(link);t.links.push(link);}
   let state="parked",winner=null,trialStart=null,settledFor=0,lastFieldNow=0,frontierArmed=false,trialSeed=null;
   function anchor(t){return new THREE.Vector3(px+t.localX,root.position.y+.54,pz);}
-  function park(){for(const t of tokens){const tr=Transform.get(t.id),a=anchor(t);tr.position.copy(a).add(new THREE.Vector3(0,.16,0));tr.velocity.set(0,0,0);Gravity.get(t.id).acceleration=0;}state="parked";winner=null;trialStart=null;settledFor=0;}
+  function park(){for(const t of tokens){const tr=Transform.get(t.id),a=anchor(t);tr.position.copy(a).add(new THREE.Vector3(0,.16,0));tr.velocity.set(0,0,0);Gravity.get(t.id).acceleration=-8.5;}state="parked";winner=null;trialStart=null;settledFor=0;}
   function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
   function rng(seed){let x=seed||1;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
   function beginTrial(now){if(state!=="parked"||field.draws.length)return false;const seed=hash32(field.clockchainHead());trialSeed=seed;const r=rng(seed);winner=(seed&1)===0?"human":"model";state="trial";trialStart=now;settledFor=0;for(const [i,t] of tokens.entries()){const tr=Transform.get(t.id),a=anchor(t),side=i===0?-1:1,angle=(r()-.5)*1.0,speed=2.0+r()*1.35;tr.position.copy(a).add(new THREE.Vector3(0,.18,0));tr.velocity.set(side*speed*Math.cos(angle),3.1+r()*1.25,speed*Math.sin(angle));Gravity.get(t.id).acceleration=-8.5;}return true;}
@@ -21,7 +21,7 @@ export function createCoupletTrialSystem({world,components,THREE,scene,terrain,f
   function updateChains(){for(const t of tokens){const a=anchor(t),p=Transform.get(t.id).position;for(let i=0;i<t.links.length;i++){const q=(i+1)/(t.links.length+1),link=t.links[i];link.position.lerpVectors(a,p,q);link.rotation.set(Math.PI/2,i%2?Math.PI/2:0,0);}}}
   function update(fieldNow,dt){lastFieldNow=fieldNow;const frontier=field.frontier();if(state==="parked"&&!field.draws.length&&fieldNow>=frontier&&!frontierArmed)frontierArmed=true;
     if(state==="trial"){let quiet=true;for(const t of tokens){chainLimit(t);const tr=Transform.get(t.id);if(tr.velocity.lengthSq()>.06)quiet=false;}settledFor=quiet?settledFor+dt:0;if(settledFor>.7||fieldNow-trialStart>6500)resolve(fieldNow);}
-    if(state==="resolved"){for(const t of tokens){const tr=Transform.get(t.id),a=anchor(t);if(t.owner===winner){Gravity.get(t.id).acceleration=-8.5;tr.velocity.y+=12.2*dt;tr.velocity.multiplyScalar(Math.pow(.94,dt*60));chainLimit(t);}else{Gravity.get(t.id).acceleration=-8.5;const home=a.clone().add(new THREE.Vector3(0,.16,0));tr.position.lerp(home,Math.min(1,dt*5));tr.velocity.set(0,0,0);}}}
+    if(state==="resolved"){for(const t of tokens){const tr=Transform.get(t.id),a=anchor(t);if(t.owner===winner){tr.velocity.y+=12.2*dt;tr.velocity.multiplyScalar(Math.pow(.94,dt*60));chainLimit(t);}else{const home=a.clone().add(new THREE.Vector3(0,.16,0));tr.position.lerp(home,Math.min(1,dt*5));tr.velocity.set(0,0,0);}}}
     updateChains();
   }
   function advance(){const frontier=field.frontier();if(lastFieldNow<frontier){field.fastForwardTo(field.nextTurnStart(lastFieldNow));return "fast-forward";}if(state==="parked"&&!field.draws.length){beginTrial(lastFieldNow);frontierArmed=false;return "trial";}return state;}
