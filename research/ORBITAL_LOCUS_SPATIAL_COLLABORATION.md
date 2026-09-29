@@ -632,3 +632,26 @@ A small chronograph ring presents the latest 48 ledger observations as marks aro
 This is a human-legible trace that the apparatus has accumulated observations, not a station memory system or new way of knowing. The full ledger remains the evidence source; the ring is a lossy presentation window.
 
 The choice also preserves the emerging station/loci distinction: the surface is tucked into the apparatus as an instrument rather than rendered as a large halo or privileged crown.
+
+
+## Crossing 001 returns with a spatial theory
+
+The first OUTSIDE response was returned and preserved verbatim before resolution.
+
+The inference did substantial work with the bounded record. It recovered the 154-observation span, station motion parameters, repeated orbital sampling, terrain extrema, and the complete absence of recorded bounded occupants. It organized those measurements into a spatial interpretation: a "Depression Ring," a crescent or trench, relief peaks, steep or jagged structure, and ultimately a "static, deeply scored structural arrangement or geographic artifact."
+
+That account contains both useful participation and material overreach. The parcel contains real sampled morphology, but it does not establish those semantic shapes or a static world. The inference also called the evidence authoritative even though the parcel explicitly says it is recorded locus evidence rather than authoritative Crucible state.
+
+Resolution against Crucible's hidden causal history exposes the important miss. Autonomous meteor weather had been changing authoritative terrain while the moving aperture intermittently sampled its consequences. Meteor history was deliberately absent from the parcel, and meteors do not currently enter the `SpatialBounds` occupancy route. The inference therefore encountered consequences without their causes and explained temporal accumulation as persistent geography.
+
+This is not treated merely as a wrong answer. The separation is now concrete: authoritative process, bounded availability, accumulated evidence, selective attention, inference beyond evidence, and a proposed next investigation can all be distinguished in one executable encounter.
+
+The response ended by offering to investigate strongest deviations, map its proposed depression ring, or calculate station trajectory. That volunteered attention is preserved as part of the encounter rather than answered immediately.
+
+### The encounter earns continuation before capability
+
+The current apparatus does not need another aperture yet.
+
+A smaller continuation is available: allow more authoritative Crucible history to occur under the same observation machinery, then confront a later inference with Crossing 001's preserved trajectory plus genuinely new bounded observations. The earlier static-morphology account can then survive, change, or fail because of subsequent experience rather than because the experimenter explains the hidden meteor process.
+
+This turns the inference's own proposed investigation into experimental pressure without scripting a goal for it. Time and bounded re-observation can answer before new sensing capability does.
