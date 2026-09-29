@@ -25,7 +25,14 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   const seatedY=.70,raisedY=1.92,riseMs=1800,bob=.045;
   const transit=field.turn(3);
   let state="parked",winner=null,resolvedAt=null,lastFieldNow=0;
-  function hash32(text){let h=2166136261>>>0;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+  function hash32(text){
+    // FNV-1a gathers the complete Clockchain head; a final avalanche prevents
+    // low-bit structure in similar ledger strings from becoming initiative bias.
+    let h=2166136261>>>0;
+    for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}
+    h^=h>>>16;h=Math.imul(h,0x7feb352d);h^=h>>>15;h=Math.imul(h,0x846ca68b);h^=h>>>16;
+    return h>>>0;
+  }
   function updateChain(t){
     const ay=.54,ty=t.token.position.y;
     for(let i=0;i<t.links.length;i++){const q=(i+1)/(t.links.length+1),link=t.links[i];link.position.set(t.x,THREE.MathUtils.lerp(ay,ty,q),0);link.rotation.set(Math.PI/2,i%2?Math.PI/2:0,0);}
@@ -33,8 +40,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   function resolve(now){
     const existing=field.terminalResolution();if(existing)return existing;
     const seed=hash32(field.clockchainHead()),owner=(seed&1)===0?"human":"model";
-    winner=owner;resolvedAt=now;state="resolved";
-    return field.recordResolution({owner,method:"clockchain-derived",at:now,seed});
+    return field.recordResolution({owner,method:"clockchain-derived-v2",at:field.frontier(),seed});
   }
   function update(fieldNow){
     lastFieldNow=fieldNow;
@@ -49,7 +55,13 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
     }
     const ground=terrain.groundHeight(x,z);root.position.set(x,(Number.isFinite(ground)?ground:0)+depth,z);
     if(!field.terminalResolution()&&fieldNow>=field.frontier())resolve(fieldNow);
-    const resolved=field.terminalResolution();if(resolved&&!winner){winner=resolved.owner;resolvedAt=resolved.at;state="resolved";}
+    const resolved=field.terminalResolution();
+    // Presentation is derived every frame from the CURRENT terminal resolution.
+    // Historical winners cannot remain raised after another turn is appended or
+    // while replay is still moving through scored history.
+    const active=resolved&&fieldNow>=field.frontier()&&fieldNow>=resolved.at;
+    if(active){winner=resolved.owner;resolvedAt=resolved.at;state="resolved";}
+    else {winner=null;resolvedAt=null;state="parked";}
     for(const t of tokens){
       if(t.owner===winner){
         const age=Math.max(0,fieldNow-(resolvedAt??fieldNow)),u=Math.min(1,age/riseMs),ease=1-Math.pow(1-u,3);
