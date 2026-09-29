@@ -9,6 +9,7 @@ import {createLightSystem} from "./runtime/light-system.js";
 import {createTerrainSystem} from "./runtime/terrain-system.js";
 import {createMeteorSystem} from "./runtime/meteor-system.js";
 import {createContinuityStationSystem} from "./runtime/continuity-station-system.js";
+import {createFootprintSystem} from "./runtime/footprint-system.js";
 import {installDebugApi} from "./runtime/debug-api.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
@@ -16,7 +17,7 @@ document.querySelector("#build-id").textContent="build "+String(globalThis.__CRU
 document.querySelector("#debug-refresh").addEventListener("click",()=>location.reload());
 
 const world=createWorld(),three=createThreeRuntime({mount,diagnostics}),THREE=three.THREE;
-const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView","Locus","Meteor","MeteorShower","ContinuityLocus"];
+const names=["Transform","Body","Gravity","Support","RenderObject","Camera","CameraTarget","Viewport","ActiveCamera","CameraView","OrbitBehavior","Light","LightView","Locus","Meteor","MeteorShower","ContinuityLocus","Footprint","FootprintView"];
 const components=Object.fromEntries(names.map(name=>[name,world.component(name)]));
 const {Transform,Body,Gravity,Support,RenderObject,Camera,CameraTarget,Viewport,ActiveCamera,OrbitBehavior,Light,Locus}=components;
 three.scene.background=new THREE.Color(0x7f8980);three.scene.fog=new THREE.Fog(0x7f8980,22,58);
@@ -38,6 +39,7 @@ const terrain=createTerrainSystem({THREE,scene:three.scene});
 const waterBottom=-1.42,waterLevel=-.12,waterDepth=waterLevel-waterBottom,waterRadius=9.75,waterMaterial=new THREE.MeshStandardMaterial({color:0x557f88,transparent:true,opacity:.34,roughness:.28,metalness:.04,depthWrite:false,depthTest:true,side:THREE.DoubleSide}),water=new THREE.Mesh(new THREE.CylinderGeometry(waterRadius,waterRadius,waterDepth,8,1,false,Math.PI/8),waterMaterial);water.position.y=waterBottom+waterDepth*.5;water.name="crucible-sea-volume";water.renderOrder=3;water.visible=false;three.scene.add(water);
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus});
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
+const footprints=createFootprintSystem({world,components,THREE,scene:three.scene,terrain});
 const impactBuckets=[.18,.42,.85,1.55];let impactBucket=1,lastImpactTarget=meteors.targetAt();
 function setImpactBucket(index){impactBucket=THREE.MathUtils.clamp(index,0,impactBuckets.length-1);document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.classList.toggle("active",i===impactBucket));}
 function callImpact(target=lastImpactTarget){lastImpactTarget=target.clone();return meteors.meteor(target.clone(),impactBuckets[impactBucket]);}
@@ -48,9 +50,9 @@ function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGe
 function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const t=Transform.get(id),b=Body.get(id),g=Gravity.get(id);t.velocity.y+=g.acceleration*dt;t.position.addScaledVector(t.velocity,dt);if(Support.has(id)){terrain.collideSphere(t.position,t.velocity,b.radius,b.restitution,b.drag);const h=terrain.groundHeight(t.position.x,t.position.z);if(Number.isFinite(h)&&t.position.y-b.radius<h){t.position.y=h+b.radius;if(t.velocity.y<0)t.velocity.y=-t.velocity.y*b.restitution;t.velocity.x*=b.drag;t.velocity.z*=b.drag;if(Math.abs(t.velocity.y)<.08)t.velocity.y=0;}}}}
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
-function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);continuityStation.update(now);orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
-const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect(),continuityStation:continuityStation.inspect()});
-const systems={renderSync,cameras,orbit,lights,meteors,continuityStation},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
+function frame(now){const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);continuityStation.update(now);footprints.update();orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect(),continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id)}});
+const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
 globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,inspect};
 installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
