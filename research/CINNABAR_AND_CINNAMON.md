@@ -481,3 +481,10 @@ Human observed that the device itself should follow terrain, while the tokens no
 
 Human:
 > ⏳️⛓️
+
+
+### Human — Clockchain rolls at the frontier
+
+> Okay. Works well. Chain could be a tiny bit shorter. Also no tap should be required to cause it to roll winner. It just rolls when turn sequence and all Cinnabar clock time reaches t now.
+
+Accepted. The resolved suspension is shortened slightly. Clockchain no longer waits for a separate invocation at the scored frontier: when Cinnabar and Cinnamon field time naturally or through stepped fast-forward reaches the end of the known turn sequence, the immutable head is resolved immediately and the winner presentation begins. Tapping remains a way to advance through historical turn boundaries, not a requirement for Clockchain to tick.

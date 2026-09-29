@@ -22,7 +22,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
     return{owner:spec.owner,x:spec.x,token,chain,links};
   });
 
-  const seatedY=.70,raisedY=2.09,riseMs=1800,bob=.045;
+  const seatedY=.70,raisedY=1.92,riseMs=1800,bob=.045;
   let state="parked",winner=null,resolvedAt=null,lastFieldNow=0;
   function hash32(text){let h=2166136261>>>0;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
   function updateChain(t){
@@ -38,6 +38,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   function update(fieldNow){
     lastFieldNow=fieldNow;
     const ground=terrain.groundHeight(px,pz);if(Number.isFinite(ground))root.position.y=ground;
+    if(!field.draws.length&&fieldNow>=field.frontier())resolve(fieldNow);
     if(field.draws.length&&!winner){winner=field.draws[0].owner;resolvedAt=field.draws[0].at;state="resolved";}
     for(const t of tokens){
       if(t.owner===winner){
