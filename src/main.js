@@ -59,6 +59,8 @@ const bearings=createBearingSystem({world,components,THREE,scene:three.scene,ter
 const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,terrain,bearings,locus});
 // Temporary industrial-design apparatus: inspect 25 authored bodies in the real Crucible scene.
 const extruderYard=createExtruderYard({THREE,scene:three.scene});extruder.object.visible=false;
+// Yard mode freezes the production crawler; this apparatus is geometry-only.
+extruder.update=()=>{};
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
 const footprints=createFootprintSystem({world,components,THREE,scene:three.scene,terrain});
 const footprintOccupancy=createFootprintOccupancySystem({world,components,footprints});
