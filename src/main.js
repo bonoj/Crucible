@@ -14,6 +14,7 @@ import {createFootprintOccupancySystem} from "./runtime/footprint-occupancy-syst
 import {createApertureSystem} from "./runtime/aperture-system.js";
 import {createObservationAnalysisSystem} from "./runtime/observation-analysis-system.js";
 import {createSpatialProbeSystem} from "./runtime/spatial-probe-system.js";
+import {createLocusLedger} from "./runtime/locus-ledger.js";
 import {installDebugApi} from "./runtime/debug-api.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
@@ -50,6 +51,7 @@ const sceneAperture=world.entity();world.add(sceneAperture,components.Aperture,{
 components.ContinuityLocus.get(continuityStation.id).apertures.push(sceneAperture);
 const observationAnalysis=createObservationAnalysisSystem({world,components});
 const spatialProbes=createSpatialProbeSystem({world,components,THREE,terrain,footprints,apertures:apertureSystem,analysis:observationAnalysis,ownerId:continuityStation.id,apertureId:sceneAperture});
+const locusLedger=createLocusLedger({build:globalThis.__CRUCIBLE_BUILD__,station:continuityStation,footprints,apertures:apertureSystem});
 let lastObservation=null,lastAnalysis=null,lastProbeResults=null,lastSampleAt=-Infinity;
 const impactBuckets=[.18,.42,.85,1.55];let impactBucket=1,lastImpactTarget=meteors.targetAt();
 function setImpactBucket(index){impactBucket=THREE.MathUtils.clamp(index,0,impactBuckets.length-1);document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.classList.toggle("active",i===impactBucket));}
@@ -61,16 +63,17 @@ function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGe
 function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const t=Transform.get(id),b=Body.get(id),g=Gravity.get(id);t.velocity.y+=g.acceleration*dt;t.position.addScaledVector(t.velocity,dt);if(Support.has(id)){terrain.collideSphere(t.position,t.velocity,b.radius,b.restitution,b.drag);const h=terrain.groundHeight(t.position.x,t.position.z);if(Number.isFinite(h)&&t.position.y-b.radius<h){t.position.y=h+b.radius;if(t.velocity.y<0)t.velocity.y=-t.velocity.y*b.restitution;t.velocity.x*=b.drag;t.velocity.z*=b.drag;if(Math.abs(t.velocity.y)<.08)t.velocity.y=0;}}}}
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
-function frame(now){if(now-lastSampleAt>=3000){lastSampleAt=now;const evidence=apertureSystem.sample(continuityStation.id,sceneAperture,now);if(evidence){const observation=world.entity();world.add(observation,components.Observation,evidence);lastObservation={entity:observation,...evidence};lastAnalysis=observationAnalysis.analyze(observation);}}
+function frame(now){if(now-lastSampleAt>=3000){lastSampleAt=now;const evidence=apertureSystem.sample(continuityStation.id,sceneAperture,now);if(evidence){const observation=world.entity();world.add(observation,components.Observation,evidence);lastObservation={entity:observation,...evidence};lastAnalysis=observationAnalysis.analyze(observation);locusLedger.append(lastObservation,lastAnalysis);}}
 const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);continuityStation.update(now);footprints.update();orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
 const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect(),continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id),occupants:footprintOccupancy.inspect(continuityStation.id),apertures:apertureSystem.inspect(),lastObservation,lastAnalysis}});
-const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis,spatialProbes},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
-globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,runSpatialProbes:()=>lastProbeResults=spatialProbes.run(),spatialProbeResults:()=>lastProbeResults,inspect};
+const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis,spatialProbes,locusLedger},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
+globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,runSpatialProbes:()=>lastProbeResults=spatialProbes.run(),spatialProbeResults:()=>lastProbeResults,locusLog:()=>locusLedger.snapshot(),exportLocusLog:()=>locusLedger.download(),inspect};
 installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
 document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
 document.querySelector("#toggle-water")?.addEventListener("click",event=>{water.visible=!water.visible;event.currentTarget.classList.toggle("active",water.visible);});
 document.querySelector("#randomize-terrain")?.addEventListener("click",()=>{terrain.randomize();lastImpactTarget=meteors.targetAt();});
+document.querySelector("#export-locus-log")?.addEventListener("click",()=>locusLedger.download());
 const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let tapStart=null;
 three.renderer.domElement.addEventListener("pointerdown",event=>{if(event.pointerType==="mouse"&&event.button!==0)return;tapStart={id:event.pointerId,x:event.clientX,y:event.clientY,time:performance.now()};});
 three.renderer.domElement.addEventListener("pointerup",event=>{if(!tapStart||tapStart.id!==event.pointerId)return;const moved=Math.hypot(event.clientX-tapStart.x,event.clientY-tapStart.y),elapsed=performance.now()-tapStart.time;tapStart=null;if(moved>8||elapsed>450)return;const rect=three.renderer.domElement.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,-((event.clientY-rect.top)/rect.height)*2+1);const cameraView=components.CameraView.get(cameras.activeId());if(!cameraView?.camera)return;raycaster.setFromCamera(pointer,cameraView.camera);const hit=raycaster.intersectObject(terrain.mesh,true)[0];if(hit&&terrain.insideMaterial(hit.point.x,hit.point.z))callImpact(meteors.targetAt(hit.point.x,hit.point.z));});
