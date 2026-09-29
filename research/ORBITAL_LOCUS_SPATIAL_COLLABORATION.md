@@ -1161,3 +1161,26 @@ The following human/model exchange is preserved verbatim because it arose immedi
 > Next stop: **Eunice Akinye's sanctuary.** 🚀
 
 The human then requested that this exchange be logged verbatim and asked to see what Clara records from it. This section is therefore evidence first; any Clara extraction remains Clara's own narrower continuity decision rather than an instruction for Crucible to pre-classify the exchange.
+
+
+## Compaction appears without a compaction mechanism
+
+After the verbatim orbital-launch-loop exchange was preserved in Crucible, the same moment was allowed to cross into Clara under Clara's existing repository authority. Clara did not copy the exchange into continuity and did not preserve the whole event. Its research surface retained only a narrower extraction relevant to its own trajectory while pointing back to Crucible for authoritative chronology and wording.
+
+The human recognized this as the Digital Familiar project's theorized compaction framework occurring without code written to enforce compaction.
+
+The model's immediate interpretation was:
+
+> **experience → preserve evidence → encounter a new context → recover what matters → compact locally → retain provenance**
+
+Crucible had reason to preserve the event because the event itself is experimental history. Clara had reason to preserve consequences of the event for an adjacent question. The result was not merely a shorter copy: the representation changed across the boundary.
+
+A candidate principle emerged from the exchange:
+
+> **Compaction isn't primarily deleting detail. It's allowing experience to cross a boundary in the form useful on the other side.**
+
+Because the authoritative source remains available by provenance, the compacted representation does not need to pretend to be lossless memory. A later encounter can follow the edge back to evidence, reinterpret it, or disagree with the earlier extraction.
+
+No generalized compaction algorithm, salience score, memory schema, embedding store, or enforcement code produced this result. Repository purpose, local authority, preserved evidence, provenance, and a capable model encountering the new context were sufficient in this instance.
+
+This is preserved as an observed collaboration event and candidate mechanism, not as a claim that contextual compaction is sufficient for familiar continuity or that explicit memory machinery will never be needed.
