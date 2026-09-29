@@ -3,12 +3,14 @@ export function createLocusDisplaySystem({THREE,station}){
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   const root=new THREE.Group();root.name="station-feed-hud";root.visible=false;station.object.add(root);
   const displayWidth=1.98,displayHeight=1.10,displayCenterX=.205;
-  const glow=new THREE.Mesh(new THREE.PlaneGeometry(displayWidth,displayHeight),new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));glow.position.set(displayCenterX,0,-.012);root.add(glow);
+  const displayMat=new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(displayWidth,displayHeight),displayMat);glow.position.set(displayCenterX,0,-.012);root.add(glow);
+  const rimMat=new THREE.LineBasicMaterial({color:0xcff6ff,transparent:true,opacity:.90,depthWrite:false});
+  const outerRim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(displayWidth,displayHeight)),rimMat);outerRim.position.set(displayCenterX,0,.010);root.add(outerRim);
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));root.add(screen);
-  // CLARA's peripheral bay shares the same translucent display substrate. White rims
-  // divide functions without making the bay read as a separate floating card.
+  // CLARA's peripheral bay is a subdivision of one bounded translucent surface.
   const bay=new THREE.Group();bay.name="clara-cinnabar-control-bay";bay.position.set(.995,0,.012);root.add(bay);
-  const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.40,1)),new THREE.LineBasicMaterial({color:0xcff6ff,transparent:true,opacity:.86,depthWrite:false}));rim.position.z=.002;bay.add(rim);
+  const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.40,1)),rimMat);rim.position.z=.002;bay.add(rim);
   const controlMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide});
   const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.30,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(0,.37,.004);bay.add(stowButton);
   const arrowShape=new THREE.Shape();arrowShape.moveTo(-.065,.042);arrowShape.lineTo(.065,.042);arrowShape.lineTo(0,-.062);arrowShape.closePath();
