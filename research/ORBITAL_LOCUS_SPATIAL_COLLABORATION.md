@@ -1008,3 +1008,36 @@ This is recorded as an apparatus limitation, not evidence that the candidate wor
 The candidate remains **unaccepted** pending field execution in a WebGL-capable browser. It must not be promoted to stable merely because CI and bundling succeeded.
 
 No present-tense semantic claim about the extruder is promoted into `SEMANTIC_SURFACE.md` yet. No Clara continuity material is created. No Digital Familiar authority is changed. If field execution reveals a failure, preserve this candidate and append the correction rather than rewriting this entry.
+
+
+## Extruder embodiment selection — temporary in-world design yard
+
+After the autonomous extruder existed as executable behavior, the human identified a representational failure in its provisional body: the geometry did not communicate its motion or process cleanly, decorative lights floated away from plausible surfaces, and the oversized orange working end dominated the silhouette. External rover references were briefly considered and rejected. The useful constraint was instead stated directly: **no wheels; comprehensible geometry; warm lighting; the orbital station's color language; restrained rail and panel greebling.**
+
+Rather than continue a serial describe → implement → inspect loop, the collaboration changed the selection apparatus.
+
+### Model decision
+
+The model authored **25 distinct low-poly extruder bodies** from ordinary Three.js primitives and placed all 25 simultaneously into the real Crucible scene as a temporary 5 × 5 design yard.
+
+This was not procedural random variation. Each candidate deliberately explored a different small geometric grammar while sharing the station material family: warm ivory primary hulls, secondary grey, dark structural/mechanical pieces, restrained orange accents, and attached warm emissive details. Candidate differences included slabs, split bodies, cylindrical modules, exposed structure, rails, panels, recessed working geometry, rear chutes, and asymmetric equipment housings.
+
+The production extruder was hidden and frozen while the yard was active. The candidates were therefore evaluated as geometry under Crucible's actual terrain, camera, atmosphere, and lighting rather than as detached concept art. Temporary picking machinery allowed individual candidates to be selected in place.
+
+### Human selection
+
+On seeing the full yard, the human reported loving the collection rather than finding most candidates disposable. The requested production choice was spatial rather than numerical: **the vehicle in the far-left forward corner, farthest from the now-rejected prototype.** In the authored yard arrangement this resolved to candidate **25**.
+
+The human also requested that the other bodies be retained as a “box of vehicles free to a good home,” while the first production prototype should be discarded.
+
+### Consequence
+
+Candidate 25's authored geometry was promoted into the autonomous extruder implementation. The previous provisional extruder body was removed. The temporary yard was disconnected from the runtime and preserved as dormant design apparatus in `src/runtime/extruder-yard.js`; `src/runtime/VEHICLE_BOX.md` records the resulting reusable collection.
+
+The unused bodies are **not** automatically world vocabulary. Their existence does not earn corresponding vehicle types or systems. They are inexpensive authored possibilities available if later behavior gives one a reason to exist.
+
+This pass demonstrated a useful collaboration pattern:
+
+**state physical/visual constraints → generate a bounded family directly in the executable environment → inspect simultaneously under real world conditions → select spatially → preserve useful surplus → return immediately to simulation work**
+
+For this kind of low-poly embodiment question, the temporary in-world design yard removed repeated prose/render translation and made one human inspection turn sufficient to choose a production direction. It is therefore retained as procedural evidence, not merely asset history.
