@@ -266,3 +266,58 @@ This validates the low-level geometry calculation, not crater recognition.
 ### Collaboration consequence
 
 No human correction was required to expose this miss. The model found it while trying to close the executable-evidence loop after a one-symbol continuation request. This is worth preserving because the collaboration study is not only about whether the model understands 3D space; it is also about whether it correctly tracks the provenance and strength of its own spatial claims.
+
+
+## The station becomes a permanent fixture
+
+The human paused further sensing work to request a present-tense walkthrough of the station's functions and footprints, explicitly so the collaboration record and semantic surface could be synchronized before continuing:
+
+> "Let's walkthrough the station's current functions and footprints to capture in the log and also update the semantic surface before we continue. This is a permanent fixture in the crucible at this point, I think."
+
+The model re-read the station and every system on its current observation path before describing it. This produced an important ownership distinction.
+
+### Station-owned truths
+
+The station itself currently owns:
+- its ECS identity as an orbital continuity locus;
+- its World Lab-derived physical rendering;
+- its transform;
+- deterministic elliptical apparatus motion and quiet attitude drift;
+- one generic projected footprint;
+- a reference to its current aperture.
+
+The station's motion is not currently agent navigation.
+
+### Generic machinery serving the station
+
+The footprint system resolves the projected cone against terrain and provides geometric containment. `SpatialBounds` lets ordinary ECS entities explicitly opt into footprint availability.
+
+The aperture system turns footprint-bounded evidence into immutable observations.
+
+The observation-analysis system is downstream machinery. It can derive low-level spatial evidence from an observation without world access, but its existence does not mean the station or a future model must attend to that evidence.
+
+### Laboratory machinery that does not belong to the station
+
+The controlled spatial-probe system can reset terrain, create known deformations, and temporarily reposition the station. Those are test-bench powers and must not be described as capabilities of the locus.
+
+The synthetic CI profiles similarly test derivation math rather than live station perception.
+
+### Current footprint in concrete terms
+
+The station's footprint is an 18-degree downward cone capped at 4.5 world units. Its resolved radius depends on height above terrain. The visible pale boundary follows terrain height and is diagnostic only.
+
+Inside the footprint does not mean perceived. Ordinary entities require explicit `SpatialBounds` to become geometrically available to occupancy queries, and an aperture must still choose what evidence to record.
+
+The current aperture samples center ground height, a 37-point deterministic terrain profile, and bounded occupants every three seconds.
+
+### Permanence as an earned semantic change
+
+The station began as an experimental locus transplanted from World Lab. It has now accumulated enough stable world presence and generic systems around it that the human judged it a permanent Crucible fixture.
+
+The semantic surface was updated accordingly. This does not freeze its instruments or decide what inhabits the locus later. It establishes that the station itself is now part of Crucible's enduring world vocabulary.
+
+### Collaboration observation
+
+This pause was initiated by the human, not because a visible bug demanded correction, but because the implementation had crossed a semantic threshold. The human recognized that persistence of the object had been earned and requested documentation before further extension.
+
+The model's contribution was to reconstruct current ownership boundaries from code and resist conflating generic tools and laboratory controls with station capability. This is a different kind of spatial understanding from locating geometry: it is understanding **which spatial powers belong to which thing**.
