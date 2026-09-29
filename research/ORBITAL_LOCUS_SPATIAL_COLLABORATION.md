@@ -459,3 +459,18 @@ All 29 returned observations report no bounded occupants. The current evidence i
 Because meteor event history is intentionally absent from the ledger, this record alone does not establish which terrain features correspond to which impacts, whether the station observed an impact while it occurred, or whether it encountered consequences later. That uncertainty is part of the intended epistemic boundary rather than missing debug data.
 
 This first return already exposes the distinction the human's shop memory highlighted: **collection is present; meaningful use has not been assumed.** The next question is what an inference can recover or choose to care about from this bounded record without being told what happened.
+
+
+## The station gets a window onto its own evidence
+
+After inspecting the first natural ledger, the human asked:
+
+> "Can you create a little mini window in scene that shows me what the station sees in real time?"
+
+The implementation deliberately interprets "what the station sees" as **what the aperture records**, not a privileged second renderer camera.
+
+A small physical display is now attached to the orbital station. It is driven only from the latest recorded scene-summary observation and refreshes on the same approximately three-second cadence as that aperture. The display reconstructs the circular footprint from its 37 terrain samples: sample positions are plotted relative to the recorded footprint center and radius, brightness varies with measured height within that observation, the center is marked, and the measured relief range is shown.
+
+The display does not query terrain, renderer contents, meteor history, ECS world truth, or any faster hidden sensor. It is therefore a human-visible rendering of Clara's existing evidence rather than a new aperture.
+
+This creates a useful shared perceptual surface: the human can now watch the sparse evidence itself move through the world while simultaneously seeing the richer Terrordrome from outside the station's epistemic boundary. Differences between those two views can become experimental evidence rather than remaining hidden in JSON.
