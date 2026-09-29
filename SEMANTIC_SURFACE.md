@@ -137,3 +137,18 @@ A parcel carries ledger and instrument provenance plus a selected chronological 
 The parcel omits authoritative terrain state, meteor event history, hidden ECS state, controlled-probe labels, unmeasured object identities, objectives, and personality or identity instructions.
 
 The parcel is transport machinery only. Its existence does not connect a model to the station, prescribe what an inference should notice, or make an inference's interpretation authoritative world truth.
+
+
+## The station chronograph is a ledger-derived presentation surface
+
+A small chronograph ring on the station presents the most recent recorded locus history. It is downstream of the locus ledger and does not sample Crucible, terrain, the renderer, meteors, or ECS state.
+
+The chronograph currently displays at most the latest 48 ledger entries. Each mark corresponds to one already-recorded observation. Mark lift and scale derive from the existing blind relief range; a small radial offset derives from the existing blind roughness value. These mappings are presentation only.
+
+The chronograph is therefore not an aperture, memory mechanism, attention policy, event detector, or authoritative history. The rolling locus ledger remains the retained evidence source. The ring is a compact human-legible indication that the station has accumulated bounded observations.
+
+## Meteor flight presentation is not impact matter
+
+Meteor heads and their short particulate wakes are presentation geometry. Wake particles are emitted sequentially in simulation time, fade independently, and carry no collision, terrain, ECS, or causal meaning.
+
+The current particulate wake replaces the earlier rigid line tail. Meteor impact consequences remain separate. No bearing splash or other physical impact matter is implied by the wake; that seam is intentionally available for later work.
