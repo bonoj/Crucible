@@ -2,11 +2,12 @@ export function createLocusDisplaySystem({THREE,station}){
   const canvas=document.createElement("canvas");canvas.width=384;canvas.height=256;const ctx=canvas.getContext("2d");
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   const root=new THREE.Group();root.name="station-feed-hud";root.visible=false;station.object.add(root);
-  const glow=new THREE.Mesh(new THREE.PlaneGeometry(1.72,1.10),new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));glow.position.z=-.012;root.add(glow);
+  const displayWidth=1.98,displayHeight=1.10,displayCenterX=.205;
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(displayWidth,displayHeight),new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));glow.position.set(displayCenterX,0,-.012);root.add(glow);
   const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));root.add(screen);
-  // Persistent JARVIS affordance: pack/deploy the Cinnabar apparatus without undoing its consequences.
-  const bayMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide});
-  const bay=new THREE.Mesh(new THREE.PlaneGeometry(.40,1),bayMat);bay.name="clara-cinnabar-control-bay";bay.position.set(.995,0,.012);root.add(bay);
+  // CLARA's peripheral bay shares the same translucent display substrate. White rims
+  // divide functions without making the bay read as a separate floating card.
+  const bay=new THREE.Group();bay.name="clara-cinnabar-control-bay";bay.position.set(.995,0,.012);root.add(bay);
   const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.40,1)),new THREE.LineBasicMaterial({color:0xcff6ff,transparent:true,opacity:.86,depthWrite:false}));rim.position.z=.002;bay.add(rim);
   const controlMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide});
   const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.30,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(0,.37,.004);bay.add(stowButton);
