@@ -513,3 +513,14 @@ The acceleration boundary is explicit. Station motion, meteor weather, meteor fl
 Human interaction and presentation remain wall-clock behavior: camera gestures, tap/drag discrimination, FPS reporting, HUD response/orientation, downloads, and rendering are not sped up. Terrain test depth and epistemic access are unchanged.
 
 This avoids reproducing the Vertical Accretion failure mode in which aggressive time acceleration could become entangled with simulation correctness. Here accelerated time is a clock boundary, not a license to enlarge integration steps.
+
+
+## Mixed clock domains briefly removed visible meteor flight
+
+After simulation-time acceleration was introduced, the human reported a precise regression: meteors were no longer visible at any speed bucket, while terrain still received impacts and frame rate remained healthy.
+
+Inspection found that the simulation loop had moved meteor updates onto simulation time beginning at zero, while newly launched meteors still recorded their birth timestamp from wall-clock performance time. Their normalized flight age therefore remained clamped at zero rather than advancing through the visible trajectory. Ambient weather also retained wall-clock initialization and browser timers for burst staggering.
+
+The correction made meteor lifetime, weather scheduling, burst staggering, and weather inspection use the simulation clock consistently. Burst delays are now queued as simulation-time events rather than browser timers.
+
+The report was spatially diagnostic before code inspection: visible flight absent, physical consequence present, and no FPS loss sharply separated trajectory-time behavior from impact causality and performance.
