@@ -423,3 +423,46 @@ A first Trial prototype now lives in Crucible. It is a small brass twin-cup laun
 Tap the machine to release both tokens into the real terrain under ordinary body/gravity/support rules. They launch in opposite directions, bounce and roll against the terrain, and resolve after settling (or a bounded timeout). **Farthest planar distance from the launcher wins.**
 
 This is intentionally a prototype to tinker with. The machine is a world object and a tap target. The draw result is recorded once in the Cinnabar and Cinnamon object. No Turn 3 move is scored merely by building the apparatus.
+
+
+## Table talk — Clockchain earns a body
+
+The first Trial was immediately useful and immediately wrong in a useful way: both tokens flew away and the human could not tell which had won. Discussion of how to make the result deterministic exposed an older handle.
+
+### Human
+
+> It's clockchain. Literally.
+
+The working interpretation became concrete rather than metaphorical: accumulated immutable history derives the next deterministic trial conditions; Crucible executes those conditions; the physical result is appended and therefore changes the head from which a later tick is derived.
+
+The human noted that this differs enough from blockchain to keep its own name. No broader Clockchain specification is claimed here; this device is executable evidence.
+
+### Human
+
+> Okay. So I think both objects are tethered to the device. No. Chained. They sit in their little hollows until the current couplet ends. Then winner floats up. And persists, bobbing against gravity indefinitely until the world is reset and the turn plays out. Thoughts?
+
+The Trial therefore becomes a chained mechanism. Both contestants belong to their hollows. A trial lets them move only within chain reach. On resolution the loser returns to its hollow while the winner receives continuous upward force against ordinary gravity until the chain arrests it overhead. That resolved physical state persists as the visible initiative marker.
+
+### Human
+
+> Perfect. And tapping on the device jumps to the next turn in the sequence via animated fast forward. This works while total turns are still low.
+
+The device gains one world affordance: tapping advances toward the next unresolved moment. Existing scored history is accelerated rather than teleported. At the current frontier, tapping conducts the Clockchain trial. The frontier itself is not skipped. This deliberately exploits the tiny history; no checkpoint or scrub architecture is introduced.
+
+### Human
+
+> ⚙️
+
+### Executable consequence
+
+The prototype is rebuilt as a Clockchain trial mechanism:
+
+- two contestants remain visibly chained to their hollows;
+- launch conditions are derived deterministically from the current immutable Cinnabar/Cinnamon history rather than live randomness;
+- the chains physically bound the trial;
+- the loser returns home;
+- the winner persists overhead under upward force opposed by gravity and chain constraint;
+- tapping the mechanism fast-forwards scored history at 8× until the frontier, then a subsequent frontier tap conducts the trial;
+- the resolved owner, seed, method, and measured excursions append to the field draw ledger.
+
+This remains a first executable instance, not a generalized Clockchain framework.
