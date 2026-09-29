@@ -23,3 +23,18 @@ The first move is realized in Crucible as an authored local behavior rather than
 That implementation choice is intentionally small. If later play requires other things to emerge, construct themselves, displace terrain, persist as loci, or share a common mechanism, the repeated requirement can earn machinery then.
 
 The dome's purpose, allegiance, age, and relationship to Cinnabar or Cinnamon remain unassigned.
+
+
+## Deterministic field score
+
+After seeing the first move realized nearly in real time, the human proposed keeping a **Cinnabar and Cinnamon object** that owns turn order and timing deterministically so replay falls out of the representation rather than being added later as a separate feature.
+
+The first implementation is deliberately literal:
+
+- the field uses Crucible simulation time, not wall-clock time;
+- Turn 1 is scored at `0 ms` with a `12,000 ms` consequence window;
+- the dome derives its rise state from that score rather than remembering when its own animation happened to start;
+- replay resets the field clock; the same scored turn therefore produces the same dome trajectory again;
+- the score records authored turn/consequence timing only. It does **not** claim that all of Crucible is currently deterministic or that meteor weather, granular matter, the extruder, and other independent world processes rewind with it.
+
+The live debug surface exposes `crucible.cinnabarAndCinnamon.replay()` and `inspect()`. Future turns can extend the score in order. A generalized replay framework is not earned yet.

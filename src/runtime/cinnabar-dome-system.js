@@ -1,4 +1,4 @@
-export function createCinnabarDomeSystem({THREE,scene,terrain}){
+export function createCinnabarDomeSystem({THREE,scene,terrain,field}){
   // First async-field move: keep the behavior authored and local until play earns broader machinery.
   const root=new THREE.Group();root.name="cinnabar-skeletal-dome";
   const brass=new THREE.MeshStandardMaterial({color:0x9b6a2f,roughness:.48,metalness:.72}),
@@ -18,8 +18,8 @@ export function createCinnabarDomeSystem({THREE,scene,terrain}){
   const baseRing=new THREE.Mesh(new THREE.TorusGeometry(R,.065,7,48),darkBrass);baseRing.rotation.x=Math.PI/2;baseRing.position.y=.03;baseRing.castShadow=true;root.add(baseRing);
   const center=new THREE.Vector3(2.7,0,1.8),ground=terrain.groundHeight(center.x,center.z),surface=Number.isFinite(ground)?ground:.15;
   const buried=surface-(H+1.2),settled=surface+.02;root.position.set(center.x,buried,center.z);scene.add(root);
-  let startedAt=null,progress=0,settledOnce=false;
+  const scored=field.turn(1);let progress=0,settledOnce=false;
   function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-  function update(now){if(startedAt==null)startedAt=now;progress=THREE.MathUtils.clamp((now-startedAt)/12000,0,1);root.position.y=THREE.MathUtils.lerp(buried,settled,ease(progress));if(progress>=1)settledOnce=true;}
+  function update(fieldNow){progress=THREE.MathUtils.clamp((fieldNow-scored.at)/scored.duration,0,1);root.position.y=THREE.MathUtils.lerp(buried,settled,ease(progress));settledOnce=progress>=1;}
   return{object:root,update,inspect:()=>({kind:"cinnabar-skeletal-dome",position:[root.position.x,root.position.y,root.position.z],riseProgress:Number(progress.toFixed(3)),settled:settledOnce,behavior:"authored-rise"})};
 }
