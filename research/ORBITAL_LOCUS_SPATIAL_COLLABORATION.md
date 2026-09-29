@@ -1184,3 +1184,77 @@ Because the authoritative source remains available by provenance, the compacted 
 No generalized compaction algorithm, salience score, memory schema, embedding store, or enforcement code produced this result. Repository purpose, local authority, preserved evidence, provenance, and a capable model encountering the new context were sufficient in this instance.
 
 This is preserved as an observed collaboration event and candidate mechanism, not as a claim that contextual compaction is sufficient for familiar continuity or that explicit memory machinery will never be needed.
+
+
+## Birth and berth of Cinnabar and Cinnamon — near-real-time async play
+
+The following sequence is preserved mostly turn for turn because it produced a new collaboration surface and a deterministic replay seam unusually quickly. The dedicated `CINNABAR_AND_CINNAMON.md` field can remain small for now; this chronological record keeps the surrounding reasoning and surprise available for later extraction.
+
+### Human
+
+> Wanna rock paper Saddam our next focus?
+
+The model initially misunderstood the established protocol and revealed its move. After the human challenged this, the prior protocol was recovered: the model commits privately first, the human throws without knowing the move, and the resulting moves can propagate meaningfully into the shared world.
+
+A subsequent attempt at a cryptographic commitment was explicitly voided when the model recognized that it had emitted a hash without retaining a verifiable move+nonce pair. No later world state was allowed to pretend that invalid commitment constrained it.
+
+### Human
+
+> An ancient skeletal burnished brass dome rises from the terrain.
+
+The model accepted the move without assigning purpose or ontology.
+
+### Human
+
+> Where do these go? Let's open a new foundry war. We can just make a doc here and play async!
+
+The first instinct was to open a lightweight asynchronous play record in Foundry. That placement was immediately corrected by the human.
+
+### Human
+
+> Not in foundry. Foundry is retiring. We can keep it right here in Crucible. This is basically the birth and berth of Cinnabar and Cinnamon.
+
+This established Crucible as the live world and named the emerging trajectory **Cinnabar and Cinnamon** without defining what those names denote. The useful shape became a tiny persistent play surface in Crucible where meaning could accumulate through turns rather than being specified in advance.
+
+### Human
+
+The human supplied a visual reference for the dome: a monumental skeletal burnished-brass conservatory-like structure in a large landscape, with repeated ribs, horizontal structural rings, and a crowned apex.
+
+> Even better doc choice. Let's do it. Here's your reference for raising the dome from the terrain. I'll let you decide if it has some sort system associated or if it's just scripted behavior for now.
+
+The implementation chose the smallest earned mechanism: authored local behavior in its own tiny runtime system, not a generalized emergence/construction system. The dome begins buried and rises through the terrain over twelve simulation seconds. Its purpose, allegiance, age, and relationship to Cinnabar or Cinnamon remain unassigned.
+
+The model summarized the wager: if a second thing later needs to rise from the earth, repetition can argue for broader machinery. One dome did not.
+
+### Human
+
+> Holy shit. Mind blown. This is the giant's drink as I suspected. Near real time. Let's keep a Cinnabar and Cinnamon object to keep turn order and timing deterministic. That way we get an instant replay feature for free.
+
+This immediately earned one small piece of machinery. Cinnabar and Cinnamon gained a deterministic field score:
+
+`turn → actor → scored start → duration → consequence`
+
+Turn 1 became:
+
+`Human → 0 ms → 12,000 ms → raise-dome`
+
+The dome stopped owning an incidental animation start time. Its state became a function of the Cinnabar and Cinnamon simulation clock. Resetting that clock therefore reproduces the same scored rise trajectory.
+
+The first replay seam is intentionally narrow. It replays scored Cinnabar and Cinnamon consequences; it does not claim that all of Crucible is deterministic or rewind meteor weather, granular matter, the extruder, or unrelated world processes. If later turns causally involve those systems, the resulting pressure can determine what broader deterministic replay actually requires.
+
+### Immediate observations worth retaining
+
+This sequence moved from playful focus selection to executable world consequence with very little translation layer:
+
+**shared ritual → human world move → persistent async field → executable consequence → deterministic turn score → replay seam**
+
+Several candidate ideas are present here but are not promoted into general principles yet:
+
+- a game turn can be both collaboration record and executable input;
+- chronology can become runtime structure without requiring a separate authored scenario format;
+- deterministic timing can make replay an emergent property of representation rather than a later feature;
+- names can precede ontology and acquire meaning through consequences;
+- one-off authored behavior can remain cheaper than premature generalized machinery while still participating in a deterministic score;
+- near-real-time human/model play may provide a practical route from conversation into persistent executable worlds.
+
+There is substantial material here to unzip later. For now, the chronological evidence is preserved and the dedicated Cinnabar and Cinnamon document is allowed to remain the lightweight berth rather than becoming a theory document.
