@@ -522,3 +522,14 @@ The earlier fast-forward easing typo was also corrected while inspecting this pa
 Turn 4 begins at the Turn 3 frontier and lasts 6.5 simulated seconds. Meteor weather enters abatement: no new weather packets begin during the interval, while already-scheduled members of an existing packet are allowed to finish. At the end of the scored consequence autonomous meteor weather is quiescent. The meteor system itself remains present; this turn does not delete meteor capability or claim that Crucible can never experience another meteor.
 
 Clockchain remains terminal. It does not speak until this Turn 4 consequence has completed.
+
+
+## Turn 5 — Human
+
+> The dome begins to exert an invisible force on nearby granular materials. They swirl and shift around it lazily.
+
+### Executable consequence
+
+Turn 5 begins at the Turn 4 frontier and develops over 7 simulated seconds. The dome gains a local physical field over nearby granular matter. The field acts directly on the authoritative bearing velocities with a weak tangential bias, a much smaller inward component, and a trace of lift; its influence falls off with distance and eases in over the scored interval. There is no visible force geometry and no scripted bearing path. Existing terrain collision, pile support, impacts, and bearing integration remain authoritative after the field perturbs velocity.
+
+The effect is deliberately local and lazy rather than a vortex or launch event. Clockchain remains terminal and speaks only after Turn 5 completes.

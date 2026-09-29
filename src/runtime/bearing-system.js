@@ -34,6 +34,21 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
   }
+  function applyField(center,{radius=4.2,strength=2.1,lift=.10}={}){
+    if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.z))return;
+    const r=Math.max(.01,radius),r2=r*r;
+    for(let i=0;i<count;i++){
+      const dx=bx[i]-center.x,dz=bz[i]-center.z,d2=dx*dx+dz*dz;
+      if(d2<=.0001||d2>=r2)continue;
+      const d=Math.sqrt(d2),fall=1-d/r;
+      // Tangential bias makes nearby grains circulate lazily; a weak radial
+      // component keeps the field from collapsing into a perfect ring.
+      const q=strength*fall;
+      bvx[i]+=(-dz/d*q-dx/d*q*.10);
+      bvz[i]+=( dx/d*q-dz/d*q*.10);
+      bvy[i]+=lift*fall;
+    }
+  }
   function applyImpact(event){
     const c=event?.position,power=Math.max(.01,event?.radius??event?.power??0);if(!c||!power)return;
     const strength=event?.impulse??18;
@@ -46,5 +61,5 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     return{grains,cells,cellSize:cell};
   }
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyImpact,sampleDensity,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
 }
