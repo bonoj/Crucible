@@ -18,6 +18,8 @@ This resolution is an experimental constraint, not a tuning target. Terrain beha
 
 Meteor impacts currently express a carved bowl and raised rim. Strong impacts can additionally form a broad central uplift using the same density field, dirty bounds, and remesh path. The uplift is deliberately conditioned on impact scale so smaller craters are not asked to represent structure below the useful granularity of the field.
 
+The central uplift is impact morphology, not additional terrain resolution. It does not change test depth, chunk dimensions, or the remeshing architecture.
+
 ## The orbital station is a permanent Crucible fixture
 
 Crucible contains one persistent orbital station descended visually from World Lab's `OrbitalConstruction T1`.
@@ -26,7 +28,7 @@ The station is an ECS entity with transform, rendering, continuity-locus identit
 
 Its current apparatus motion is a deterministic 90-second elliptical sweep centered above Crucible at altitude 8.5, with horizontal radii 4.2 and 3.2 world units. A separate quiet attitude drift changes its orientation. This motion is apparatus behavior, not evidence of agency or navigation.
 
-The station casts ordinary world shadows.
+The station casts ordinary world shadows. Its current station-feed HUD is also spatially associated with this fixture, but the HUD is presentation rather than an additional station sensor.
 
 ## A footprint describes spatial availability, not perception
 
@@ -77,11 +79,15 @@ The existence of an analysis tool does not imply that a future model-mediated lo
 
 ## The station feed is a diegetic presentation surface
 
-Tapping the orbital station can summon a translucent blue station-feed HUD. The display remains spatially associated with the moving station while orienting toward the active camera for legibility.
+Tapping the orbital station can summon a translucent blue station-feed HUD. The HUD is hidden by default. While open, it remains spatially associated with the moving station and reorients toward the active camera each frame for legibility rather than inheriting the station's changing attitude.
 
-The HUD renders the latest recorded scene-summary aperture evidence. Its camera-facing presentation does not grant a camera aperture, renderer access, faster sampling, or additional world knowledge. It is a human-visible presentation of evidence that already crossed the station's epistemic boundary.
+Station selection takes precedence over the terrain-tap meteor interaction, so tapping the apparatus summons its feed rather than calling an impact through the terrain interaction beneath it.
 
-The feed is intentionally a presentation surface that can expand as future station evidence earns additional channels. Its existence does not itself add those channels.
+The HUD renders the latest recorded scene-summary aperture evidence at the observation cadence. Its current terrain presentation reconstructs the sampled footprint from the same recorded terrain-profile points and reports measured relief and footprint radius.
+
+The camera-facing presentation does not grant a camera aperture, renderer access, terrain-system access, meteor history, faster hidden sampling, or additional world knowledge. It is a human-visible presentation of evidence that already crossed the station's epistemic boundary.
+
+The feed is intentionally a diegetic presentation surface that can expand as future station evidence earns additional channels, histories, or controls. Its existence does not itself add those channels or capabilities.
 
 ## Observation is not behavior
 
@@ -102,5 +108,7 @@ Pure CI tests also exercise the downstream spatial derivation against synthetic 
 The present observation path is:
 
 **authoritative world state → projected footprint → aperture measurement → immutable observation → optional blind spatial derivation**
+
+The locus ledger and diegetic station feed are downstream consumers of this evidence. Neither sits upstream of the aperture or bypasses it.
 
 Each boundary is intentionally explicit. Later systems may earn additional apertures, tools, or ways to act without collapsing these layers into direct omniscience.
