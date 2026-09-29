@@ -1,5 +1,6 @@
 export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,maxBearings=1000000}){
-  const BALL_R=.055,PG=96,MAX_RENDERED=180000;
+  const BALL_R=.055,PG=96,MAX_RENDERED=180000,PROJECTION_GRID=64,PROJECTION_MIN=-10,PROJECTION_SPAN=20;
+  const projection=new Uint32Array(PROJECTION_GRID*PROJECTION_GRID);
   const bx=new Float32Array(maxBearings),by=new Float32Array(maxBearings),bz=new Float32Array(maxBearings);
   const bvx=new Float32Array(maxBearings),bvy=new Float32Array(maxBearings),bvz=new Float32Array(maxBearings);
   let count=0;
@@ -23,11 +24,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   }
   const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
   function update(dt){
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       bvy[i]+=g*dt;bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
       contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
       const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
+      const qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;
       if((i%renderStride)===0&&rendered<MAX_RENDERED){dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
@@ -37,6 +39,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     const strength=event?.impulse??18;
     for(let i=0;i<count;i++){const dx=bx[i]-c.x,dy=by[i]-c.y,dz=bz[i]-c.z,d2=dx*dx+dy*dy+dz*dz;if(d2>=power*power||d2<=.0001)continue;const d=Math.sqrt(d2),fall=1-d/power,q=fall*strength/d;bvx[i]+=dx*q;bvy[i]+=Math.abs(dy*q)+strength*.55*fall;bvz[i]+=dz*q;}
   }
+  function sampleDensity(x,z,radius=0){
+    const cell=PROJECTION_SPAN/PROJECTION_GRID,r=Math.max(0,radius),minX=Math.max(0,Math.floor((x-r-PROJECTION_MIN)/cell)),maxX=Math.min(PROJECTION_GRID-1,Math.floor((x+r-PROJECTION_MIN)/cell)),minZ=Math.max(0,Math.floor((z-r-PROJECTION_MIN)/cell)),maxZ=Math.min(PROJECTION_GRID-1,Math.floor((z+r-PROJECTION_MIN)/cell));
+    let grains=0,cells=0;
+    for(let iz=minZ;iz<=maxZ;iz++)for(let ix=minX;ix<=maxX;ix++){const cx=PROJECTION_MIN+(ix+.5)*cell,cz=PROJECTION_MIN+(iz+.5)*cell;if(r&&((cx-x)*(cx-x)+(cz-z)*(cz-z)>r*r))continue;grains+=projection[ix+PROJECTION_GRID*iz];cells++;}
+    return{grains,cells,cellSize:cell};
+  }
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyImpact,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyImpact,sampleDensity,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
 }

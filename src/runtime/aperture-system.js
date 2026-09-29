@@ -1,4 +1,4 @@
-export function createApertureSystem({world,components,footprints,occupancy,terrain}){
+export function createApertureSystem({world,components,footprints,occupancy,terrain,granularProjection=null}){
   const {Aperture,Footprint}=components;
   let sequence=0;
   function sample(ownerId,apertureId,now){
@@ -18,6 +18,7 @@ export function createApertureSystem({world,components,footprints,occupancy,terr
       }
     }
     const heights=terrainSamples.map(s=>s.height),minHeight=heights.length?Math.min(...heights):null,maxHeight=heights.length?Math.max(...heights):null;
+    const granular=granularProjection?.sampleDensity(center[0],center[2],footprint.radius)??null;
     return{
       observationId:++sequence,
       sampledAtMs:Number(now.toFixed(1)),
@@ -27,6 +28,7 @@ export function createApertureSystem({world,components,footprints,occupancy,terr
       measurement:{
         groundHeight:Number.isFinite(ground)?Number(ground.toFixed(3)):null,
         terrainProfile:{samples:terrainSamples,minHeight,maxHeight,heightRange:minHeight==null?null:Number((maxHeight-minHeight).toFixed(3))},
+        granularOccupancy:granular?{occupied:granular.grains>0,density:Number((granular.grains/Math.max(1,granular.cells)).toFixed(3)),sampleCells:granular.cells,cellSize:Number(granular.cellSize.toFixed(4))}:null,
         boundedOccupants:occupants.map(o=>({id:o.id,kind:o.bounds.kind}))
       }
     };

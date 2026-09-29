@@ -59,7 +59,7 @@ const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,te
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
 const footprints=createFootprintSystem({world,components,THREE,scene:three.scene,terrain});
 const footprintOccupancy=createFootprintOccupancySystem({world,components,footprints});
-const apertureSystem=createApertureSystem({world,components,footprints,occupancy:footprintOccupancy,terrain});
+const apertureSystem=createApertureSystem({world,components,footprints,occupancy:footprintOccupancy,terrain,granularProjection:bearings});
 const sceneAperture=world.entity();world.add(sceneAperture,components.Aperture,{owner:continuityStation.id,kind:"scene-summary"});
 components.ContinuityLocus.get(continuityStation.id).apertures.push(sceneAperture);
 const observationAnalysis=createObservationAnalysisSystem({world,components});
