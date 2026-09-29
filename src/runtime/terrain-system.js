@@ -61,7 +61,8 @@ export function createTerrainSystem({THREE,scene}){
       const p=wp(x,y,z),dx=p.x-center.x,dz=p.z-center.z,radial=Math.hypot(dx,dz),dy=p.y-center.y;
       const bowl=Math.hypot(dx,dy*.82,dz);
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
-      if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}\n      if(peakStrength>0&&radial<peakRadius&&Math.abs(dy)<radius*.32){const radialWeight=1-radial/peakRadius,vertical=Math.max(0,1-Math.abs(dy-radius*.02)/(radius*.32));field[idx(x,y,z)]+=peakStrength*radialWeight*radialWeight*vertical;}
+      if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
+      if(peakStrength>0&&radial<peakRadius&&Math.abs(dy)<radius*.32){const radialWeight=1-radial/peakRadius,vertical=Math.max(0,1-Math.abs(dy-radius*.02)/(radius*.32));field[idx(x,y,z)]+=peakStrength*radialWeight*radialWeight*vertical;}
     }
     const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
     return{magnitude:e,radius,depth,rim,centralUplift:peakStrength};
