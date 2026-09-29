@@ -473,3 +473,11 @@ This remains a first executable instance, not a generalized Clockchain framework
 > Okay. And while you're at it slow that fast forward down a bit, make it elastic at the interval edges and stop fast forward between turns. Ie turn 1 tap. Go to turn 2 start. Tap go to turn 3 or if end trigger clockchain.
 
 The world control now advances one scored interval at a time rather than racing to the entire-history frontier. Fast-forward is reduced from 8× to a 4× peak and eases back toward ordinary time near each target boundary. A tap during Turn 1 advances only to the start of Turn 2 and stops; another tap advances to the current frontier, where the next tap conducts Clockchain. The winner chain is shortened so resolved suspension reads close to the device rather than as another launch.
+
+
+### Table talk — the mechanism gets smaller
+
+Human observed that the device itself should follow terrain, while the tokens no longer need launch velocity or lateral competition. The mechanism was reduced accordingly: the Clockchain device samples terrain height; its tokens and chains are local children of the device; Clockchain derives and records the winner; the winner rises only on local Y and then bobs lightly; the loser remains seated and inert. Independent token Body, Gravity, Support, SpatialBounds, launch RNG, excursion scoring, settlement timing, and chain constraint machinery were removed. The world no longer simulates a physical contest after the ledger has already decided it.
+
+Human:
+> ⏳️⛓️
