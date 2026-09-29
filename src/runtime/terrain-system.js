@@ -44,20 +44,28 @@ export function createTerrainSystem({THREE,scene}){
     return THREE.MathUtils.lerp(THREE.MathUtils.lerp(h00,h10,tx),THREE.MathUtils.lerp(h01,h11,tx),tz);
   }
   const SUPPORT_G=112,support=new Float32Array(SUPPORT_G*SUPPORT_G);
-  function rebuildSupport(){
-    // Bearing support is authored from the final clipped rendered triangles, matching Foundry.
-    // Vertical cut walls are skipped here; the immutable plinth sides are resolved analytically.
-    support.fill(-Infinity);
+  function rebuildSupport(bounds=null){
+    // Bearing support is terrain-owned derived state. Mutations pass their already-known
+    // field footprint; terrain maps it to support cells and refreshes only that region.
     const gx=x=>THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1);
     const gz=z=>THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1);
+    let sx0=0,sx1=SUPPORT_G-1,sz0=0,sz1=SUPPORT_G-1;
+    if(bounds){
+      const wx0=THREE.MathUtils.lerp(MIN.x,MAX.x,Math.max(0,bounds.x0-1)/(NX-1)),wx1=THREE.MathUtils.lerp(MIN.x,MAX.x,Math.min(NX-1,bounds.x1+1)/(NX-1));
+      const wz0=THREE.MathUtils.lerp(MIN.z,MAX.z,Math.max(0,bounds.z0-1)/(NZ-1)),wz1=THREE.MathUtils.lerp(MIN.z,MAX.z,Math.min(NZ-1,bounds.z1+1)/(NZ-1));
+      sx0=Math.max(0,Math.floor(gx(wx0))-2);sx1=Math.min(SUPPORT_G-1,Math.ceil(gx(wx1))+2);
+      sz0=Math.max(0,Math.floor(gz(wz0))-2);sz1=Math.min(SUPPORT_G-1,Math.ceil(gz(wz1))+2);
+      for(let iz=sz0;iz<=sz1;iz++)support.fill(-Infinity,iz*SUPPORT_G+sx0,iz*SUPPORT_G+sx1+1);
+    }else support.fill(-Infinity);
     const eps=1e-8;
     for(const chunk of chunks){
       const a=chunk.geometry.getAttribute("position");if(!a)continue;
       for(let t=0;t<a.count;t+=3){
         const ax=a.getX(t),ay=a.getY(t),az=a.getZ(t),bx=a.getX(t+1),by=a.getY(t+1),bz=a.getZ(t+1),cx=a.getX(t+2),cy=a.getY(t+2),cz=a.getZ(t+2);
         const den=(bz-cz)*(ax-cx)+(cx-bx)*(az-cz);if(Math.abs(den)<eps)continue;
-        const ix0=Math.max(0,Math.floor(gx(Math.min(ax,bx,cx)))-1),ix1=Math.min(SUPPORT_G-1,Math.ceil(gx(Math.max(ax,bx,cx)))+1);
-        const iz0=Math.max(0,Math.floor(gz(Math.min(az,bz,cz)))-1),iz1=Math.min(SUPPORT_G-1,Math.ceil(gz(Math.max(az,bz,cz)))+1);
+        const ix0=Math.max(sx0,Math.floor(gx(Math.min(ax,bx,cx)))-1),ix1=Math.min(sx1,Math.ceil(gx(Math.max(ax,bx,cx)))+1);
+        const iz0=Math.max(sz0,Math.floor(gz(Math.min(az,bz,cz)))-1),iz1=Math.min(sz1,Math.ceil(gz(Math.max(az,bz,cz)))+1);
+        if(ix0>ix1||iz0>iz1)continue;
         for(let iz=iz0;iz<=iz1;iz++){const z=THREE.MathUtils.lerp(MIN.z,MAX.z,iz/(SUPPORT_G-1));for(let ix=ix0;ix<=ix1;ix++){
           const x=THREE.MathUtils.lerp(MIN.x,MAX.x,ix/(SUPPORT_G-1));
           const wa=((bz-cz)*(x-cx)+(cx-bx)*(z-cz))/den,wb=((cz-az)*(x-cx)+(ax-cx)*(z-cz))/den,wc=1-wa-wb;
@@ -65,9 +73,9 @@ export function createTerrainSystem({THREE,scene}){
         }}
       }
     }
-    // Conservative hole fill mirrors Foundry: never let a missed raster cell create a false pit.
+    // Fill only the refreshed region; neighboring stable support remains valid context.
     const copy=support.slice();
-    for(let iz=0;iz<SUPPORT_G;iz++)for(let ix=0;ix<SUPPORT_G;ix++){const k=ix+SUPPORT_G*iz;if(Number.isFinite(copy[k]))continue;let best=-Infinity;for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){const x=ix+dx,z=iz+dz;if(x<0||x>=SUPPORT_G||z<0||z>=SUPPORT_G)continue;best=Math.max(best,copy[x+SUPPORT_G*z])}support[k]=best}
+    for(let iz=sz0;iz<=sz1;iz++)for(let ix=sx0;ix<=sx1;ix++){const k=ix+SUPPORT_G*iz;if(Number.isFinite(copy[k]))continue;let best=-Infinity;for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){const x=ix+dx,z=iz+dz;if(x<0||x>=SUPPORT_G||z<0||z>=SUPPORT_G)continue;best=Math.max(best,copy[x+SUPPORT_G*z])}support[k]=best}
   }
   function groundHeightExact(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
   function bearingTerrainHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),tx=fx-ix,tz=fz-iz,A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];if(![A,B,C,D].every(Number.isFinite))return Math.max(A,B,C,D);return THREE.MathUtils.lerp(THREE.MathUtils.lerp(A,B,tx),THREE.MathUtils.lerp(C,D,tx),tz);}
@@ -77,7 +85,7 @@ export function createTerrainSystem({THREE,scene}){
   function excavate(center,{radius=.62,depth=.34}={}){
     const r=Math.max(.3,radius),d=Math.max(.04,depth),ix0=Math.max(1,Math.floor((center.x-r-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+r-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1),iz0=Math.max(1,Math.floor((center.z-r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))-1),iz1=Math.min(NZ-2,Math.ceil((center.z+r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))+1);
     for(let z=iz0;z<=iz1;z++)for(let x=ix0;x<=ix1;x++){const p=wp(x,0,z),radial=Math.hypot(p.x-center.x,p.z-center.z);if(radial>=r)continue;const w=1-radial/r,delta=d*w*w;for(let y=1;y<NY-1;y++)field[idx(x,y,z)]-=delta;}
-    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport();return{radius:r,depth:d};
+    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);return{radius:r,depth:d};
   }
 
   function impact(center,{magnitude=1}={}){
@@ -92,7 +100,7 @@ export function createTerrainSystem({THREE,scene}){
       if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
       if(peakStrength>0&&radial<peakRadius&&Math.abs(dy)<radius*.32){const radialWeight=1-radial/peakRadius,vertical=Math.max(0,1-Math.abs(dy-radius*.02)/(radius*.32));field[idx(x,y,z)]+=peakStrength*radialWeight*radialWeight*vertical;}
     }
-    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport();
+    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
     return{magnitude:e,radius,depth,rim,centralUplift:peakStrength};
   }
   function reset(){field.set(initial);rebuild();rebuildSupport();}
