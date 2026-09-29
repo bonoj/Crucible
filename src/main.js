@@ -8,6 +8,7 @@ import {installOrbitInput} from "./runtime/orbit-input.js";
 import {createLightSystem} from "./runtime/light-system.js";
 import {createTerrainSystem} from "./runtime/terrain-system.js";
 import {createMeteorSystem} from "./runtime/meteor-system.js";
+import {createMeteorWeatherSystem} from "./runtime/meteor-weather-system.js";
 import {createContinuityStationSystem} from "./runtime/continuity-station-system.js";
 import {createFootprintSystem} from "./runtime/footprint-system.js";
 import {createFootprintOccupancySystem} from "./runtime/footprint-occupancy-system.js";
@@ -43,6 +44,7 @@ const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensit
 const terrain=createTerrainSystem({THREE,scene:three.scene});
 const waterBottom=-1.42,waterLevel=-.12,waterDepth=waterLevel-waterBottom,waterRadius=9.75,waterMaterial=new THREE.MeshStandardMaterial({color:0x557f88,transparent:true,opacity:.34,roughness:.28,metalness:.04,depthWrite:false,depthTest:true,side:THREE.DoubleSide}),water=new THREE.Mesh(new THREE.CylinderGeometry(waterRadius,waterRadius,waterDepth,8,1,false,Math.PI/8),waterMaterial);water.position.y=waterBottom+waterDepth*.5;water.name="crucible-sea-volume";water.renderOrder=3;water.visible=false;three.scene.add(water);
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus});
+const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors});
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
 const footprints=createFootprintSystem({world,components,THREE,scene:three.scene,terrain});
 const footprintOccupancy=createFootprintOccupancySystem({world,components,footprints});
@@ -64,9 +66,9 @@ function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const 
 
 let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=document.querySelector("#fps-counter");
 function frame(now){if(now-lastSampleAt>=3000){lastSampleAt=now;const evidence=apertureSystem.sample(continuityStation.id,sceneAperture,now);if(evidence){const observation=world.entity();world.add(observation,components.Observation,evidence);lastObservation={entity:observation,...evidence};lastAnalysis=observationAnalysis.analyze(observation);locusLedger.append(lastObservation,lastAnalysis);}}
-const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);continuityStation.update(now);footprints.update();orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
-const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect(),continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id),occupants:footprintOccupancy.inspect(continuityStation.id),apertures:apertureSystem.inspect(),lastObservation,lastAnalysis}});
-const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis,spatialProbes,locusLedger},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
+const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteorWeather.update(now);meteors.update(now);continuityStation.update(now);footprints.update();orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:{...meteors.inspect(),weather:meteorWeather.inspect()},continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id),occupants:footprintOccupancy.inspect(continuityStation.id),apertures:apertureSystem.inspect(),lastObservation,lastAnalysis}});
+const systems={renderSync,cameras,orbit,lights,meteors,meteorWeather,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis,spatialProbes,locusLedger},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
 globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,runSpatialProbes:()=>lastProbeResults=spatialProbes.run(),spatialProbeResults:()=>lastProbeResults,locusLog:()=>locusLedger.snapshot(),exportLocusLog:()=>locusLedger.download(),inspect};
 installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
