@@ -18,6 +18,6 @@ export function createCinnabarAndCinnamon(){
   function clockchainHead(){return JSON.stringify({turns:turns.map(({turn,actor,at,duration,kind})=>({turn,actor,at,duration,kind})),draws:draws.map(({couplet,owner,method,seed})=>({couplet,owner,method,seed}))});}
   function turn(number){return turns.find(entry=>entry.turn===number)??null;}
   function recordDraw(draw){if(draws.length)return draws[draws.length-1];const entry={couplet:1,...draw};draws.push(entry);return entry;}
-  function inspect(now=null){const elapsed=origin==null?0:(now==null?null:Math.max(0,now-origin));return{kind:"cinnabar-and-cinnamon",clock:"simulation",origin,elapsed,replays,frontier:frontier(),fastForwardTarget,clockchainHead:clockchainHead(),turns:turns.map(entry=>({...entry})),rules:{fromTurn:3,initiative:"two-turn-couplets",draw:"diegetic-world-trial"},draws:draws.map(entry=>({...entry}))};}
+  function inspect(now=null){const elapsed=origin==null?0:(now==null?null:Math.max(0,now-origin));return{kind:"cinnabar-and-cinnamon",clock:"simulation",origin,elapsed,replays,frontier:frontier(),fastForwardTarget,clockchainHead:clockchainHead(),turns:turns.map(entry=>({...entry})),rules:{fromTurn:3,initiative:"clockchain-per-turn",draw:"diegetic-world-clockchain"},draws:draws.map(entry=>({...entry}))};}
   return{turns,draws,update,replay,turn,recordDraw,frontier,nextTurnStart,fastForwardTo,consumeFastForward,clockchainHead,inspect};
 }

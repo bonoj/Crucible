@@ -497,3 +497,10 @@ Accepted. The resolved suspension is shortened slightly. Clockchain no longer wa
 ### Executable consequence
 
 The first Clockchain result is promoted from transient runtime state into the scored history: the pale Human token won the first couplet at the Turn 2 frontier. Turn 3 begins there. The entire Clockchain mechanism, including its child tokens and chains, descends more than two world units beneath the local terrain, traverses while buried, and re-emerges at the dome center over 5.2 seconds. Its surface height continues to be taken from terrain at its current location, so the motion is relative to the world plinth rather than a fixed world Y. No teleport or duplicate device is introduced.
+
+
+### Human — couplets are gone
+
+> In fact, couplets are gone.
+
+Correction accepted prospectively. The two-turn initiative rule was an intermediate rule, not a permanent structure. From Turn 3 onward there is no A/B ownership and no reserved second move. Each completed scored turn carries Cinnabar and Cinnamon time to its new frontier; Clockchain speaks there and determines the owner of the next single turn. The historical discussion of couplets remains above because the ledger is not rewritten when its rules change.
