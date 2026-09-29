@@ -60,7 +60,7 @@ export function createContinuityStationSystem({world,components,THREE,scene}){
     return station;
   }
 
-  const id=world.entity(),station=buildStation();
+  const id=world.entity(),station=buildStation(),motion={center:new THREE.Vector3(0,8.5,0),radiusX:4.2,radiusZ:3.2,periodMs:90000,phase:.35};
   scene.add(station);
   world.add(id,Transform,{position:new THREE.Vector3(0,8.5,0),rotation:new THREE.Euler(.20,.35,.08),scale:new THREE.Vector3(3.2,3.2,3.2),visible:true});
   world.add(id,RenderObject,{object:station});
@@ -70,13 +70,14 @@ export function createContinuityStationSystem({world,components,THREE,scene}){
   return {
     id,
     update(now){
-      const t=now*.000075;
+      const t=now*.000075,phase=(now/motion.periodMs)*Math.PI*2+motion.phase;
       const transform=Transform.get(id);
+      transform.position.set(motion.center.x+Math.cos(phase)*motion.radiusX,motion.center.y,motion.center.z+Math.sin(phase)*motion.radiusZ);
       transform.rotation.set(.20+.10*Math.sin(t*.31),.35+t*.43,.08+.12*Math.sin(t*.23));
     },
     inspect(){
       const t=Transform.get(id),locus=ContinuityLocus.get(id);
-      return {id,kind:locus.kind,donor:locus.donor,position:t.position.toArray(),scale:t.scale.x,apertures:[...locus.apertures]};
+      return {id,kind:locus.kind,donor:locus.donor,position:t.position.toArray(),scale:t.scale.x,motion:{radiusX:motion.radiusX,radiusZ:motion.radiusZ,periodMs:motion.periodMs,phase:motion.phase},apertures:[...locus.apertures]};
     }
   };
 }
