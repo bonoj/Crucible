@@ -72,7 +72,7 @@ const coupletTrial=createCoupletTrialSystem({world,components,THREE,scene:three.
 const cinnabarLayer=new THREE.Group();cinnabarLayer.name="cinnabar-and-cinnamon-apparatus";three.scene.add(cinnabarLayer);
 for(const object of [cinnabarDome.object,cinnabarKite.object,cinnabarKite.line,cinnabarSpire.object,coupletTrial.object])cinnabarLayer.attach(object);
 terrain.occludeBelowPlinth(cinnabarLayer);
-let cinnabarPacked=false,cinnabarPackTarget=0,cinnabarPackY=0,cinnabarPackFrom=0,cinnabarPackElapsed=0;const cinnabarPackDepth=-13,cinnabarPackDuration=1.15;
+let cinnabarPacked=false,cinnabarPackTarget=0,cinnabarPackY=0,cinnabarPackFrom=0,cinnabarPackElapsed=0;const cinnabarPackDepth=-13,cinnabarPackDuration=.95;
 function setCinnabarPacked(packed){cinnabarPacked=!!packed;cinnabarPackFrom=cinnabarPackY;cinnabarPackTarget=cinnabarPacked?1:0;cinnabarPackElapsed=0;return cinnabarPacked}
 function toggleCinnabarPacked(){return setCinnabarPacked(!cinnabarPacked)}
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
