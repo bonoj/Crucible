@@ -773,3 +773,84 @@ No second aperture has yet been earned.
 The apparatus is already generating useful pressure by allowing authoritative world history to continue while preserving a stable epistemic boundary. Future crossings can therefore test whether later bounded experience causes earlier interpretations to survive, change, or fail before the experiment adds privileged sensing or explanatory machinery.
 
 This file is intended to be sufficient for orientation. Follow the linked primary evidence only when exact wording, audit, or re-analysis of a crossing matters.
+
+
+# Adjacent Terrordrome turn — bearings return as ordinary matter
+
+While the orbital crossing sequence continued, the human asked to restore the last known-good Foundry ball-bearing implementation as spawnable Crucible matter. This was not introduced as a new station aperture or continuity mechanism. It changes the authoritative world beneath the locus and is therefore recorded here as part of the same expeditionary environment.
+
+The requested baseline was deliberately narrow: recover Foundry parity, preserve its special terrain/plinth handling, and expose a control that spawns 25,000 bearings at a time. Spacing and stacking polish were explicitly deferred.
+
+## The Foundry terrain seam mattered
+
+Inspection of the Foundry reference recovered an important distinction that was easy to lose in a superficial transplant.
+
+High-count bearings did not merely query a generic scalar terrain height. Their support surface was rasterized from the **final clipped rendered terrain triangles**, while the manufactured octagonal plinth remained analytic infrastructure. Plinth top support participated in ground height; exposed vertical plinth sides were resolved separately against bearing radius.
+
+Crucible already contained most of the analytic plinth collision vocabulary. Its bearing support cache was brought into parity by deriving support from final clipped terrain triangles on a 112 × 112 field. This keeps rendered/deformed terrain and high-count bearing support from silently disagreeing at the cut boundary.
+
+## The first transplant exposed a performance regression
+
+The first restored bearing batch used array-backed position and velocity state plus one instanced presentation mesh and a cheap 96 × 96 pile-support approximation. A button spawned 25,000 bearings per activation.
+
+The human immediately supplied two pieces of executable evidence:
+
+> "the ball bearings are fucking huge. They should be fucking tiny :)"
+
+and
+
+> "25k is np 60 fps but 50k is instant 30 fps. I suspect it is some nasty array shit or our pile compute. That's why 200k at 60 fps was no problem before. We had like 350k before 30 fps previously."
+
+Both observations were treated as evidence against the transplant rather than as reasons to tune the renderer blindly.
+
+The scale problem was literal. The initial transplant had copied Foundry's historical radius `0.22` into the current Crucible scale, where it read as large balls rather than bearings. Physical and rendered radius were reduced together to `0.055`.
+
+The performance regression came from a more consequential architectural mismatch. Foundry's high-count path integrated the entire bearing population **once per rendered frame** using frame delta and uploaded instance matrices once. The first Crucible transplant had placed `bearings.update()` inside Crucible's fixed 1/120 physics loop. At ordinary 60 FPS this could already mean roughly two complete bearing passes and two instance uploads per rendered frame; accelerated simulation could multiply the mistake much further.
+
+The repair restored the Foundry performance shape rather than attempting to optimize the accidental architecture. Bearings now integrate once per rendered frame using a bounded accumulated simulation delta. Their authoritative array state remains complete while presentation begins sampling above 50,000 bearings: stride 2 above 50K, 3 above 100K, 5 above 250K, and 8 above 500K. The instanced presentation capacity remains 180,000 while authoritative bearing storage is currently provisioned for up to one million.
+
+The resulting performance curve still belongs to executable testing on the user's device; the restored architecture does not by itself establish a particular FPS ceiling.
+
+## Impacts became an extensible world consequence
+
+The human also required that bearings care about meteor strikes through an extensible impact system rather than by wiring meteor knowledge directly into the bearing implementation.
+
+A small generic world-impact bus was introduced. Meteor impacts emit an event carrying consequence-level data such as position, radius, and impulse. The bearing system subscribes to that vocabulary and applies a radial granular impulse to bearings within the affected region.
+
+The dependency direction is therefore:
+
+**world event → generic impact consequence → interested systems**
+
+Bearings do not know that the source was a meteor. Future thumpers, explosions, machinery, or other Crucible processes can emit the same impact vocabulary without coupling themselves to bearing internals.
+
+This impact seam is authoritative world machinery, not station evidence. The existing `scene-summary` aperture does not gain impact history merely because impacts now have an internal distribution path.
+
+## The batch is not yet one observable occupant
+
+The bearing population is represented by one Crucible batch entity for system ownership, but that entity intentionally has no batch-wide `SpatialBounds`.
+
+A single spatial bound would falsely collapse tens or hundreds of thousands of distributed bearings into one footprint occupant. Per-bearing observational availability has not yet been earned or implemented. The station can therefore encounter terrain consequences in a bearing-rich world without automatically receiving a bearing census through its current aperture.
+
+## A dependency-order regression was caught in preview
+
+The first generic-impact integration produced a preview startup failure:
+
+```
+ReferenceError: impacts is not defined
+```
+
+Inspection showed that the bearing system was being constructed with `impacts` before the impact bus existed, and the meteor constructor had not landed with the intended `onImpact` wiring as one coherent initialization change.
+
+The runtime order was repaired to:
+
+**impact bus → meteors wired to impact bus → meteor weather → bearings subscribed to impact bus**
+
+The repaired candidate passed the repository build gate. This failure remains part of the expedition because it distinguishes a sound dependency boundary from a faulty initialization of that boundary.
+
+## Why this belongs in the orbital record
+
+The bearing work is not evidence that the orbital locus gained a new faculty. It is evidence that the **world available beneath the locus is becoming richer while the epistemic boundary remains explicit**.
+
+That distinction matters to the larger investigation. Crucible can accumulate dense matter, impacts, terrain consequences, future agents, and other competing processes without automatically converting all of them into station knowledge. World complexity and locus access can grow independently.
+
+The bearing turns also reinforce the expedition's engineering discipline: reference behavior was recovered from executable precedent; human perceptual and performance reports falsified a bad transplant quickly; and the correction restored the proven causal/performance shape rather than escalating into a new GPU or contact-physics architecture.
