@@ -20,6 +20,18 @@ Meteor impacts currently express a carved bowl and raised rim. Strong impacts ca
 
 The central uplift is impact morphology, not additional terrain resolution. It does not change test depth, chunk dimensions, or the remeshing architecture.
 
+## Simulation time can accelerate without accelerating the interface
+
+Crucible has a simulation-time bucket with **1×, 4×, and 8×** rates. It defaults to 1×.
+
+Simulation time governs autonomous world processes whose passage defines Terrordrome experience: orbital-station motion and attitude, meteor-weather scheduling, meteor trajectories and impact timing, aperture sampling cadence, and therefore locus-ledger accumulation.
+
+Loose-matter physics participates in accelerated world time through bounded fixed substeps rather than by multiplying a single integration step. Excess physics debt is discarded if a render frame cannot safely service it.
+
+Human and presentation time remain real-time. Camera/orbit input, pointer tap and drag thresholds, FPS measurement, HUD responsiveness and orientation, log download behavior, and browser/render cadence are not accelerated.
+
+Time scaling does not alter terrain test depth, static geometry, aperture contents, impact morphology, or the station's epistemic access. At 8×, ten simulated minutes require approximately 75 seconds of real time when the browser can sustain the simulation workload.
+
 ## The orbital station is a permanent Crucible fixture
 
 Crucible contains one persistent orbital station descended visually from World Lab's `OrbitalConstruction T1`.
