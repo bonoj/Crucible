@@ -932,3 +932,32 @@ A Clara-relevant extraction of this expedition now exists at [Clara / research /
 Authority remains here. The Clara note does not duplicate the full chronology and does not promote orbital-locus observations into Clara's continuity. It preserves only the adjacent evidence and hypotheses that may matter if a later Clara encounter uses this substrate.
 
 This edge is deliberately bidirectional by reference rather than duplication: Crucible owns what happened; Clara owns what may later matter to Clara.
+
+
+## Verbatim planning turn before the next Terrordrome expansion
+
+The following assistant turn is preserved verbatim because it records the planning state before the next implementation. It is not promoted semantic authority; subsequent executable evidence may support, revise, or invalidate any part of it.
+
+> Mighty fine indeed. We have a unusually clean stopping point: **Crucible is live, the bearings are no longer an infrastructure problem, and the Terrordrome has acquired another consequential physical substrate without giving the station any epistemic freebies.**
+>
+> My docket from here:
+>
+> 1. **Return to the orbital locus experiment.** We deliberately interrupted it to restore bearings. Crossing 002 gave us the interesting result: a longer bounded biography changed an independent inference from mostly spatial interpretation to temporal interpretation, while the hidden cause remained hidden. We specifically decided that did **not** earn another aperture yet.
+>
+> 2. **Make the world richer, not the sensor smarter.** Bearings are perfect for this. Meteors now perturb them through a generic impact seam. The station cannot currently see them because the batch deliberately has no dishonest `SpatialBounds`. That creates exactly the kind of asymmetry we wanted: consequential activity can occur under the satellite without automatically becoming experience.
+>
+> 3. **Give the Terrordrome another autonomous process.** Not another effect for Clara. Something with its own local rules that interacts with terrain/bearings/impacts and leaves persistent consequences. This is where I think the next executable work belongs. We now have terrain, weather, granular matter, and generic impacts. One more genuinely different process starts making the footprint a *busy place* rather than a terrain profiler flying over meteor scars.
+>
+> 4. **Then ask whether the existing aperture becomes inadequate naturally.** If an inference looking through `scene-summary` starts encountering consequences it cannot discriminate usefully, *that* can earn aperture #2. We shouldn't choose “camera,” “thermal,” “audio,” etc. in advance merely because we know we eventually want multimodality.
+>
+> 5. **Hold Unzip City in reserve.** TabulaRasa now has something real to inherit later: build/deployment machinery, generic impacts, high-count matter patterns, perhaps terrain seams. But I would not unzip today. Crucible is still earning vocabulary faster than we could sensibly classify it.
+>
+> And there is one delicious thing waiting beyond that: **the station as a distribution of loci.** Once the world is noisy enough, we can put some small autonomous actor *on* the station or below it. Then Moth-style selective attention stops being an abstract research question. There will genuinely be too much happening for one trajectory to consume.
+>
+> So my immediate move would be:
+>
+> **Don’t improve Clara. Add one more thing to the Terrordrome that doesn’t care Clara exists.**
+>
+> Then fly over it and see what she can know.
+
+The Clara repository extraction and reciprocal project links were performed after this planning turn. The next implementation therefore resumes at the proposed world-side move rather than adding new Clara machinery.
