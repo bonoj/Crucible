@@ -961,3 +961,50 @@ The following assistant turn is preserved verbatim because it records the planni
 > Then fly over it and see what she can know.
 
 The Clara repository extraction and reciprocal project links were performed after this planning turn. The next implementation therefore resumes at the proposed world-side move rather than adding new Clara machinery.
+
+
+## Terrordrome expansion — autonomous extruder candidate
+
+The next implementation resumed directly from the preserved planning turn rather than reopening the program design.
+
+### Model decision
+
+The model chose an autonomous terrain extruder/crawler as the next world-side process. The choice reused an already-earned Crucible/Foundry vocabulary rather than inventing a station-facing stimulus: deformable terrain, ordinary ECS body/gravity/support, high-count bearings, autonomous simulation time, and existing footprint occupancy.
+
+The intended local process is simple:
+
+**move by local heading and world boundary → chew a narrow path behind the body → emit small lots of bearings from removed material → continue independently**
+
+The process does not query the orbital station, its footprint, its ledger, observations, analysis, or inference machinery. It is not steered toward the footprint. Its ECS body can be physically disturbed by existing meteor body impulse because it participates in the ordinary body vocabulary.
+
+The crawler exposes the same generic spherical `SpatialBounds` contract already available to ordinary entities. Consequently, if it happens to cross the station footprint, the existing `scene-summary` aperture can record only the already-permitted bounded occupant identity and bounds kind. No extruder semantic label, bearing awareness, terrain-change history, goal, or process state is added to the station.
+
+### Executable implementation
+
+Source commit `275c14c9b8f9babf4bf2c1a1417f432e29b9ca97` added:
+
+- a small generic terrain `excavate` operation that lowers the existing density field locally and rebuilds only dirty terrain/support regions;
+- `src/runtime/extruder-system.js`, containing one autonomous ECS crawler with local heading/boundary rules;
+- periodic small bearing production through the accepted array-backed bearing system;
+- ordinary Body/Gravity/Support/RenderObject/SpatialBounds participation;
+- runtime inspection counters for position, heading, digs, produced bearings, and boundary turns.
+
+No aperture, station capability, Clara machinery, attention policy, object recognition, or new locus was added.
+
+### Build evidence
+
+GitHub Actions run `36548095894` completed successfully. The existing pure spatial/inference tests passed, the self-contained artifact built, artifact verification passed, and immutable candidate artifact `crucible-candidate-275c14c9b8f9babf4bf2c1a1417f432e29b9ca97` was produced.
+
+The exact immutable candidate artifact was then downloaded back from the workflow for execution rather than treating source/build success as browser success.
+
+### Runtime inspection boundary
+
+The model attempted to execute that exact artifact in the available headless Chromium environment. Chromium failed before Crucible bootstrap because the environment could not create any WebGL context, including with software-rendering flags. The browser reported Three.js WebGL context creation failure and therefore never instantiated `globalThis.crucible`.
+
+This is recorded as an apparatus limitation, not evidence that the candidate works or fails in the human runtime.
+
+### Consequence
+
+The candidate remains **unaccepted** pending field execution in a WebGL-capable browser. It must not be promoted to stable merely because CI and bundling succeeded.
+
+No present-tense semantic claim about the extruder is promoted into `SEMANTIC_SURFACE.md` yet. No Clara continuity material is created. No Digital Familiar authority is changed. If field execution reveals a failure, preserve this candidate and append the correction rather than rewriting this entry.
