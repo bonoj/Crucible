@@ -524,3 +524,44 @@ Inspection found that the simulation loop had moved meteor updates onto simulati
 The correction made meteor lifetime, weather scheduling, burst staggering, and weather inspection use the simulation clock consistently. Burst delays are now queued as simulation-time events rather than browser timers.
 
 The report was spatially diagnostic before code inspection: visible flight absent, physical consequence present, and no FPS loss sharply separated trajectory-time behavior from impact causality and performance.
+
+
+## Meteor weather becomes packet-shaped
+
+The human proposed a visual and semantic refinement to ambient meteor weather:
+
+> "Make erratic burst like a noisy elastic data stream with a central node? That way its still just one packet."
+
+This borrows a useful physical vocabulary from earlier stream experiments without importing their application semantics. A weather event is now the packet-level identity. Singlets remain one-member packets; bursts and showers share one packet identifier and central target while individual rendered members carry spatial and temporal offsets.
+
+The central node is structural rather than an additional impactor. Multi-member packets stretch and wobble during descent, so the visible event can have internal noisy extent without becoming a collection of unrelated weather events.
+
+The human then asked to make meteor heads slightly smaller and more opaque. Their rendered radius was reduced from 0.28 to 0.18 and their head material made nearly opaque. This deliberately shifts visual emphasis from large individual fireballs toward the structure and motion of the packet.
+
+This is currently a world/weather representation change, not a new station aperture. The locus is still not handed packet identity or meteor-event history.
+
+## The station feed gains volumetric anchoring
+
+The human asked to pull the diegetic UI card forward and give it a pyramidal tail anchored to the station so that it reads as a volume without damaging the UI.
+
+The feed card now sits slightly toward the active camera while remaining station-associated and camera-facing. A faint translucent pyramidal tail connects the card's back region to an anchor near the station's upper hub/mast. The card remains the readable plane; the tail carries depth and parallax.
+
+This is presentation only. It does not change the aperture, observation cadence, evidence content, or station authority.
+
+Visual acceptance of this particular volumetric treatment had not yet been recorded when the next data-collection run began.
+
+## Next-turn sequence held behind the natural biography
+
+The human began an accelerated natural run and asked the model to use the wall-clock interval to reconcile documentation and plan the next turns.
+
+No additional sensor or continuity machinery should be built before the returned biography is inspected. The intended sequence is contingent:
+
+1. Receive the post-clock-fix natural locus ledger from the current apparatus.
+2. Check its provenance, duration, cadence, and whether accelerated simulation preserved a coherent observation sequence. Treat gaps or anomalies as evidence rather than silently repairing the record.
+3. Inspect the measurements and blind derivations without consulting hidden meteor history first. Establish what spatial structure is actually recoverable from the bounded record.
+4. Project the legitimate evidence into an inference parcel. For this experiment the parcel window should be deliberately large enough to represent the collected biography rather than silently falling back to the current 24-observation default.
+5. Hand that parcel to a genuinely fresh inference with no personality or identity instruction, no objective, no meteor/crater labels, and no explanation of what it is expected to notice.
+6. Preserve the fresh inference's response as encounter evidence before resolving any claims against authoritative Crucible state.
+7. Only after that encounter decide whether the locus has earned another aperture, a way to request observations, an action surface, a persistent artifact, or no additional machinery at all.
+
+The important experimental hinge is no longer whether the station can collect data. It is whether bounded accumulated experience is enough for a discontinuous inference to construct something useful, surprising, mistaken, selective, or recognizably consequential from it without being told what matters.
