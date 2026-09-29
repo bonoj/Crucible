@@ -1,11 +1,11 @@
-export function createBearingSystem({world,components,THREE,scene,terrain,locus,maxBearings=180000}){
-  const BALL_R=.22,PG=96;
+export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,maxBearings=1000000}){
+  const BALL_R=.055,PG=96,MAX_RENDERED=180000;
   const bx=new Float32Array(maxBearings),by=new Float32Array(maxBearings),bz=new Float32Array(maxBearings);
   const bvx=new Float32Array(maxBearings),bvy=new Float32Array(maxBearings),bvz=new Float32Array(maxBearings);
   let count=0;
   const pile=new Uint16Array(PG*PG),dummy=new THREE.Object3D();
   const geometry=new THREE.IcosahedronGeometry(BALL_R,0),material=new THREE.MeshStandardMaterial({color:0xc7d0d0,metalness:.82,roughness:.24});
-  const mesh=new THREE.InstancedMesh(geometry,material,maxBearings);mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.frustumCulled=false;mesh.count=0;scene.add(mesh);
+  const mesh=new THREE.InstancedMesh(geometry,material,Math.min(maxBearings,MAX_RENDERED));mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.frustumCulled=false;mesh.count=0;scene.add(mesh);
   const entity=world.entity();
   if(components.Locus)world.add(entity,components.Locus,{id:locus});
   // Batch bounds are intentionally absent: one batch must not masquerade as one occupant.
@@ -17,14 +17,20 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   }
   const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
   function update(dt){
-    pile.fill(0);const g=-8.5;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       bvy[i]+=g*dt;bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
       contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
       const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
-      dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);
+      if((i%renderStride)===0&&rendered<MAX_RENDERED){dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
   }
-  return{entity,mesh,spawnBatch,update,inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  function applyImpact(event){
+    const c=event?.position,power=Math.max(.01,event?.radius??event?.power??0);if(!c||!power)return;
+    const strength=event?.impulse??18;
+    for(let i=0;i<count;i++){const dx=bx[i]-c.x,dy=by[i]-c.y,dz=bz[i]-c.z,d2=dx*dx+dy*dy+dz*dz;if(d2>=power*power||d2<=.0001)continue;const d=Math.sqrt(d2),fall=1-d/power,q=fall*strength/d;bvx[i]+=dx*q;bvy[i]+=Math.abs(dy*q)+strength*.55*fall;bvz[i]+=dz*q;}
+  }
+  const unsubscribe=impacts?.subscribe(applyImpact);
+  return{entity,mesh,spawnBatch,update,applyImpact,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
 }
