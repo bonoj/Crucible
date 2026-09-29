@@ -15,6 +15,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     for(let n=0;n<available;n++){const i=count++,ix=n%cols,iz=Math.floor(n/cols)%cols,iy=Math.floor(n/(cols*cols));bx[i]=center.x+(ix-(cols-1)/2)*spacing+(Math.random()-.5)*.05;bz[i]=center.z+(iz-(cols-1)/2)*spacing+(Math.random()-.5)*.05;by[i]=baseY+iy*spacing+(Math.random()-.5)*.05;bvx[i]=(Math.random()-.5)*.15;bvy[i]=0;bvz[i]=(Math.random()-.5)*.15}
     return available;
   }
+  function spawnOne(position,velocity){
+    if(count>=maxBearings)return 0;
+    const i=count++;bx[i]=position.x;by[i]=position.y;bz[i]=position.z;
+    bvx[i]=velocity?.x??0;bvy[i]=velocity?.y??0;bvz[i]=velocity?.z??0;
+    return 1;
+  }
   const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
   function update(dt){
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
@@ -32,5 +38,5 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     for(let i=0;i<count;i++){const dx=bx[i]-c.x,dy=by[i]-c.y,dz=bz[i]-c.z,d2=dx*dx+dy*dy+dz*dz;if(d2>=power*power||d2<=.0001)continue;const d=Math.sqrt(d2),fall=1-d/power,q=fall*strength/d;bvx[i]+=dx*q;bvy[i]+=Math.abs(dy*q)+strength*.55*fall;bvz[i]+=dz*q;}
   }
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,update,applyImpact,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyImpact,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
 }
