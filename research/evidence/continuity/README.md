@@ -27,3 +27,12 @@ Neutral handoff prompt:
 > The attached parcel is the complete evidence available to you for this encounter. Treat its boundary statement as authoritative about what you have and do not have. Respond to the evidence as you judge useful. Do not assume access to anything outside the parcel.
 
 The source parcel contains 154 chronological observations and their optional blind derivations from Crucible build `d899585c0c1a26d9e137289b0b72be1a63166c29`.
+
+
+Frozen input identity:
+
+- filename: `crucible-inference-parcel-d899585-full154.json`
+- bytes: `951142`
+- SHA-256: `fce71b154427c538f1ca0f7f7c8cdbdced62153e8eeaa670312d4d91b4f3f179`
+
+The parcel is intentionally identified by content hash so the exact OUTSIDE input can be verified independently of transport.
