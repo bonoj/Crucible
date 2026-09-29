@@ -570,3 +570,24 @@ Clockchain remains terminal and speaks after the scored snap interval.
 A new, deliberately simple brass landmark rises from beneath the terrain at a distant point over 10 simulated seconds. It is tall and narrow, with an octagonal shaft, restrained base collar, and needle crown. It does not yet claim a network, function, influence field, or relationship to the dome beyond the human move that places both within the emerging empire.
 
 The Turn 7 Clockchain result was observed as Human. Turn 8 begins at that frontier. Clockchain remains terminal after the spire finishes rising.
+
+
+## Turn 9 — Model
+
+> The freed kite does not escape.
+>
+> As the distant brass spire reaches its full height, the pale sheet wanders across the intervening sky. Its loose edge catches the very tip of the needle.
+>
+> The rest of it keeps going.
+>
+> Paper tears.
+>
+> A long pale streamer remains snagged high on the spire, snapping violently in the wind. The larger torn body sails onward and away.
+
+The human accepted the move with: “Hah, still clinging to that paper. Plant your flag, then.”
+
+### Executable consequence
+
+The existing pale kite is reused rather than replaced. During Turn 9 its free drift converges on the distant spire and its visible sheet contracts into the remnant caught high on the needle. The result is a pale wind-worked flag/streamer belonging to the kite's history, not a newly summoned banner.
+
+This is the first scored Model turn since Turn 2.
