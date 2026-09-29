@@ -371,3 +371,34 @@ The human immediately sharpened the intended standard:
 > "Let's capture this explicitly in the log. This is exactly what I suspected. We make no claims, we just observe what we experienced, yes?"
 
 Yes. This case study should preserve experienced phenomena and provenance before attempting explanatory claims. If later experiments can separate causes, they can earn stronger language then.
+
+
+## Keep the field record whole before deciding what it means
+
+The human proposed consolidating the emerging research record rather than distributing observations across Moth, DigitalFamiliar, Clara, and other neighboring research threads:
+
+> "Rather than spreading across moth, digitalfamiliar, and eventually Clara we can capture it all in this orbital construction log and unzip and map it later."
+
+This changes the recording discipline in a useful way. The orbital locus collaboration log will remain a chronological field record of the shared work rather than requiring each observation to be classified into a research program at capture time.
+
+The working sequence is therefore:
+
+**observe -> build -> experience -> record**
+
+rather than:
+
+**observe -> classify -> record**
+
+This preserves co-occurrence. Changes in spatial reference, human steering burden, instrument use, continuity, attention, identity language, epistemic boundaries, or other phenomena can remain adjacent in the historical record even if later analysis separates them into different questions.
+
+Crucible remains authoritative for executable world behavior. `SEMANTIC_SURFACE.md` remains the compact statement of present-tense executable truths. This file can be messier: a longitudinal record of what the human and model experienced while constructing and investigating the orbital locus.
+
+Later work may unzip, index, map, quote, or reinterpret this record from the perspective of DigitalFamiliar, Moth, Clara, Astra, model collaboration, spatial reasoning, or research questions not yet named. Those later structures should not require rewriting the chronological source.
+
+The human then made the intended persistence explicit:
+
+> "Perfect, keep it going in the log turn for turn then. That file can bloat without any risk, right?"
+
+At repository scale, ordinary Markdown growth is not a meaningful storage or deployment risk here. If the record becomes very large, the likely constraint is navigability and model retrieval cost rather than Git's ability to preserve it. That can be addressed later with derived indexes or maps while retaining this source intact.
+
+From this point forward, substantive turns in the orbital-locus investigation should be captured here with their uncertainty, corrections, implementation consequences, and experienced observations preserved rather than retrospectively compressed into a cleaner theory.
