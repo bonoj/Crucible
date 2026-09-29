@@ -466,3 +466,10 @@ The prototype is rebuilt as a Clockchain trial mechanism:
 - the resolved owner, seed, method, and measured excursions append to the field draw ledger.
 
 This remains a first executable instance, not a generalized Clockchain framework.
+
+
+### Human — interval stepping refinement
+
+> Okay. And while you're at it slow that fast forward down a bit, make it elastic at the interval edges and stop fast forward between turns. Ie turn 1 tap. Go to turn 2 start. Tap go to turn 3 or if end trigger clockchain.
+
+The world control now advances one scored interval at a time rather than racing to the entire-history frontier. Fast-forward is reduced from 8× to a 4× peak and eases back toward ordinary time near each target boundary. A tap during Turn 1 advances only to the start of Turn 2 and stops; another tap advances to the current frontier, where the next tap conducts Clockchain. The winner chain is shortened so resolved suspension reads close to the device rather than as another launch.
