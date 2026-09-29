@@ -192,3 +192,16 @@ The scene-summary aperture can sample that projection only inside its current fo
 The bearing system knows how its granular population projects into space. The aperture knows only how to request a bounded spatial measurement. This is observational availability, not object recognition: downstream inference is not told that the measured granular occupancy consists of ball bearings.
 
 This establishes a reusable seam: expensive or numerous world truth may maintain a cheap spatial availability projection as part of work already being performed, while a locus pays only for bounded sampling of that projection.
+
+
+## Cinnabar and Cinnamon is a scored field with terminal Clockchain resolution
+
+Cinnabar and Cinnamon is a deterministic scored field inside Crucible. Ordinary turns are chronological scored consequences driven by field time. The currently authored consequences are the brass dome rise, the tethered kite, and the Clockchain mechanism's descent, buried transit, and re-emergence at the dome center. These authored consequences do not imply generalized construction, cloth, tunneling, or event machinery.
+
+Clockchain is terminal to the complete known turn sequence. Historical Clockchain resolutions remain ledger evidence, but only a resolution keyed to the current terminal turn can drive the visible mechanism. Appending another turn therefore moves the active Clockchain frontier after that turn; a previously resolved token cannot rise in the middle of later known history.
+
+At the terminal frontier, Clockchain derives and records the owner of the next single turn from the accumulated scored history. Its current derivation is deterministic and publicly computable; it is not cryptographic secrecy, consensus, or an external randomness service. The world mechanism is terrain-grounded, and its chains and tokens are local children of the device. A resolved winner rises vertically and bobs lightly as presentation of the recorded result while the other token remains seated.
+
+Turn rules may change prospectively without rewriting earlier scored history. The former two-turn couplet rule is no longer active; current initiative is one Clockchain resolution per next turn.
+
+Cinnabar and Cinnamon does not add an aperture or otherwise change the orbital station's epistemic access.

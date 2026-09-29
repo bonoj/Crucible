@@ -504,3 +504,10 @@ The first Clockchain result is promoted from transient runtime state into the sc
 > In fact, couplets are gone.
 
 Correction accepted prospectively. The two-turn initiative rule was an intermediate rule, not a permanent structure. From Turn 3 onward there is no A/B ownership and no reserved second move. Each completed scored turn carries Cinnabar and Cinnamon time to its new frontier; Clockchain speaks there and determines the owner of the next single turn. The historical discussion of couplets remains above because the ledger is not rewritten when its rules change.
+
+
+### Clockchain invariant repaired and checked
+
+The scored representation now makes the intended ordering explicit: ordinary turns form the array; Clockchain resolutions are terminal records keyed to the turn after which they occurred. A historical resolution may remain in the ledger without driving presentation once a later turn exists. Only a resolution for the current terminal turn may raise a token. Therefore adding Turn 3 moves the active Clockchain after Turn 3 rather than allowing the Turn 2 winner to float during Turn 3.
+
+The earlier fast-forward easing typo was also corrected while inspecting this path: the edge interpolation now ranges from 0 to 1 rather than being clamped permanently to 1.

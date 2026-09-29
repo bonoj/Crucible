@@ -61,7 +61,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   function advance(){
     const frontier=field.frontier();
     if(lastFieldNow<frontier){field.fastForwardTo(field.nextTurnStart(lastFieldNow));return "fast-forward";}
-    if(!field.draws.length){resolve(lastFieldNow);return "clockchain";}
+    if(!field.terminalResolution()){resolve(lastFieldNow);return "clockchain";}
     return state;
   }
   function contains(object){for(let o=object;o;o=o.parent)if(o===root)return true;return false;}
