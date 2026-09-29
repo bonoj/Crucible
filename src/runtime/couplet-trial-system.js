@@ -23,7 +23,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   });
 
   const seatedY=.70,raisedY=1.92,riseMs=1800,bob=.045;
-  const transit=field.turn(3),climb=field.turn(10);
+  const transit=field.turn(3);
   let state="parked",winner=null,resolvedAt=null,lastFieldNow=0;
   function hash32(text){
     // FNV-1a gathers the complete Clockchain head; a final avalanche prevents
@@ -53,14 +53,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
       else if(u<.62){const q=(u-.34)/.28,e=q*q*(3-2*q);x=THREE.MathUtils.lerp(px,domeX,e);z=THREE.MathUtils.lerp(pz,domeZ,e);depth=-2.35;}
       else {x=domeX;z=domeZ;const q=(u-.62)/.38,e=q*q*(3-2*q);depth=THREE.MathUtils.lerp(-2.35,0,e);}
     }
-    const ground=terrain.groundHeight(x,z);
-    let y=(Number.isFinite(ground)?ground:0)+depth;
-    if(climb&&fieldNow>=climb.at){
-      const q=Math.min(1,Math.max(0,(fieldNow-climb.at)/climb.duration)),e=q*q*(3-2*q);
-      x=domeX;z=domeZ;y=THREE.MathUtils.lerp(y,2.05,e);
-      root.rotation.z=THREE.MathUtils.lerp(0,-Math.PI*.5,e);
-    }else root.rotation.z=0;
-    root.position.set(x,y,z);
+    const ground=terrain.groundHeight(x,z);root.position.set(x,(Number.isFinite(ground)?ground:0)+depth,z);
     if(!field.terminalResolution()&&fieldNow>=field.frontier())resolve(fieldNow);
     const resolved=field.terminalResolution();
     // Presentation is derived every frame from the CURRENT terminal resolution.
