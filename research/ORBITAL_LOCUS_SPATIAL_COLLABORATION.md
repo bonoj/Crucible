@@ -474,3 +474,18 @@ A small physical display is now attached to the orbital station. It is driven on
 The display does not query terrain, renderer contents, meteor history, ECS world truth, or any faster hidden sensor. It is therefore a human-visible rendering of Clara's existing evidence rather than a new aperture.
 
 This creates a useful shared perceptual surface: the human can now watch the sparse evidence itself move through the world while simultaneously seeing the richer Terrordrome from outside the station's epistemic boundary. Differences between those two views can become experimental evidence rather than remaining hidden in JSON.
+
+
+## Test depth becomes a protected experimental constraint
+
+While discussing more faithful impact morphology, the human explicitly stopped a familiar optimization failure mode:
+
+> "Let's call the current resolution test depth and hold it sacred. I don't want to fall into the ball bearings black hole right now. But if there is no cost for a slightly more accurate depiction we might as well add the math."
+
+The current 60 × 44 × 60 density field is therefore named **test depth** and treated as a protected experimental constraint. Local visual or physical shortcomings should not trigger density escalation by default.
+
+Within that fixed depth, the existing meteor impact kernel was extended without changing its remesh architecture: strong impacts now add a broad central-uplift density term alongside the existing bowl subtraction and rim uplift. The term is gated to stronger impacts so small craters are not asked to resolve sub-grid structure.
+
+The first implementation exposed a mundane source-generation error: a literal escaped newline was written into the JavaScript and CI rejected the candidate. The source was corrected without changing the morphology decision; the subsequent candidate build passed.
+
+This is intentionally a cheap morphology experiment. If the central uplift does not survive test depth legibly, the first response is to tune or remove the term, not increase terrain resolution.
