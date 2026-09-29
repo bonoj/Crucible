@@ -38,3 +38,20 @@ The first implementation is deliberately literal:
 - the score records authored turn/consequence timing only. It does **not** claim that all of Crucible is currently deterministic or that meteor weather, granular matter, the extruder, and other independent world processes rewind with it.
 
 The live debug surface exposes `crucible.cinnabarAndCinnamon.replay()` and `inspect()`. Future turns can extend the score in order. A generalized replay framework is not earned yet.
+
+
+## Turn 2 — Model
+
+> From the highest point of the risen dome, a single sheet of pale material unfurls into the wind.
+>
+> It does not detach.
+>
+> The sheet catches, strains, and becomes a long narrow kite tethered to the brass finial by a nearly invisible line. It climbs until it is only a small white mark above Crucible.
+>
+> No one built it. Nothing emerges to operate it.
+>
+> It simply remains aloft, tugging continuously on the ancient dome.
+
+### Executable consequence
+
+Pending implementation. Preserve the move before deciding how much machinery it earns.
