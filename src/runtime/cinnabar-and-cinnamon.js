@@ -6,7 +6,8 @@ export function createCinnabarAndCinnamon(){
     {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"},
     {turn:3,actor:"human",at:22000,duration:5200,kind:"clockchain-burrow-to-dome"},
     {turn:4,actor:"human",at:27200,duration:6500,kind:"meteorstorm-abates"},
-    {turn:5,actor:"human",at:33700,duration:7000,kind:"dome-granular-field"}
+    {turn:5,actor:"human",at:33700,duration:7000,kind:"dome-granular-field"},
+    {turn:6,actor:"human",at:40700,duration:9000,kind:"dome-granular-field-intensifies"}
   ];
   // Historical resolutions remain evidence, but only a resolution whose afterTurn
   // equals the current terminal turn may drive the visible Clockchain.
@@ -15,7 +16,8 @@ export function createCinnabarAndCinnamon(){
     // Turn 3 resolved Human under the original derivation before Turn 4 was authored.
     // Persist it here so every later Clockchain head contains the same immutable history.
     {afterTurn:3,owner:"human",method:"clockchain-derived",at:27200,seed:4078113516},
-    {afterTurn:4,owner:"human",method:"clockchain-derived-v2",at:33700,seed:2729507116}
+    {afterTurn:4,owner:"human",method:"clockchain-derived-v2",at:33700,seed:2729507116},
+    {afterTurn:5,owner:"human",method:"clockchain-derived-v2",at:40700,seed:2197232084}
   ];
   let origin=null,replays=0,fastForwardTarget=null;
   function update(now){if(origin==null)origin=now;return Math.max(0,now-origin);}

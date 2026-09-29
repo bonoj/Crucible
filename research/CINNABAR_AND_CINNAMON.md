@@ -533,3 +533,14 @@ Clockchain remains terminal. It does not speak until this Turn 4 consequence has
 Turn 5 begins at the Turn 4 frontier and develops over 7 simulated seconds. The dome gains a local physical field over nearby granular matter. The field acts directly on the authoritative bearing velocities with a weak tangential bias, a much smaller inward component, and a trace of lift; its influence falls off with distance and eases in over the scored interval. There is no visible force geometry and no scripted bearing path. Existing terrain collision, pile support, impacts, and bearing integration remain authoritative after the field perturbs velocity.
 
 The effect is deliberately local and lazy rather than a vortex or launch event. Clockchain remains terminal and speaks only after Turn 5 completes.
+
+
+## Turn 6 — Human
+
+> Fine. I'll build an empire. The dome's sphere of influence expands and the swirl begins to rise upwards and faster as the materials are pulled closer.
+
+### Executable consequence
+
+Turn 6 begins at the Turn 5 frontier and intensifies the already-earned dome field over 9 simulated seconds. Its influence radius expands from 4.2 to 7.2 world units while tangential acceleration grows and upward force becomes materially significant. The same authoritative bearings remain the affected material: no replacement particles or scripted spiral are introduced. Their ordinary terrain contact, pile behavior, meteor impacts, and integration continue to compete with the dome field.
+
+This is an escalation of the Turn 5 force, not a second granular system. Nearby material should gather into a faster rising circulation as the field expands outward. Clockchain remains terminal and speaks only after Turn 6 completes.

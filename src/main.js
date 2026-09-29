@@ -64,6 +64,7 @@ const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,te
 const cinnabarDome=createCinnabarDomeSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
 const cinnabarKite=createCinnabarKiteSystem({THREE,scene:three.scene,field:cinnabarAndCinnamon,dome:cinnabarDome});
 const domeGranularTurn=cinnabarAndCinnamon.turn(5);
+const domeGranularRiseTurn=cinnabarAndCinnamon.turn(6);
 const coupletTrial=createCoupletTrialSystem({world,components,THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon,locus});
 const continuityStation=createContinuityStationSystem({world,components,THREE,scene:three.scene});
 const footprints=createFootprintSystem({world,components,THREE,scene:three.scene,terrain});
@@ -91,7 +92,15 @@ function frame(now){const realDt=Math.min(.033,Math.max(0,(now-last)/1000));last
  if(domeGranularTurn&&fieldNow>=domeGranularTurn.at){
    const u=Math.min(1,Math.max(0,(fieldNow-domeGranularTurn.at)/domeGranularTurn.duration));
    const ease=u*u*(3-2*u);
-   bearings.applyField({x:2.7,z:1.8},{radius:4.2,strength:.032*ease,lift:.0015*ease});
+   let radius=4.2,strength=.032*ease,lift=.0015*ease;
+   if(domeGranularRiseTurn&&fieldNow>=domeGranularRiseTurn.at){
+     const v=Math.min(1,Math.max(0,(fieldNow-domeGranularRiseTurn.at)/domeGranularRiseTurn.duration));
+     const rise=v*v*(3-2*v);
+     radius=THREE.MathUtils.lerp(4.2,7.2,rise);
+     strength=THREE.MathUtils.lerp(.032,.095,rise);
+     lift=THREE.MathUtils.lerp(.0015,.055,rise);
+   }
+   bearings.applyField({x:2.7,z:1.8},{radius,strength,lift});
  }
  bearings.update(Math.min(.15,simDt));if(steps===32)physicsAccumulator=0;meteorWeather.update(simNow);meteors.update(simNow);continuityStation.update(simNow);footprints.update();if(simNow-lastSampleAt>=3000){lastSampleAt=simNow;const evidence=apertureSystem.sample(continuityStation.id,sceneAperture,simNow);if(evidence){const observation=world.entity();world.add(observation,components.Observation,evidence);lastObservation={entity:observation,...evidence};lastAnalysis=observationAnalysis.analyze(observation);locusLedger.append(lastObservation,lastAnalysis);locusDisplay.update(lastObservation);locusChronograph.update(locusLedger.snapshot());}}orbit.applyAll();lights.syncAll();renderSync();const activeView=components.CameraView.get(cameras.activeId());locusDisplay.updatePresentation(activeView?.camera);cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
 const inspect=()=>({entities:world.alive.size,timeScale,simulationTimeMs:simNow,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:{...meteors.inspect(),weather:meteorWeather.inspect()},impacts:impacts.inspect(),bearings:bearings.inspect(),extruder:extruder.inspect(),cinnabarAndCinnamon:cinnabarAndCinnamon.inspect(simNow),cinnabarDome:cinnabarDome.inspect(),cinnabarKite:cinnabarKite.inspect(),coupletTrial:coupletTrial.inspect(),continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id),occupants:footprintOccupancy.inspect(continuityStation.id),apertures:apertureSystem.inspect(),lastObservation,lastAnalysis}});
