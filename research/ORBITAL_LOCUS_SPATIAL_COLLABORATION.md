@@ -419,3 +419,20 @@ While that record accumulates, the next design question can be investigated with
 > What is the smallest parcel of legitimate locus evidence that can be handed to an independently instantiated inference without also handing it hidden world truth, a prescribed objective, a personality, or a preinterpreted account of what matters?
 
 The current inclination is to preserve the same epistemic boundary already enforced by the ledger. A future inference parcel may expose available observations and tools, but tool availability should not prescribe attention or behavior. This remains a design question until the first natural ledger is inspected.
+
+
+## Parallel work while the natural ledger accumulates
+
+The human explicitly invited the model to take another task while the first autonomous bombardment ledger accumulated:
+
+> "Go ahead and grab another task while you wait. Engage!"
+
+The model chose work that would not perturb the ongoing sensing experiment: make the prospective inference-parcel boundary executable as a pure projection of already-recorded locus evidence.
+
+A new pure module, `inference-parcel.js`, accepts an exported locus ledger and emits a bounded parcel containing instrument provenance plus a recent window of observation/analysis pairs. The module has no world, terrain, renderer, ECS, meteor, or station-system dependency. Its boundary statement explicitly distinguishes recorded locus evidence from authoritative Crucible state and names categories omitted by design, including hidden world state, meteor history, controlled-probe labels, objectives, and personality/identity instructions.
+
+A CI test now verifies that the projection retains the requested observation window while arbitrary extra fields placed in the source ledger do not cross into the parcel. Candidate builds are gated on this test alongside the existing blind spatial-evidence test.
+
+During this pass the model also rechecked a previously noticed provenance issue in the live frame order. It was still present: aperture sampling occurred before the current frame advanced physics, meteor weather, meteors, station motion, and footprint geometry. Sampling was moved after those updates so an observation timestamp now corresponds to the current frame's world/station/footprint state rather than approximately the previous frame's footprint.
+
+This does not add a new instrument, objective, identity, model connection, or station power. It tightens provenance and makes a future handoff boundary executable while the first natural ledger remains otherwise undisturbed.
