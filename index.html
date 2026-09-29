@@ -19,7 +19,7 @@
   <button id="debug-refresh" type="button" aria-label="Refresh">↻</button>
 </aside>
 <pre id="diagnostics" role="alert" hidden></pre>
-<script>globalThis.__CRUCIBLE_BUILD__="698a0efc9587df8ed7774064ce87d7ac75d022b2";</script>
+<script>globalThis.__CRUCIBLE_BUILD__="2cee089b2aa300209a17083abb912e89d38d2f0d";</script>
 <script>(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -41966,6 +41966,7 @@ void main() {
     renderer.toneMappingExposure = 1.05;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
+    renderer.localClippingEnabled = true;
     renderer.domElement.setAttribute("aria-label", "Crucible construction world");
     mount2.append(renderer.domElement);
     renderer.domElement.addEventListener("webglcontextlost", (e) => {
@@ -42337,6 +42338,19 @@ void main() {
     apparatus.name = "crucible-octagonal-apparatus";
     apparatus.receiveShadow = true;
     scene.add(apparatus);
+    const belowPlinthOcclusion = new THREE2.Plane(new THREE2.Vector3(0, 1, 0), -APPARATUS_TOP);
+    function occludeBelowPlinth(object) {
+      object.traverse((o) => {
+        if (!o.isMesh && !o.isLine && !o.isLineSegments || !o.material) return;
+        const materials = Array.isArray(o.material) ? o.material : [o.material];
+        for (const mat of materials) {
+          const planes = mat.clippingPlanes || [];
+          if (!planes.includes(belowPlinthOcclusion)) mat.clippingPlanes = [...planes, belowPlinthOcclusion];
+          mat.needsUpdate = true;
+        }
+      });
+      return object;
+    }
     function rebuildChunk(chunk) {
       const raw = [], x0 = chunk.cx * CHUNK, x1 = Math.min(NX - 1, x0 + CHUNK), z0 = chunk.cz * CHUNK, z1 = Math.min(NZ - 1, z0 + CHUNK);
       for (let z = z0; z < z1; z++) for (let y = 0; y < NY - 1; y++) for (let x = x0; x < x1; x++) {
@@ -42378,10 +42392,19 @@ void main() {
       return THREE2.MathUtils.lerp(THREE2.MathUtils.lerp(h00, h10, tx), THREE2.MathUtils.lerp(h01, h11, tx), tz);
     }
     const SUPPORT_G = 112, support = new Float32Array(SUPPORT_G * SUPPORT_G);
-    function rebuildSupport() {
-      support.fill(-Infinity);
+    function rebuildSupport(bounds = null) {
       const gx = (x) => THREE2.MathUtils.clamp((x - MIN.x) / (MAX.x - MIN.x) * (SUPPORT_G - 1), 0, SUPPORT_G - 1);
       const gz = (z) => THREE2.MathUtils.clamp((z - MIN.z) / (MAX.z - MIN.z) * (SUPPORT_G - 1), 0, SUPPORT_G - 1);
+      let sx0 = 0, sx1 = SUPPORT_G - 1, sz0 = 0, sz1 = SUPPORT_G - 1;
+      if (bounds) {
+        const wx0 = THREE2.MathUtils.lerp(MIN.x, MAX.x, Math.max(0, bounds.x0 - 1) / (NX - 1)), wx1 = THREE2.MathUtils.lerp(MIN.x, MAX.x, Math.min(NX - 1, bounds.x1 + 1) / (NX - 1));
+        const wz0 = THREE2.MathUtils.lerp(MIN.z, MAX.z, Math.max(0, bounds.z0 - 1) / (NZ - 1)), wz1 = THREE2.MathUtils.lerp(MIN.z, MAX.z, Math.min(NZ - 1, bounds.z1 + 1) / (NZ - 1));
+        sx0 = Math.max(0, Math.floor(gx(wx0)) - 2);
+        sx1 = Math.min(SUPPORT_G - 1, Math.ceil(gx(wx1)) + 2);
+        sz0 = Math.max(0, Math.floor(gz(wz0)) - 2);
+        sz1 = Math.min(SUPPORT_G - 1, Math.ceil(gz(wz1)) + 2);
+        for (let iz = sz0; iz <= sz1; iz++) support.fill(-Infinity, iz * SUPPORT_G + sx0, iz * SUPPORT_G + sx1 + 1);
+      } else support.fill(-Infinity);
       const eps = 1e-8;
       for (const chunk of chunks) {
         const a = chunk.geometry.getAttribute("position");
@@ -42390,8 +42413,9 @@ void main() {
           const ax = a.getX(t), ay = a.getY(t), az = a.getZ(t), bx = a.getX(t + 1), by = a.getY(t + 1), bz = a.getZ(t + 1), cx = a.getX(t + 2), cy = a.getY(t + 2), cz = a.getZ(t + 2);
           const den = (bz - cz) * (ax - cx) + (cx - bx) * (az - cz);
           if (Math.abs(den) < eps) continue;
-          const ix0 = Math.max(0, Math.floor(gx(Math.min(ax, bx, cx))) - 1), ix1 = Math.min(SUPPORT_G - 1, Math.ceil(gx(Math.max(ax, bx, cx))) + 1);
-          const iz0 = Math.max(0, Math.floor(gz(Math.min(az, bz, cz))) - 1), iz1 = Math.min(SUPPORT_G - 1, Math.ceil(gz(Math.max(az, bz, cz))) + 1);
+          const ix0 = Math.max(sx0, Math.floor(gx(Math.min(ax, bx, cx))) - 1), ix1 = Math.min(sx1, Math.ceil(gx(Math.max(ax, bx, cx))) + 1);
+          const iz0 = Math.max(sz0, Math.floor(gz(Math.min(az, bz, cz))) - 1), iz1 = Math.min(sz1, Math.ceil(gz(Math.max(az, bz, cz))) + 1);
+          if (ix0 > ix1 || iz0 > iz1) continue;
           for (let iz = iz0; iz <= iz1; iz++) {
             const z = THREE2.MathUtils.lerp(MIN.z, MAX.z, iz / (SUPPORT_G - 1));
             for (let ix = ix0; ix <= ix1; ix++) {
@@ -42406,7 +42430,7 @@ void main() {
         }
       }
       const copy = support.slice();
-      for (let iz = 0; iz < SUPPORT_G; iz++) for (let ix = 0; ix < SUPPORT_G; ix++) {
+      for (let iz = sz0; iz <= sz1; iz++) for (let ix = sx0; ix <= sx1; ix++) {
         const k = ix + SUPPORT_G * iz;
         if (Number.isFinite(copy[k])) continue;
         let best = -Infinity;
@@ -42432,6 +42456,19 @@ void main() {
       const terrainY = bearingTerrainHeight(x, z);
       return insideApparatus(x, z) ? Math.max(terrainY, APPARATUS_TOP) : terrainY;
     }
+    function excavate(center, { radius = 0.62, depth = 0.34 } = {}) {
+      const r = Math.max(0.3, radius), d = Math.max(0.04, depth), ix0 = Math.max(1, Math.floor((center.x - r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1), iz0 = Math.max(1, Math.floor((center.z - r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) - 1), iz1 = Math.min(NZ - 2, Math.ceil((center.z + r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) + 1);
+      for (let z = iz0; z <= iz1; z++) for (let x = ix0; x <= ix1; x++) {
+        const p = wp(x, 0, z), radial = Math.hypot(p.x - center.x, p.z - center.z);
+        if (radial >= r) continue;
+        const w = 1 - radial / r, delta = d * w * w;
+        for (let y = 1; y < NY - 1; y++) field[idx(x, y, z)] -= delta;
+      }
+      const dirty = { x0: ix0, x1: ix1, z0: iz0, z1: iz1 };
+      rebuild(dirty);
+      rebuildSupport(dirty);
+      return { radius: r, depth: d };
+    }
     function impact(center, { magnitude = 1 } = {}) {
       const e = Math.max(0.02, magnitude), radius = 0.72 + 0.62 * Math.sqrt(e), depth = 0.16 + 0.72 * Math.pow(e, 0.82), rim = 0.035 + 0.16 * Math.pow(e, 0.72), peakStrength = e >= 0.72 ? 0.035 + 0.13 * Math.pow((e - 0.72) / 0.83, 0.72) : 0, peakRadius = radius * 0.24;
       const ix0 = Math.max(1, Math.floor((center.x - radius - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + radius - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1);
@@ -42455,7 +42492,7 @@ void main() {
       }
       const dirty = { x0: ix0, x1: ix1, z0: iz0, z1: iz1 };
       rebuild(dirty);
-      rebuildSupport();
+      rebuildSupport(dirty);
       return { magnitude: e, radius, depth, rim, centralUplift: peakStrength };
     }
     function reset() {
@@ -42524,7 +42561,7 @@ void main() {
     }
     rebuild();
     rebuildSupport();
-    return { mesh, apparatus, field, rebuild, impact, reset, randomize, groundHeight, groundHeightExact, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, collideSphere, collideBearingState, segmentApparatusHit, inspect: () => ({ grid: [NX, NY, NZ], chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
+    return { mesh, apparatus, field, rebuild, impact, excavate, reset, randomize, groundHeight, groundHeightExact, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, collideSphere, collideBearingState, segmentApparatusHit, belowPlinthOcclusion, occludeBelowPlinth, inspect: () => ({ grid: [NX, NY, NZ], chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
   }
 
   // src/runtime/meteor-system.js
@@ -42668,7 +42705,7 @@ void main() {
   }
 
   // src/runtime/meteor-weather-system.js
-  function createMeteorWeatherSystem({ THREE: THREE2, terrain: terrain2, meteors: meteors2, seed = 5351361 }) {
+  function createMeteorWeatherSystem({ THREE: THREE2, terrain: terrain2, meteors: meteors2, field = null, seed = 5351361 }) {
     class RNG {
       constructor(s) {
         this.s = s >>> 0 || 1;
@@ -42702,6 +42739,11 @@ void main() {
     }
     function update(now) {
       clockNow = now;
+      const abatement = field?.turn?.(4) ?? null;
+      if (abatement && now >= abatement.at) {
+        nextAt = Math.max(nextAt, abatement.at + abatement.duration);
+        if (now >= abatement.at + abatement.duration) return;
+      }
       for (let i = pending.length - 1; i >= 0; i--) if (now >= pending[i].at) {
         const item = pending.splice(i, 1)[0];
         meteors2.meteor(item.point, item.power, item.packet);
@@ -42737,7 +42779,10 @@ void main() {
       }
       schedule(now);
     }
-    return { update, inspect: () => ({ seed, events, impacts: impacts2, packets: packetSerial, pending: pending.length, lastKind, nextInMs: Math.max(0, Math.round(nextAt - clockNow)) }) };
+    return { update, inspect: () => {
+      const a = field?.turn?.(4) ?? null, abating = !!a && clockNow >= a.at && clockNow < a.at + a.duration, abated = !!a && clockNow >= a.at + a.duration;
+      return { seed, events, impacts: impacts2, packets: packetSerial, pending: pending.length, lastKind, nextInMs: abated ? null : Math.max(0, Math.round(nextAt - clockNow)), abating, abated };
+    } };
   }
 
   // src/runtime/continuity-station-system.js
@@ -42913,7 +42958,7 @@ void main() {
   }
 
   // src/runtime/aperture-system.js
-  function createApertureSystem({ world: world2, components: components2, footprints: footprints2, occupancy, terrain: terrain2 }) {
+  function createApertureSystem({ world: world2, components: components2, footprints: footprints2, occupancy, terrain: terrain2, granularProjection = null }) {
     const { Aperture, Footprint } = components2;
     let sequence = 0;
     function sample(ownerId, apertureId, now) {
@@ -42934,6 +42979,7 @@ void main() {
         }
       }
       const heights = terrainSamples.map((s) => s.height), minHeight = heights.length ? Math.min(...heights) : null, maxHeight = heights.length ? Math.max(...heights) : null;
+      const granular = granularProjection?.sampleDensity(center[0], center[2], footprint.radius) ?? null;
       return {
         observationId: ++sequence,
         sampledAtMs: Number(now.toFixed(1)),
@@ -42943,6 +42989,7 @@ void main() {
         measurement: {
           groundHeight: Number.isFinite(ground) ? Number(ground.toFixed(3)) : null,
           terrainProfile: { samples: terrainSamples, minHeight, maxHeight, heightRange: minHeight == null ? null : Number((maxHeight - minHeight).toFixed(3)) },
+          granularOccupancy: granular ? { occupied: granular.grains > 0, density: Number((granular.grains / Math.max(1, granular.cells)).toFixed(3)), sampleCells: granular.cells, cellSize: Number(granular.cellSize.toFixed(4)) } : null,
           boundedOccupants: occupants.map((o) => ({ id: o.id, kind: o.bounds.kind }))
         }
       };
@@ -43070,8 +43117,8 @@ void main() {
   // src/runtime/locus-display-system.js
   function createLocusDisplaySystem({ THREE: THREE2, station }) {
     const canvas = document.createElement("canvas");
-    canvas.width = 384;
-    canvas.height = 256;
+    canvas.width = 512;
+    canvas.height = 320;
     const ctx = canvas.getContext("2d");
     const texture = new THREE2.CanvasTexture(canvas);
     texture.colorSpace = THREE2.SRGBColorSpace;
@@ -43079,12 +43126,79 @@ void main() {
     root.name = "station-feed-hud";
     root.visible = false;
     station.object.add(root);
-    const glow = new THREE2.Mesh(new THREE2.PlaneGeometry(1.72, 1.1), new THREE2.MeshBasicMaterial({ color: 7065599, transparent: true, opacity: 0.1, depthWrite: false, side: THREE2.DoubleSide, blending: THREE2.AdditiveBlending }));
-    glow.position.z = -0.012;
-    root.add(glow);
-    const screen = new THREE2.Mesh(new THREE2.PlaneGeometry(1.55, 1), new THREE2.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.92, depthWrite: false, side: THREE2.DoubleSide, blending: THREE2.AdditiveBlending }));
+    const W = 2.18, H = 1.18, centerX = 0.18, pad = 0.055, headerH = 0.2, bayW = 0.38, gap = 0.045;
+    const innerH = H - pad * 2 - headerH, sceneW = W - pad * 2 - bayW - gap;
+    const surfaceMat = new THREE2.MeshBasicMaterial({ color: 463643, transparent: true, opacity: 0.48, depthWrite: false, side: THREE2.DoubleSide });
+    const surface = new THREE2.Mesh(new THREE2.PlaneGeometry(W, H), surfaceMat);
+    surface.position.set(centerX, 0, -0.014);
+    root.add(surface);
+    const lineMat = new THREE2.LineBasicMaterial({ color: 14678527, transparent: true, opacity: 0.88, depthWrite: false });
+    const outer = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(W, H)), lineMat);
+    outer.position.set(centerX, 0, 0.01);
+    root.add(outer);
+    const headerCanvas = document.createElement("canvas");
+    headerCanvas.width = 512;
+    headerCanvas.height = 72;
+    const hctx = headerCanvas.getContext("2d");
+    hctx.clearRect(0, 0, 512, 72);
+    hctx.fillStyle = "rgba(235,251,255,.96)";
+    hctx.font = "24px monospace";
+    hctx.fillText("CLARA", 18, 29);
+    hctx.fillStyle = "rgba(175,224,238,.76)";
+    hctx.font = "12px monospace";
+    hctx.fillText("ORBITAL LOCUS  //  CONTINUITY SURFACE", 18, 51);
+    hctx.strokeStyle = "rgba(207,246,255,.45)";
+    hctx.beginPath();
+    hctx.moveTo(292, 34);
+    hctx.lineTo(494, 34);
+    hctx.stroke();
+    const headerTexture = new THREE2.CanvasTexture(headerCanvas);
+    headerTexture.colorSpace = THREE2.SRGBColorSpace;
+    const header = new THREE2.Mesh(new THREE2.PlaneGeometry(W - pad * 2, headerH), new THREE2.MeshBasicMaterial({ map: headerTexture, transparent: true, opacity: 0.96, depthWrite: false, side: THREE2.DoubleSide }));
+    header.position.set(centerX, H * 0.5 - pad - headerH * 0.5, 6e-3);
+    root.add(header);
+    const contentY = -headerH * 0.5;
+    const sceneX = centerX - W * 0.5 + pad + sceneW * 0.5;
+    const screen = new THREE2.Mesh(new THREE2.PlaneGeometry(sceneW, innerH), new THREE2.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.96, depthWrite: false, side: THREE2.DoubleSide }));
+    screen.position.set(sceneX, contentY, 6e-3);
     root.add(screen);
-    const tailMat = new THREE2.MeshBasicMaterial({ color: 7065599, transparent: true, opacity: 0.075, depthWrite: false, side: THREE2.DoubleSide, blending: THREE2.AdditiveBlending });
+    const sceneRim = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(sceneW, innerH)), lineMat);
+    sceneRim.position.copy(screen.position).setZ(0.011);
+    root.add(sceneRim);
+    const bayX = centerX + W * 0.5 - pad - bayW * 0.5;
+    const bay = new THREE2.Group();
+    bay.name = "clara-cinnabar-control-bay";
+    bay.position.set(bayX, contentY, 0.012);
+    root.add(bay);
+    const bayRim = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(bayW, innerH)), lineMat);
+    bayRim.position.z = 2e-3;
+    bay.add(bayRim);
+    const controlMat = new THREE2.MeshBasicMaterial({ color: 1195344, transparent: true, opacity: 0.88, depthWrite: false, side: THREE2.DoubleSide });
+    const buttonW = bayW - pad * 1.15, buttonH = 0.25;
+    const stowButton = new THREE2.Mesh(new THREE2.PlaneGeometry(buttonW, buttonH), controlMat);
+    stowButton.name = "cinnabar-stow-toggle";
+    stowButton.position.set(0, innerH * 0.5 - pad - buttonH * 0.5, 4e-3);
+    bay.add(stowButton);
+    const buttonRim = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(buttonW, buttonH)), new THREE2.LineBasicMaterial({ color: 14678527, transparent: true, opacity: 0.48, depthWrite: false }));
+    buttonRim.position.z = 2e-3;
+    stowButton.add(buttonRim);
+    const arrowShape = new THREE2.Shape();
+    arrowShape.moveTo(-0.065, 0.042);
+    arrowShape.lineTo(0.065, 0.042);
+    arrowShape.lineTo(0, -0.062);
+    arrowShape.closePath();
+    const arrow = new THREE2.Mesh(new THREE2.ShapeGeometry(arrowShape), new THREE2.MeshBasicMaterial({ color: 16777215, transparent: true, opacity: 0.98, depthWrite: false, side: THREE2.DoubleSide }));
+    arrow.position.z = 4e-3;
+    stowButton.add(arrow);
+    let cinnabarPacked2 = false, cinnabarPacking = false;
+    function setCinnabarPacked2(packed, packing2 = false) {
+      cinnabarPacked2 = !!packed;
+      cinnabarPacking = !!packing2;
+      arrow.rotation.z = cinnabarPacked2 ? Math.PI : 0;
+      controlMat.opacity = cinnabarPacking ? 0.52 : 0.88;
+      return cinnabarPacked2;
+    }
+    const tailMat = new THREE2.MeshBasicMaterial({ color: 7065599, transparent: true, opacity: 0.06, depthWrite: false, side: THREE2.DoubleSide, blending: THREE2.AdditiveBlending });
     const tailGeo = new THREE2.BufferGeometry(), tail = new THREE2.Mesh(tailGeo, tailMat);
     tail.name = "station-feed-tail";
     station.object.add(tail);
@@ -43103,8 +43217,7 @@ void main() {
     function updatePresentation(camera) {
       if (!open || !camera) return;
       const sw = new THREE2.Vector3();
-      station.object.getWorldPosition(sw);
-      const cw = new THREE2.Vector3();
+      station.object.getWorldPosition(sw), cw = new THREE2.Vector3();
       camera.getWorldPosition(cw);
       camDir.copy(cw).sub(sw).normalize();
       const p = sw.clone().add(new THREE2.Vector3(0.95, 0.65, 0)).addScaledVector(camDir, 0.55);
@@ -43113,49 +43226,43 @@ void main() {
       root.lookAt(cw);
       station.object.localToWorld(anchorWorld.copy(anchorLocal));
       root.getWorldPosition(cardWorld);
-      cardRight.set(1, 0, 0).applyQuaternion(root.getWorldQuaternion(new THREE2.Quaternion())).multiplyScalar(0.34);
-      cardUp.set(0, 1, 0).applyQuaternion(root.getWorldQuaternion(new THREE2.Quaternion())).multiplyScalar(0.22);
-      const back = cardWorld.clone().addScaledVector(camDir, -0.035), a = anchorWorld.clone();
-      const corners = [back.clone().sub(cardRight).sub(cardUp), back.clone().add(cardRight).sub(cardUp), back.clone().add(cardRight).add(cardUp), back.clone().sub(cardRight).add(cardUp)];
+      cardRight.set(1, 0, 0).applyQuaternion(root.getWorldQuaternion(new THREE2.Quaternion())).multiplyScalar(0.42);
+      cardUp.set(0, 1, 0).applyQuaternion(root.getWorldQuaternion(new THREE2.Quaternion())).multiplyScalar(0.25);
+      const back = cardWorld.clone().addScaledVector(camDir, -0.035), a = anchorWorld.clone(), corners = [back.clone().sub(cardRight).sub(cardUp), back.clone().add(cardRight).sub(cardUp), back.clone().add(cardRight).add(cardUp), back.clone().sub(cardRight).add(cardUp)];
       const pts = [];
-      for (let i = 0; i < 4; i++) {
-        pts.push(a, corners[i], corners[(i + 1) % 4]);
-      }
-      const localPts = pts.map((v) => station.object.worldToLocal(v.clone())), pos = [];
-      for (const v of localPts) pos.push(v.x, v.y, v.z);
+      for (let i = 0; i < 4; i++) pts.push(a, corners[i], corners[(i + 1) % 4]);
+      const pos = [];
+      for (const v of pts.map((v2) => station.object.worldToLocal(v2.clone()))) pos.push(v.x, v.y, v.z);
       tailGeo.setAttribute("position", new THREE2.Float32BufferAttribute(pos, 3));
       tailGeo.computeBoundingSphere();
     }
     function draw(observation) {
-      ctx.clearRect(0, 0, 384, 256);
-      ctx.fillStyle = "rgba(30,145,205,.09)";
-      ctx.fillRect(8, 8, 368, 240);
-      ctx.strokeStyle = "rgba(122,220,255,.70)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(8, 8, 368, 240);
-      ctx.strokeStyle = "rgba(122,220,255,.28)";
+      ctx.clearRect(0, 0, 512, 320);
+      ctx.fillStyle = "rgba(8,25,34,.42)";
+      ctx.fillRect(0, 0, 512, 320);
+      ctx.fillStyle = "rgba(224,248,255,.92)";
+      ctx.font = "18px monospace";
+      ctx.fillText("SCENE SUMMARY", 22, 30);
+      ctx.strokeStyle = "rgba(207,246,255,.36)";
       ctx.beginPath();
-      ctx.moveTo(24, 38);
-      ctx.lineTo(360, 38);
+      ctx.moveTo(22, 43);
+      ctx.lineTo(490, 43);
       ctx.stroke();
-      ctx.fillStyle = "rgba(170,235,255,.88)";
-      ctx.font = "15px monospace";
-      ctx.fillText("ORBITAL LOCUS // SCENE SUMMARY", 24, 29);
       const profile = observation?.measurement?.terrainProfile;
       if (!profile?.samples?.length) {
-        ctx.fillStyle = "rgba(150,220,245,.68)";
-        ctx.font = "16px monospace";
-        ctx.fillText("AWAITING APERTURE SAMPLE", 72, 138);
+        ctx.fillStyle = "rgba(170,226,242,.70)";
+        ctx.font = "17px monospace";
+        ctx.fillText("AWAITING APERTURE SAMPLE", 108, 170);
         texture.needsUpdate = true;
         return;
       }
-      const fp = observation.footprint, r = Math.max(1e-3, fp.radius), samples = profile.samples, min = profile.minHeight, max = profile.maxHeight, span = Math.max(1e-3, max - min), cx = 192, cy = 139, rr = 82;
-      ctx.strokeStyle = "rgba(110,215,255,.55)";
+      const fp = observation.footprint, r = Math.max(1e-3, fp.radius), samples = profile.samples, min = profile.minHeight, max = profile.maxHeight, span = Math.max(1e-3, max - min), cx = 256, cy = 174, rr = 102;
+      ctx.strokeStyle = "rgba(180,237,250,.58)";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(cx, cy, rr, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(110,215,255,.16)";
+      ctx.strokeStyle = "rgba(180,237,250,.16)";
       ctx.lineWidth = 1;
       for (const q of [0.33, 0.66]) {
         ctx.beginPath();
@@ -43163,28 +43270,30 @@ void main() {
         ctx.stroke();
       }
       for (const s of samples) {
-        const dx = (s.x - fp.center[0]) / r, dz = (s.z - fp.center[2]) / r, v = (s.height - min) / span, alpha = 0.28 + v * 0.67, rad = 3.5 + v * 2.5;
-        ctx.fillStyle = `rgba(130,225,255,${alpha.toFixed(3)})`;
+        const dx = (s.x - fp.center[0]) / r, dz = (s.z - fp.center[2]) / r, v = (s.height - min) / span, alpha = 0.28 + v * 0.67, rad = 4 + v * 2.5;
+        ctx.fillStyle = `rgba(205,245,255,${alpha.toFixed(3)})`;
         ctx.beginPath();
         ctx.arc(cx + dx * rr, cy + dz * rr, rad, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.fillStyle = "rgba(220,250,255,.95)";
+      ctx.fillStyle = "rgba(235,252,255,.96)";
       ctx.beginPath();
-      ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "rgba(170,235,255,.88)";
-      ctx.font = "12px monospace";
-      ctx.fillText(`RELIEF ${(max - min).toFixed(3)}`, 24, 231);
-      ctx.fillText(`FOOTPRINT R ${r.toFixed(2)}`, 224, 231);
+      ctx.fillStyle = "rgba(185,232,244,.88)";
+      ctx.font = "14px monospace";
+      ctx.fillText(`RELIEF ${(max - min).toFixed(3)}`, 22, 298);
+      ctx.textAlign = "right";
+      ctx.fillText(`FOOTPRINT R ${r.toFixed(2)}`, 490, 298);
+      ctx.textAlign = "left";
       texture.needsUpdate = true;
     }
     draw(null);
-    return { update: draw, toggle, setOpen, updatePresentation, containsObject(object) {
+    return { update: draw, toggle, setOpen, setCinnabarPacked: setCinnabarPacked2, stowButton, updatePresentation, containsObject(object) {
       for (let o = object; o; o = o.parent) if (o === root) return true;
       return false;
     }, inspect() {
-      return { kind: "locus-evidence-display", presentation: "station-anchored camera-facing volumetric HUD", open, source: "latest recorded aperture observation", privilegedWorldAccess: false };
+      return { kind: "locus-evidence-display", presentation: "station-anchored CLARA continuity surface", open, cinnabarPacked: cinnabarPacked2, cinnabarPacking, source: "latest recorded aperture observation", privilegedWorldAccess: false };
     } };
   }
 
@@ -43235,7 +43344,8 @@ void main() {
 
   // src/runtime/bearing-system.js
   function createBearingSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, impacts: impacts2, maxBearings = 1e6 }) {
-    const BALL_R = 0.055, PG = 96, MAX_RENDERED = 18e4;
+    const BALL_R = 0.055, PG = 96, MAX_RENDERED = 18e4, PROJECTION_GRID = 64, PROJECTION_MIN = -10, PROJECTION_SPAN = 20;
+    const projection = new Uint32Array(PROJECTION_GRID * PROJECTION_GRID);
     const bx = new Float32Array(maxBearings), by = new Float32Array(maxBearings), bz = new Float32Array(maxBearings);
     const bvx = new Float32Array(maxBearings), bvy = new Float32Array(maxBearings), bvz = new Float32Array(maxBearings);
     let count = 0;
@@ -43265,10 +43375,22 @@ void main() {
       }
       return available;
     }
+    function spawnOne(position, velocity) {
+      if (count >= maxBearings) return 0;
+      const i = count++;
+      bx[i] = position.x;
+      by[i] = position.y;
+      bz[i] = position.z;
+      bvx[i] = velocity?.x ?? 0;
+      bvy[i] = velocity?.y ?? 0;
+      bvz[i] = velocity?.z ?? 0;
+      return 1;
+    }
     const contact = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 };
     function update(dt) {
       dt = Math.min(0.15, Math.max(1e-3, dt));
       pile.fill(0);
+      projection.fill(0);
       const g = -8.5, renderStride = count > 5e5 ? 8 : count > 25e4 ? 5 : count > 1e5 ? 3 : count > 5e4 ? 2 : 1;
       let rendered = 0;
       for (let i = 0; i < count; i++) {
@@ -43304,6 +43426,8 @@ void main() {
             if (Number.isFinite(hz)) bvz[i] -= hz * 0.08;
           }
         }
+        const qx = Math.floor((bx[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID), qz = Math.floor((bz[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID);
+        if (qx >= 0 && qx < PROJECTION_GRID && qz >= 0 && qz < PROJECTION_GRID) projection[qx + PROJECTION_GRID * qz]++;
         if (i % renderStride === 0 && rendered < MAX_RENDERED) {
           dummy.position.set(bx[i], by[i], bz[i]);
           dummy.rotation.set(0, 0, 0);
@@ -43314,6 +43438,19 @@ void main() {
       }
       mesh.count = rendered;
       mesh.instanceMatrix.needsUpdate = true;
+    }
+    function applyField(center, { radius = 4.2, strength = 2.1, lift = 0.1 } = {}) {
+      if (!center || !Number.isFinite(center.x) || !Number.isFinite(center.z)) return;
+      const r = Math.max(0.01, radius), r2 = r * r;
+      for (let i = 0; i < count; i++) {
+        const dx = bx[i] - center.x, dz = bz[i] - center.z, d2 = dx * dx + dz * dz;
+        if (d2 <= 1e-4 || d2 >= r2) continue;
+        const d = Math.sqrt(d2), fall = 1 - d / r;
+        const q = strength * fall;
+        bvx[i] += -dz / d * q - dx / d * q * 0.1;
+        bvz[i] += dx / d * q - dz / d * q * 0.1;
+        bvy[i] += lift * fall;
+      }
     }
     function applyImpact(event) {
       const c = event?.position, power = Math.max(0.01, event?.radius ?? event?.power ?? 0);
@@ -43328,8 +43465,19 @@ void main() {
         bvz[i] += dz * q;
       }
     }
+    function sampleDensity(x, z, radius = 0) {
+      const cell = PROJECTION_SPAN / PROJECTION_GRID, r = Math.max(0, radius), minX = Math.max(0, Math.floor((x - r - PROJECTION_MIN) / cell)), maxX = Math.min(PROJECTION_GRID - 1, Math.floor((x + r - PROJECTION_MIN) / cell)), minZ = Math.max(0, Math.floor((z - r - PROJECTION_MIN) / cell)), maxZ = Math.min(PROJECTION_GRID - 1, Math.floor((z + r - PROJECTION_MIN) / cell));
+      let grains = 0, cells = 0;
+      for (let iz = minZ; iz <= maxZ; iz++) for (let ix = minX; ix <= maxX; ix++) {
+        const cx = PROJECTION_MIN + (ix + 0.5) * cell, cz = PROJECTION_MIN + (iz + 0.5) * cell;
+        if (r && (cx - x) * (cx - x) + (cz - z) * (cz - z) > r * r) continue;
+        grains += projection[ix + PROJECTION_GRID * iz];
+        cells++;
+      }
+      return { grains, cells, cellSize: cell };
+    }
     const unsubscribe = impacts2?.subscribe(applyImpact);
-    return { entity, mesh, spawnBatch, update, applyImpact, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count }) };
+    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count }) };
   }
 
   // src/runtime/impact-system.js
@@ -43347,6 +43495,510 @@ void main() {
         return { kind: "world-impact-bus", listeners: listeners.size };
       }
     };
+  }
+
+  // src/runtime/extruder-system.js
+  function createExtruderSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, bearings: bearings2, locus: locus2 }) {
+    const { Transform: Transform2, Body: Body2, Gravity: Gravity2, Support: Support2, RenderObject: RenderObject2, SpatialBounds, Locus: Locus2 } = components2;
+    const id = world2.entity(), root = new THREE2.Group(), hullMat = new THREE2.MeshStandardMaterial({ color: 13620177, roughness: 0.58, metalness: 0.16 }), hull2Mat = new THREE2.MeshStandardMaterial({ color: 11450038, roughness: 0.62, metalness: 0.13 }), darkMat = new THREE2.MeshStandardMaterial({ color: 5068377, roughness: 0.56, metalness: 0.28 }), orangeMat = new THREE2.MeshStandardMaterial({ color: 14186540, roughness: 0.48, metalness: 0.2 }), windowMat = new THREE2.MeshStandardMaterial({ color: 16762478, emissive: 16753466, emissiveIntensity: 1.15, roughness: 0.4, metalness: 0 });
+    function box(x, y, z, sx, sy, sz, mat = hullMat) {
+      const m = new THREE2.Mesh(new THREE2.BoxGeometry(sx, sy, sz), mat);
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      root.add(m);
+      return m;
+    }
+    function cyl(x, y, z, r, len, mat = darkMat, n = 8) {
+      const m = new THREE2.Mesh(new THREE2.CylinderGeometry(r, r, len, n), mat);
+      m.position.set(x, y, z);
+      m.rotation.x = Math.PI / 2;
+      m.castShadow = true;
+      root.add(m);
+      return m;
+    }
+    function rail(x, z, w, d, y = 0.43) {
+      const pts = [[x - w / 2, z - d / 2], [x + w / 2, z - d / 2], [x + w / 2, z + d / 2], [x - w / 2, z + d / 2], [x - w / 2, z - d / 2]];
+      for (let i = 0; i < 4; i++) {
+        const a = pts[i], b = pts[i + 1], dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz), m = new THREE2.Mesh(new THREE2.CylinderGeometry(0.014, 0.014, len, 6), orangeMat);
+        m.position.set((a[0] + b[0]) / 2, y, (a[1] + b[1]) / 2);
+        m.quaternion.setFromUnitVectors(new THREE2.Vector3(0, 1, 0), new THREE2.Vector3(dx, 0, dz).normalize());
+        root.add(m);
+      }
+    }
+    box(0, 0.18, 0, 0.88, 0.2, 0.56);
+    box(-0.18, 0.36, 0, 0.28, 0.18, 0.4, hull2Mat);
+    box(0.16, 0.32, 0, 0.24, 0.1, 0.3, darkMat);
+    const cutter = cyl(0.47, 0.03, 0, 0.09, 0.4, darkMat, 8);
+    const chute = box(-0.47, 0.08, 0, 0.2, 0.13, 0.22, darkMat);
+    chute.rotation.z = -0.22;
+    rail(-0.18, 0, 0.32, 0.44);
+    box(0.16, 0.39, 0, 0.08, 0.018, 0.025, windowMat);
+    root.name = "autonomous-extruder";
+    scene.add(root);
+    const startY = terrain2.groundHeight(-4.8, -2.6);
+    world2.add(id, Transform2, { position: new THREE2.Vector3(-4.8, (Number.isFinite(startY) ? startY : 0.15) + 0.3, -2.6), rotation: new THREE2.Euler(), scale: new THREE2.Vector3(1, 1, 1), visible: true, velocity: new THREE2.Vector3() });
+    world2.add(id, RenderObject2, { object: root });
+    world2.add(id, Body2, { radius: 0.31, restitution: 0.08, drag: 0.94 });
+    world2.add(id, Gravity2, { acceleration: -8.5 });
+    world2.add(id, Support2, { kind: "ground" });
+    world2.add(id, SpatialBounds, { kind: "sphere", radius: 0.42 });
+    if (Locus2) world2.add(id, Locus2, { id: locus2 });
+    let heading = 0.31, targetHeading = 0.31, lastDig = -Infinity, lastNow = null, digs = 0, produced = 0, turns = 0, emissionSequence = 0;
+    const emissions = [];
+    function queueYield(now) {
+      const durations = [1e3, 2e3, 3e3], duration = durations[emissionSequence++ % durations.length], total = 48;
+      emissions.push({ startedAt: now, duration, total, emitted: 0 });
+    }
+    function emitYield(now) {
+      for (let i = emissions.length - 1; i >= 0; i--) {
+        const e = emissions[i], progress = THREE2.MathUtils.clamp((now - e.startedAt) / e.duration, 0, 1), target = Math.floor(e.total * progress), due = target - e.emitted;
+        if (due > 0) {
+          const t = Transform2.get(id);
+          if (t) {
+            const backX = -Math.cos(heading), backZ = -Math.sin(heading), sideX = -backZ, sideZ = backX;
+            for (let n = 0; n < due; n++) {
+              const k = e.emitted + n, lateral = (k % 5 - 2) * 0.018;
+              const point = new THREE2.Vector3(t.position.x + backX * 0.5 + sideX * lateral, t.position.y - 0.18, t.position.z + backZ * 0.5 + sideZ * lateral);
+              const velocity = new THREE2.Vector3(backX * (1.08 + 0.05 * (k % 4)) + sideX * lateral * 3, 0.46 + 0.04 * (k % 3), backZ * (1.08 + 0.05 * (k % 4)) + sideZ * lateral * 3);
+              produced += bearings2.spawnOne(point, velocity);
+            }
+          }
+          e.emitted += due;
+        }
+        if (progress >= 1 && e.emitted >= e.total) emissions.splice(i, 1);
+      }
+    }
+    function update(now) {
+      const t = Transform2.get(id);
+      if (!t) return;
+      const dt = lastNow == null ? 0 : Math.min(0.1, Math.max(0, (now - lastNow) / 1e3));
+      lastNow = now;
+      const speed = 0.72, probe = 1.05, cruiseTurn = 0.11, edgeTurn = 1.45;
+      targetHeading += cruiseTurn * dt;
+      let px2 = t.position.x + Math.cos(heading) * probe, pz2 = t.position.z + Math.sin(heading) * probe;
+      if (!terrain2.insideMaterial(px2, pz2)) {
+        const inward = Math.atan2(-t.position.z, -t.position.x), delta = Math.atan2(Math.sin(inward - heading), Math.cos(inward - heading));
+        targetHeading = heading + THREE2.MathUtils.clamp(delta, -2.35, 2.35);
+        turns++;
+      }
+      const turnDelta = Math.atan2(Math.sin(targetHeading - heading), Math.cos(targetHeading - heading)), maxTurn = edgeTurn * dt;
+      heading += THREE2.MathUtils.clamp(turnDelta, -maxTurn, maxTurn);
+      const steering = Math.min(1, Math.abs(turnDelta) / 1.15), moveSpeed = speed * (1 - 0.68 * steering);
+      t.velocity.x = Math.cos(heading) * moveSpeed;
+      t.velocity.z = Math.sin(heading) * moveSpeed;
+      t.rotation.y = -heading;
+      cutter.rotation.z = now * 0.012;
+      if (now - lastDig >= 720) {
+        lastDig = now;
+        const bx = t.position.x - Math.cos(heading) * 0.34, bz = t.position.z - Math.sin(heading) * 0.34, gy = terrain2.terrainHeight(bx, bz);
+        if (Number.isFinite(gy)) {
+          terrain2.excavate(new THREE2.Vector3(bx, gy, bz), { radius: 0.58, depth: 0.24 });
+          queueYield(now);
+          digs++;
+        }
+      }
+      emitYield(now);
+    }
+    return { id, object: root, update, inspect: () => {
+      const t = Transform2.get(id);
+      return { kind: "autonomous-extruder", id, position: t ? [t.position.x, t.position.y, t.position.z] : null, heading, digs, producedBearings: produced, pendingEmissions: emissions.length, turns };
+    } };
+  }
+
+  // src/runtime/cinnabar-dome-system.js
+  function createCinnabarDomeSystem({ THREE: THREE2, scene, terrain: terrain2, field }) {
+    const root = new THREE2.Group();
+    root.name = "cinnabar-skeletal-dome";
+    const brass2 = new THREE2.MeshStandardMaterial({ color: 10185263, roughness: 0.48, metalness: 0.72 }), darkBrass = new THREE2.MeshStandardMaterial({ color: 6440226, roughness: 0.58, metalness: 0.62 }), warm = new THREE2.MeshStandardMaterial({ color: 13867595, emissive: 9063704, emissiveIntensity: 0.38, roughness: 0.44, metalness: 0.54 });
+    const R = 2.15, H = 2.45, segments = 12, tube = 0.035;
+    function beam(a, b, r = tube, mat = brass2) {
+      const d = b.clone().sub(a), m = new THREE2.Mesh(new THREE2.CylinderGeometry(r, r, d.length(), 7), mat);
+      m.position.copy(a).add(b).multiplyScalar(0.5);
+      m.quaternion.setFromUnitVectors(new THREE2.Vector3(0, 1, 0), d.clone().normalize());
+      m.castShadow = true;
+      root.add(m);
+      return m;
+    }
+    for (let s = 0; s < segments; s++) {
+      const a = s / segments * Math.PI * 2;
+      let prev = new THREE2.Vector3(Math.cos(a) * R, 0, Math.sin(a) * R);
+      for (let j = 1; j <= 7; j++) {
+        const t = j / 7 * Math.PI / 2, p = new THREE2.Vector3(Math.cos(a) * R * Math.cos(t), H * Math.sin(t), Math.sin(a) * R * Math.cos(t));
+        beam(prev, p, j === 7 ? 0.045 : tube);
+        prev = p;
+      }
+    }
+    for (const f of [0.24, 0.52, 0.76]) {
+      const y = H * f, r = R * Math.sqrt(Math.max(0, 1 - f * f));
+      for (let s = 0; s < segments; s++) {
+        const a = s / segments * Math.PI * 2, b = (s + 1) / segments * Math.PI * 2;
+        beam(new THREE2.Vector3(Math.cos(a) * r, y, Math.sin(a) * r), new THREE2.Vector3(Math.cos(b) * r, y, Math.sin(b) * r), 0.03, darkBrass);
+      }
+    }
+    beam(new THREE2.Vector3(0, H - 0.02, 0), new THREE2.Vector3(0, H + 0.72, 0), 0.055, darkBrass);
+    const crown = new THREE2.Mesh(new THREE2.SphereGeometry(0.16, 10, 7), warm);
+    crown.position.y = H + 0.27;
+    crown.castShadow = true;
+    root.add(crown);
+    const finial = new THREE2.Mesh(new THREE2.ConeGeometry(0.065, 0.46, 7), brass2);
+    finial.position.y = H + 0.91;
+    root.add(finial);
+    const baseRing = new THREE2.Mesh(new THREE2.TorusGeometry(R, 0.065, 7, 48), darkBrass);
+    baseRing.rotation.x = Math.PI / 2;
+    baseRing.position.y = 0.03;
+    baseRing.castShadow = true;
+    root.add(baseRing);
+    const center = new THREE2.Vector3(2.7, 0, 1.8), ground = terrain2.groundHeight(center.x, center.z), surface = Number.isFinite(ground) ? ground : 0.15;
+    const buried = surface - (H + 1.2), settled = surface + 0.02;
+    root.position.set(center.x, buried, center.z);
+    scene.add(root);
+    const scored = field.turn(1);
+    let progress = 0, settledOnce = false;
+    function ease(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+    function update(fieldNow) {
+      progress = THREE2.MathUtils.clamp((fieldNow - scored.at) / scored.duration, 0, 1);
+      root.position.y = THREE2.MathUtils.lerp(buried, settled, ease(progress));
+      settledOnce = progress >= 1;
+    }
+    return { object: root, update, inspect: () => ({ kind: "cinnabar-skeletal-dome", position: [root.position.x, root.position.y, root.position.z], riseProgress: Number(progress.toFixed(3)), settled: settledOnce, behavior: "authored-rise" }) };
+  }
+
+  // src/runtime/cinnabar-and-cinnamon.js
+  function createCinnabarAndCinnamon() {
+    const turns = [
+      { turn: 1, actor: "human", at: 0, duration: 12e3, kind: "raise-dome" },
+      { turn: 2, actor: "model", at: 12e3, duration: 1e4, kind: "unfurl-kite" },
+      { turn: 3, actor: "human", at: 22e3, duration: 5200, kind: "clockchain-burrow-to-dome" },
+      { turn: 4, actor: "human", at: 27200, duration: 6500, kind: "meteorstorm-abates" },
+      { turn: 5, actor: "human", at: 33700, duration: 7e3, kind: "dome-granular-field" },
+      { turn: 6, actor: "human", at: 40700, duration: 9e3, kind: "dome-granular-field-intensifies" },
+      { turn: 7, actor: "human", at: 49700, duration: 2600, kind: "kite-tether-snaps" },
+      { turn: 8, actor: "human", at: 52300, duration: 1e4, kind: "distant-brass-spire-rises" },
+      { turn: 9, actor: "model", at: 62300, duration: 8e3, kind: "paper-flag-on-spire" }
+    ];
+    const clockchain = [
+      { afterTurn: 2, owner: "human", method: "clockchain-derived", at: 22e3 },
+      // Turn 3 resolved Human under the original derivation before Turn 4 was authored.
+      // Persist it here so every later Clockchain head contains the same immutable history.
+      { afterTurn: 3, owner: "human", method: "clockchain-derived", at: 27200, seed: 4078113516 },
+      { afterTurn: 4, owner: "human", method: "clockchain-derived-v2", at: 33700, seed: 2729507116 },
+      { afterTurn: 5, owner: "human", method: "clockchain-derived-v2", at: 40700, seed: 2197232084 },
+      { afterTurn: 6, owner: "human", method: "clockchain-derived-v2", at: 49700 },
+      { afterTurn: 7, owner: "human", method: "clockchain-derived-v2", at: 52300, seed: 1416287156 }
+    ];
+    let origin = null, replays = 0, fastForwardTarget = null;
+    function update(now) {
+      if (origin == null) origin = now;
+      return Math.max(0, now - origin);
+    }
+    function replay() {
+      origin = null;
+      fastForwardTarget = null;
+      replays++;
+    }
+    function frontier() {
+      return turns.reduce((m, t) => Math.max(m, t.at + t.duration), 0);
+    }
+    function terminalTurn() {
+      return turns.reduce((m, t) => Math.max(m, t.turn), 0);
+    }
+    function nextTurnStart(fieldNow) {
+      for (const t of turns) if (t.at > fieldNow + 0.5) return t.at;
+      return frontier();
+    }
+    function fastForwardTo(target = frontier()) {
+      fastForwardTarget = Math.max(0, target);
+      return fastForwardTarget;
+    }
+    function consumeFastForward(fieldNow) {
+      if (fastForwardTarget == null) return 1;
+      const remaining = fastForwardTarget - fieldNow;
+      if (remaining <= 0) {
+        fastForwardTarget = null;
+        return 1;
+      }
+      const span = Math.max(0, Math.min(1, remaining / 1800));
+      const eased = span * span * (3 - 2 * span);
+      return 1 + 3 * eased;
+    }
+    function terminalResolution() {
+      const n = terminalTurn();
+      return clockchain.findLast?.((r) => r.afterTurn === n) ?? [...clockchain].reverse().find((r) => r.afterTurn === n) ?? null;
+    }
+    function clockchainHead() {
+      return JSON.stringify({ turns: turns.map(({ turn: turn2, actor, at, duration, kind }) => ({ turn: turn2, actor, at, duration, kind })), clockchain: clockchain.map(({ afterTurn, owner, method, seed }) => ({ afterTurn, owner, method, seed })) });
+    }
+    function turn(number) {
+      return turns.find((entry) => entry.turn === number) ?? null;
+    }
+    function recordResolution(result) {
+      const afterTurn = terminalTurn(), existing = terminalResolution();
+      if (existing) return existing;
+      const entry = { afterTurn, ...result };
+      clockchain.push(entry);
+      return entry;
+    }
+    function inspect2(now = null) {
+      const elapsed = origin == null ? 0 : now == null ? null : Math.max(0, now - origin);
+      return { kind: "cinnabar-and-cinnamon", clock: "simulation", origin, elapsed, replays, frontier: frontier(), terminalTurn: terminalTurn(), fastForwardTarget, clockchainHead: clockchainHead(), turns: turns.map((entry) => ({ ...entry })), rules: { fromTurn: 3, initiative: "clockchain-per-turn", clockchain: "terminal-after-all-known-turns" }, clockchain: clockchain.map((entry) => ({ ...entry })), terminalResolution: terminalResolution() };
+    }
+    return { turns, clockchain, update, replay, turn, recordResolution, terminalResolution, terminalTurn, frontier, nextTurnStart, fastForwardTo, consumeFastForward, clockchainHead, inspect: inspect2 };
+  }
+
+  // src/runtime/cinnabar-kite-system.js
+  function createCinnabarKiteSystem({ THREE: THREE2, scene, field, dome }) {
+    const root = new THREE2.Group();
+    root.name = "cinnabar-kite";
+    const paper = new THREE2.MeshStandardMaterial({ color: 15657174, roughness: 0.82, metalness: 0, side: THREE2.DoubleSide }), seam = new THREE2.MeshStandardMaterial({ color: 8153167, roughness: 0.72, metalness: 0.08, side: THREE2.DoubleSide }), lineMat = new THREE2.LineBasicMaterial({ color: 14208952, transparent: true, opacity: 0.72 });
+    const cols = 14, rows = 28, width = 0.72, length = 2.65, count = (cols + 1) * (rows + 1), positions = new Float32Array(count * 3), indices = [];
+    for (let r = 0; r <= rows; r++) for (let c = 0; c <= cols; c++) {
+      const i = r * (cols + 1) + c, u = c / cols - 0.5, v = r / rows;
+      positions[i * 3] = u * width * (1 - 0.38 * v);
+      positions[i * 3 + 1] = -v * length;
+      positions[i * 3 + 2] = 0;
+    }
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const a = r * (cols + 1) + c, b = a + 1, d = (r + 1) * (cols + 1) + c, e = d + 1;
+      indices.push(a, d, b, b, d, e);
+    }
+    const geo = new THREE2.BufferGeometry();
+    geo.setAttribute("position", new THREE2.BufferAttribute(positions, 3));
+    geo.setIndex(indices);
+    geo.computeVertexNormals();
+    const cloth = new THREE2.Mesh(geo, paper);
+    cloth.castShadow = true;
+    root.add(cloth);
+    const spine = new THREE2.Mesh(new THREE2.CylinderGeometry(0.012, 0.012, length, 6), seam);
+    spine.position.y = -length * 0.5;
+    root.add(spine);
+    const lineGeo = new THREE2.BufferGeometry().setFromPoints([new THREE2.Vector3(), new THREE2.Vector3()]), line = new THREE2.Line(lineGeo, lineMat);
+    scene.add(line);
+    root.visible = false;
+    scene.add(root);
+    const scored = field.turn(2), snap = field.turn(7), flag = field.turn(9), anchorLocal = new THREE2.Vector3(0, 3.36, 0), anchor = new THREE2.Vector3(), target = new THREE2.Vector3(), linePos = lineGeo.getAttribute("position");
+    let progress = 0, tension = 0, snapped = false, snapOrigin = new THREE2.Vector3();
+    function smooth(t) {
+      return t * t * (3 - 2 * t);
+    }
+    function update(fieldNow) {
+      dome.object.localToWorld(anchor.copy(anchorLocal));
+      progress = THREE2.MathUtils.clamp((fieldNow - scored.at) / scored.duration, 0, 1);
+      root.visible = progress > 0;
+      line.visible = progress > 0;
+      if (progress <= 0) return;
+      const p = smooth(progress), phase = fieldNow * 1e-3;
+      target.set(anchor.x + 4.2 * p + Math.sin(phase * 0.43) * 0.28, anchor.y + 1.2 + 5.8 * p + Math.sin(phase * 0.71) * 0.16, anchor.z - 2.4 * p + Math.cos(phase * 0.37) * 0.34);
+      if (snap && fieldNow >= snap.at) {
+        if (!snapped) {
+          snapped = true;
+          snapOrigin.copy(target);
+        }
+        const age = (fieldNow - snap.at) / 1e3;
+        if (flag && fieldNow >= flag.at) {
+          const q = THREE2.MathUtils.clamp((fieldNow - flag.at) / flag.duration, 0, 1), e = q * q * (3 - 2 * q);
+          root.position.set(THREE2.MathUtils.lerp(snapOrigin.x + 0.62 * age, -6.1, e), THREE2.MathUtils.lerp(snapOrigin.y + 0.16 * age - 0.018 * age * age, 7.15, e), THREE2.MathUtils.lerp(snapOrigin.z - 0.35 * age, -4.4, e));
+          root.scale.set(THREE2.MathUtils.lerp(1, 0.42, e), THREE2.MathUtils.lerp(1, 0.68, e), 1);
+        } else {
+          root.position.set(snapOrigin.x + 0.62 * age + Math.sin(phase * 0.73) * 0.18, snapOrigin.y + 0.16 * age - 0.018 * age * age + Math.sin(phase * 1.31) * 0.12, snapOrigin.z - 0.35 * age + Math.cos(phase * 0.67) * 0.2);
+          root.scale.set(1, 1, 1);
+        }
+        line.visible = false;
+      } else {
+        snapped = false;
+        root.position.copy(target);
+        line.visible = true;
+      }
+      root.rotation.set(0.16 + Math.sin(phase * 0.61) * 0.07, Math.atan2(-2.4, 4.2) - Math.PI / 2, 0.18 + Math.sin(phase * 0.83) * 0.11 + (snapped ? Math.sin(phase * 2.2) * 0.14 : 0));
+      const a = geo.getAttribute("position");
+      for (let r = 0; r <= rows; r++) for (let c = 0; c <= cols; c++) {
+        const i = r * (cols + 1) + c, u = c / cols - 0.5, v = r / rows, baseX = u * width * (1 - 0.38 * v), baseY = -v * length;
+        const edge = Math.abs(u) * 2, wave = Math.sin(phase * 3.1 + v * 9.4 + u * 2.7) * (0.025 + 0.095 * v) + Math.sin(phase * 5.7 - v * 14) * 0.028 * v;
+        a.setXYZ(i, baseX + Math.sin(phase * 1.7 + v * 5) * 0.018 * v, baseY, wave * (0.45 + 0.55 * edge));
+      }
+      a.needsUpdate = true;
+      geo.computeVertexNormals();
+      if (!snapped) {
+        linePos.setXYZ(0, anchor.x, anchor.y, anchor.z);
+        linePos.setXYZ(1, target.x, target.y, target.z);
+        linePos.needsUpdate = true;
+        lineGeo.computeBoundingSphere();
+      }
+      tension = snapped ? 0 : THREE2.MathUtils.clamp(target.distanceTo(anchor) / 7.8, 0, 1);
+    }
+    return { object: root, line, update, inspect: () => ({ kind: "tethered-pale-kite", turn: 2, progress: Number(progress.toFixed(3)), tension: Number(tension.toFixed(3)), position: [root.position.x, root.position.y, root.position.z], clothVertices: count, tethered: !snapped, snapped, behavior: snapped ? "deterministic-free-drift" : "deterministic-analytic-wind" }) };
+  }
+
+  // src/runtime/cinnabar-spire-system.js
+  function createCinnabarSpireSystem({ THREE: THREE2, scene, terrain: terrain2, field }) {
+    const root = new THREE2.Group();
+    root.name = "cinnabar-distant-spire";
+    const brass2 = new THREE2.MeshStandardMaterial({ color: 9396779, roughness: 0.5, metalness: 0.74 });
+    const dark = new THREE2.MeshStandardMaterial({ color: 5257503, roughness: 0.58, metalness: 0.66 });
+    const shaft = new THREE2.Mesh(new THREE2.CylinderGeometry(0.1, 0.19, 7.8, 8), brass2);
+    shaft.position.y = 3.9;
+    shaft.castShadow = true;
+    root.add(shaft);
+    const collar = new THREE2.Mesh(new THREE2.CylinderGeometry(0.27, 0.32, 0.22, 10), dark);
+    collar.position.y = 0.18;
+    root.add(collar);
+    const needle = new THREE2.Mesh(new THREE2.ConeGeometry(0.13, 1.45, 8), brass2);
+    needle.position.y = 8.52;
+    needle.castShadow = true;
+    root.add(needle);
+    const scored = field.turn(8), x = -6.1, z = -4.4, plinthTop = terrain2.inspect().apparatus.top;
+    const buried = plinthTop - 9.4, settled = plinthTop;
+    root.position.set(x, buried, z);
+    scene.add(root);
+    let progress = 0;
+    function update(fieldNow) {
+      progress = THREE2.MathUtils.clamp((fieldNow - scored.at) / scored.duration, 0, 1);
+      const e = progress * progress * (3 - 2 * progress);
+      root.position.y = THREE2.MathUtils.lerp(buried, settled, e);
+      const visibleHeight = Math.max(0, root.position.y + 9.25 - plinthTop);
+      root.visible = visibleHeight > 0;
+      root.traverse((o) => {
+        if (o.isMesh) o.material.clippingPlanes = [new THREE2.Plane(new THREE2.Vector3(0, 1, 0), -plinthTop)];
+      });
+    }
+    return { object: root, update, inspect: () => ({ kind: "distant-brass-spire", turn: 8, riseProgress: Number(progress.toFixed(3)), position: [root.position.x, root.position.y, root.position.z] }) };
+  }
+
+  // src/runtime/couplet-trial-system.js
+  function createCoupletTrialSystem({ THREE: THREE2, scene, terrain: terrain2, field }) {
+    const root = new THREE2.Group();
+    root.name = "clockchain";
+    const brass2 = new THREE2.MeshStandardMaterial({ color: 10185263, roughness: 0.46, metalness: 0.72 });
+    const dark = new THREE2.MeshStandardMaterial({ color: 5061156, roughness: 0.55, metalness: 0.64 });
+    const humanMat = new THREE2.MeshStandardMaterial({ color: 13226704, roughness: 0.3, metalness: 0.78 });
+    const modelMat = new THREE2.MeshStandardMaterial({ color: 13797944, roughness: 0.42, metalness: 0.55 });
+    const base = new THREE2.Mesh(new THREE2.CylinderGeometry(0.72, 0.86, 0.18, 8), dark);
+    base.position.y = 0.09;
+    root.add(base);
+    const rail = new THREE2.Mesh(new THREE2.BoxGeometry(1.45, 0.1, 0.22), brass2);
+    rail.position.y = 0.36;
+    root.add(rail);
+    const plunger = new THREE2.Mesh(new THREE2.CylinderGeometry(0.16, 0.2, 0.42, 10), brass2);
+    plunger.position.y = 0.62;
+    root.add(plunger);
+    const px2 = -3.3, pz2 = 2.7, domeX = 2.7, domeZ = 1.8;
+    root.position.set(px2, terrain2.groundHeight(px2, pz2), pz2);
+    scene.add(root);
+    const linkGeo = new THREE2.TorusGeometry(0.045, 0.012, 5, 8);
+    const specs = [
+      { owner: "human", x: -0.48, geo: new THREE2.IcosahedronGeometry(0.17, 1), mat: humanMat },
+      { owner: "model", x: 0.48, geo: new THREE2.OctahedronGeometry(0.2, 0), mat: modelMat }
+    ];
+    const tokens = specs.map((spec) => {
+      const cup = new THREE2.Mesh(new THREE2.TorusGeometry(0.2, 0.045, 7, 18), dark);
+      cup.rotation.x = Math.PI / 2;
+      cup.position.set(spec.x, 0.48, 0);
+      root.add(cup);
+      const token = new THREE2.Mesh(spec.geo, spec.mat);
+      token.castShadow = true;
+      token.position.set(spec.x, 0.7, 0);
+      root.add(token);
+      const chain = new THREE2.Group();
+      root.add(chain);
+      const links = [];
+      for (let i = 0; i < 11; i++) {
+        const link = new THREE2.Mesh(linkGeo, brass2);
+        chain.add(link);
+        links.push(link);
+      }
+      return { owner: spec.owner, x: spec.x, token, chain, links };
+    });
+    const seatedY = 0.7, raisedY = 1.92, riseMs = 1800, bob = 0.045;
+    const transit = field.turn(3);
+    let state = "parked", winner = null, resolvedAt = null, lastFieldNow = 0;
+    function hash32(text) {
+      let h = 2166136261 >>> 0;
+      for (let i = 0; i < text.length; i++) {
+        h ^= text.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      h ^= h >>> 16;
+      h = Math.imul(h, 2146121005);
+      h ^= h >>> 15;
+      h = Math.imul(h, 2221713035);
+      h ^= h >>> 16;
+      return h >>> 0;
+    }
+    function updateChain(t) {
+      const ay = 0.54, ty = t.token.position.y;
+      for (let i = 0; i < t.links.length; i++) {
+        const q = (i + 1) / (t.links.length + 1), link = t.links[i];
+        link.position.set(t.x, THREE2.MathUtils.lerp(ay, ty, q), 0);
+        link.rotation.set(Math.PI / 2, i % 2 ? Math.PI / 2 : 0, 0);
+      }
+    }
+    function resolve(now) {
+      const existing = field.terminalResolution();
+      if (existing) return existing;
+      const seed = hash32(field.clockchainHead()), owner = (seed & 1) === 0 ? "human" : "model";
+      return field.recordResolution({ owner, method: "clockchain-derived-v2", at: field.frontier(), seed });
+    }
+    function update(fieldNow) {
+      lastFieldNow = fieldNow;
+      let x = px2, z = pz2, depth = 0;
+      if (transit && fieldNow >= transit.at) {
+        const u = Math.min(1, Math.max(0, (fieldNow - transit.at) / transit.duration));
+        if (u < 0.34) {
+          const q = u / 0.34;
+          depth = -2.35 * (q * q * (3 - 2 * q));
+        } else if (u < 0.62) {
+          const q = (u - 0.34) / 0.28, e = q * q * (3 - 2 * q);
+          x = THREE2.MathUtils.lerp(px2, domeX, e);
+          z = THREE2.MathUtils.lerp(pz2, domeZ, e);
+          depth = -2.35;
+        } else {
+          x = domeX;
+          z = domeZ;
+          const q = (u - 0.62) / 0.38, e = q * q * (3 - 2 * q);
+          depth = THREE2.MathUtils.lerp(-2.35, 0, e);
+        }
+      }
+      const ground = terrain2.groundHeight(x, z);
+      root.position.set(x, (Number.isFinite(ground) ? ground : 0) + depth, z);
+      if (!field.terminalResolution() && fieldNow >= field.frontier()) resolve(fieldNow);
+      const resolved = field.terminalResolution();
+      const active = resolved && fieldNow >= field.frontier() && fieldNow >= resolved.at;
+      if (active) {
+        winner = resolved.owner;
+        resolvedAt = resolved.at;
+        state = "resolved";
+      } else {
+        winner = null;
+        resolvedAt = null;
+        state = "parked";
+      }
+      for (const t of tokens) {
+        if (t.owner === winner) {
+          const age = Math.max(0, fieldNow - (resolvedAt ?? fieldNow)), u = Math.min(1, age / riseMs), ease = 1 - Math.pow(1 - u, 3);
+          t.token.position.y = THREE2.MathUtils.lerp(seatedY, raisedY, ease) + (u >= 1 ? Math.sin(age * 32e-4) * bob : 0);
+        } else t.token.position.y = seatedY;
+        updateChain(t);
+      }
+    }
+    function advance() {
+      const frontier = field.frontier();
+      if (lastFieldNow < frontier) {
+        field.fastForwardTo(field.nextTurnStart(lastFieldNow));
+        return "fast-forward";
+      }
+      if (!field.terminalResolution()) {
+        resolve(lastFieldNow);
+        return "clockchain";
+      }
+      return state;
+    }
+    function contains(object) {
+      for (let o = object; o; o = o.parent) if (o === root) return true;
+      return false;
+    }
+    update(0);
+    return { object: root, tokens, advance, update, contains, inspect: () => ({ kind: "clockchain", state, winner, rule: "ledger-derived winner; vertical local suspension", terrainGrounded: true, tokens: tokens.map((t) => ({ owner: t.owner, localY: t.token.position.y })) }) };
   }
 
   // src/runtime/debug-api.js
@@ -43436,12 +44088,42 @@ void main() {
   var meteors = createMeteorSystem({ world, components, THREE, scene: three.scene, terrain, locus, onImpact: (e) => {
     impacts.emit({ kind: "meteor", position: e.point, radius: Math.max(1.4, 3.2 * e.magnitude), impulse: 18 * e.magnitude, magnitude: e.magnitude, terrainChanged: e.terrainChanged });
   } });
-  var meteorWeather = createMeteorWeatherSystem({ THREE, terrain, meteors });
+  var cinnabarAndCinnamon = createCinnabarAndCinnamon();
+  var meteorWeather = createMeteorWeatherSystem({ THREE, terrain, meteors, field: cinnabarAndCinnamon });
   var bearings = createBearingSystem({ world, components, THREE, scene: three.scene, terrain, locus, impacts });
+  var extruder = createExtruderSystem({ world, components, THREE, scene: three.scene, terrain, bearings, locus });
+  var cinnabarDome = createCinnabarDomeSystem({ THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon });
+  var cinnabarKite = createCinnabarKiteSystem({ THREE, scene: three.scene, field: cinnabarAndCinnamon, dome: cinnabarDome });
+  var cinnabarSpire = createCinnabarSpireSystem({ THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon });
+  var domeGranularTurn = cinnabarAndCinnamon.turn(5);
+  var domeGranularRiseTurn = cinnabarAndCinnamon.turn(6);
+  var coupletTrial = createCoupletTrialSystem({ world, components, THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon, locus });
+  var cinnabarLayer = new THREE.Group();
+  cinnabarLayer.name = "cinnabar-and-cinnamon-apparatus";
+  three.scene.add(cinnabarLayer);
+  for (const object of [cinnabarDome.object, cinnabarKite.object, cinnabarKite.line, cinnabarSpire.object, coupletTrial.object]) cinnabarLayer.attach(object);
+  terrain.occludeBelowPlinth(cinnabarLayer);
+  var cinnabarPacked = false;
+  var cinnabarPackTarget = 0;
+  var cinnabarPackY = 0;
+  var cinnabarPackFrom = 0;
+  var cinnabarPackElapsed = 0;
+  var cinnabarPackDepth = -13;
+  var cinnabarPackDuration = 0.95;
+  function setCinnabarPacked(packed) {
+    cinnabarPacked = !!packed;
+    cinnabarPackFrom = cinnabarPackY;
+    cinnabarPackTarget = cinnabarPacked ? 1 : 0;
+    cinnabarPackElapsed = 0;
+    return cinnabarPacked;
+  }
+  function toggleCinnabarPacked() {
+    return setCinnabarPacked(!cinnabarPacked);
+  }
   var continuityStation = createContinuityStationSystem({ world, components, THREE, scene: three.scene });
   var footprints = createFootprintSystem({ world, components, THREE, scene: three.scene, terrain });
   var footprintOccupancy = createFootprintOccupancySystem({ world, components, footprints });
-  var apertureSystem = createApertureSystem({ world, components, footprints, occupancy: footprintOccupancy, terrain });
+  var apertureSystem = createApertureSystem({ world, components, footprints, occupancy: footprintOccupancy, terrain, granularProjection: bearings });
   var sceneAperture = world.entity();
   world.add(sceneAperture, components.Aperture, { owner: continuityStation.id, kind: "scene-summary" });
   components.ContinuityLocus.get(continuityStation.id).apertures.push(sceneAperture);
@@ -43511,7 +44193,8 @@ void main() {
   function frame(now) {
     const realDt = Math.min(0.033, Math.max(0, (now - last) / 1e3));
     last = now;
-    const simDt = realDt * timeScale;
+    const fieldScale = cinnabarAndCinnamon.consumeFastForward(cinnabarAndCinnamon.update(simNow));
+    const simDt = realDt * timeScale * fieldScale;
     simNow += simDt * 1e3;
     physicsAccumulator += simDt;
     fpsFrames++;
@@ -43520,11 +44203,38 @@ void main() {
       fpsWindowStart = now;
       fpsFrames = 0;
     }
+    extruder.update(simNow);
+    const fieldNow = cinnabarAndCinnamon.update(simNow);
+    cinnabarDome.update(fieldNow);
+    cinnabarKite.update(fieldNow);
+    cinnabarSpire.update(fieldNow);
+    coupletTrial.update(fieldNow, simDt);
+    if (cinnabarPackY !== cinnabarPackTarget) {
+      cinnabarPackElapsed = Math.min(cinnabarPackDuration, cinnabarPackElapsed + realDt);
+      const packT = cinnabarPackElapsed / cinnabarPackDuration, packEase = packT * packT * (3 - 2 * packT);
+      cinnabarPackY = THREE.MathUtils.lerp(cinnabarPackFrom, cinnabarPackTarget, packEase);
+      if (packT >= 1) cinnabarPackY = cinnabarPackTarget;
+    }
+    cinnabarLayer.position.y = cinnabarPackDepth * cinnabarPackY;
+    locusDisplay?.setCinnabarPacked?.(cinnabarPackY >= 0.999, cinnabarPackY > 1e-3 && cinnabarPackY < 0.999);
     let steps = 0;
     while (physicsAccumulator >= physicsStep && steps < 32) {
       physics(physicsStep);
       physicsAccumulator -= physicsStep;
       steps++;
+    }
+    if (domeGranularTurn && fieldNow >= domeGranularTurn.at) {
+      const u = Math.min(1, Math.max(0, (fieldNow - domeGranularTurn.at) / domeGranularTurn.duration));
+      const ease = u * u * (3 - 2 * u);
+      let radius = 4.2, strength = 0.032 * ease, lift = 15e-4 * ease;
+      if (domeGranularRiseTurn && fieldNow >= domeGranularRiseTurn.at) {
+        const v = Math.min(1, Math.max(0, (fieldNow - domeGranularRiseTurn.at) / domeGranularRiseTurn.duration));
+        const rise = v * v * (3 - 2 * v);
+        radius = THREE.MathUtils.lerp(4.2, 7.2, rise);
+        strength = THREE.MathUtils.lerp(0.032, 0.095, rise);
+        lift = THREE.MathUtils.lerp(15e-4, 0.055, rise);
+      }
+      bearings.applyField({ x: 2.7, z: 1.8 }, { radius, strength, lift });
     }
     bearings.update(Math.min(0.15, simDt));
     if (steps === 32) physicsAccumulator = 0;
@@ -43554,10 +44264,10 @@ void main() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: terrain.inspect(), water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
-  var systems = { renderSync, cameras, orbit, lights, meteors, meteorWeather, impacts, bearings, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
+  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: terrain.inspect(), water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
+  var systems = { renderSync, cameras, orbit, lights, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
   var entities = { locus, continuityStation: continuityStation.id, overviewCamera, skyLight, keyLight, fillLight };
-  globalThis.crucible = { spawnMatter, spawnBearings: (count = 25e3) => bearings.spawnBatch(count), meteor: callImpact, groundHeight: terrain.groundHeight, runSpatialProbes: () => lastProbeResults = spatialProbes.run(), spatialProbeResults: () => lastProbeResults, locusLog: () => locusLedger.snapshot(), exportLocusLog: () => locusLedger.download(), inspect };
+  globalThis.crucible = { cinnabarAndCinnamon: { replay: () => cinnabarAndCinnamon.replay(), inspect: () => cinnabarAndCinnamon.inspect(simNow), advance: () => coupletTrial.advance(), stow: () => setCinnabarPacked(true), deploy: () => setCinnabarPacked(false), togglePacked: toggleCinnabarPacked }, spawnMatter, spawnBearings: (count = 25e3) => bearings.spawnBatch(count), meteor: callImpact, groundHeight: terrain.groundHeight, runSpatialProbes: () => lastProbeResults = spatialProbes.run(), spatialProbeResults: () => lastProbeResults, locusLog: () => locusLedger.snapshot(), exportLocusLog: () => locusLedger.download(), inspect };
   installDebugApi({ world, components, terrain, three, systems, entities, water, inspect });
   document.querySelectorAll("[data-impact-bucket]").forEach((button, i) => button.addEventListener("click", () => setImpactBucket(i)));
   setImpactBucket(1);
@@ -43603,6 +44313,16 @@ void main() {
     const cameraView = components.CameraView.get(cameras.activeId());
     if (!cameraView?.camera) return;
     raycaster.setFromCamera(pointer, cameraView.camera);
+    const stowHit = locusDisplay.inspect().open ? raycaster.intersectObject(locusDisplay.stowButton, true)[0] : null;
+    if (stowHit) {
+      toggleCinnabarPacked();
+      return;
+    }
+    const trialHit = raycaster.intersectObject(coupletTrial.object, true)[0];
+    if (trialHit) {
+      coupletTrial.advance();
+      return;
+    }
     const stationHit = raycaster.intersectObject(continuityStation.object, true)[0];
     if (stationHit) {
       locusDisplay.toggle();
