@@ -544,3 +544,18 @@ The effect is deliberately local and lazy rather than a vortex or launch event. 
 Turn 6 begins at the Turn 5 frontier and intensifies the already-earned dome field over 9 simulated seconds. Its influence radius expands from 4.2 to 7.2 world units while tangential acceleration grows and upward force becomes materially significant. The same authoritative bearings remain the affected material: no replacement particles or scripted spiral are introduced. Their ordinary terrain contact, pile behavior, meteor impacts, and integration continue to compete with the dome field.
 
 This is an escalation of the Turn 5 force, not a second granular system. Nearby material should gather into a faster rising circulation as the field expands outward. Clockchain remains terminal and speaks only after Turn 6 completes.
+
+
+### Field observation — Turn 6
+
+The human observed that the intensified field's actual coupled result was an inward spiral rather than the initially imagined rising circulation. That executable behavior is accepted as canon rather than tuned away to match the prior prose. The Turn 6 Clockchain result was observed as Human.
+
+## Turn 7 — Human
+
+> The kite's tether snaps.
+
+### Executable consequence
+
+Turn 7 begins at the Turn 6 frontier. The pale kite is released from the dome: its tether disappears and tension falls to zero. The existing cloth remains the same object and continues its deterministic analytic wind motion, but its world position becomes a free downwind drift from the release state rather than remaining anchored to the dome. No replacement kite is spawned.
+
+Clockchain remains terminal and speaks after the scored snap interval.
