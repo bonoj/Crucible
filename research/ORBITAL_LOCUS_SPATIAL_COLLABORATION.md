@@ -854,3 +854,32 @@ The bearing work is not evidence that the orbital locus gained a new faculty. It
 That distinction matters to the larger investigation. Crucible can accumulate dense matter, impacts, terrain consequences, future agents, and other competing processes without automatically converting all of them into station knowledge. World complexity and locus access can grow independently.
 
 The bearing turns also reinforce the expedition's engineering discipline: reference behavior was recovered from executable precedent; human perceptual and performance reports falsified a bad transplant quickly; and the correction restored the proven causal/performance shape rather than escalating into a new GPU or contact-physics architecture.
+
+
+## Build truth becomes an unzip seam
+
+The impact-bus startup failure survived two apparently successful repairs before the actual transport/build failure was isolated. That sequence is worth preserving because the mistake crossed several different notions of truth.
+
+Source inspection first showed the intended dependency order. Candidate and Pages workflows both reported success. The browser nevertheless continued to execute:
+
+```
+ReferenceError: impacts is not defined
+```
+
+Inspection of the **exact deployed Pages artifact**, rather than source or workflow status, finally exposed the contradiction: the generated executable contained calls to `impacts.emit(...)` and construction of the bearing system with `impacts`, but no construction of the impact bus itself.
+
+The cause was smaller and more concrete than the theories that preceded it. A documentation-style patch had inserted a literal `\n` into a JavaScript `//` comment:
+
+```js
+// Impact bus must exist before producers and subscribers are constructed.\nconst impacts=createImpactSystem();
+```
+
+Because that was one physical source line, JavaScript correctly treated the impact-bus declaration as part of the comment. Esbuild did not delete the declaration; it never received an executable declaration to preserve.
+
+The repair restored a real physical newline. More importantly, the candidate gate was strengthened so the **generated self-contained artifact** must itself contain the impact-system definition and construction. Source validity and workflow success are no longer accepted as sufficient evidence for this seam.
+
+This is reusable substrate rather than a Crucible-specific fix. The downstream architectural home is [TabulaRasa](https://github.com/bonoj/TabulaRasa). No code is moved there during this turn. When the expedition is later unzipped, the proven build/deployment assertions and other generic substrate can be recovered from Crucible into the appropriate clean surface rather than reconstructed from memory.
+
+The emerging direction is intentionally broader than one extraction. The Six Cities vocabulary is becoming literal: **Unzip City** can become a place where accumulated expedition machinery is separated into earned reusable systems, while other cities can likewise become executable specializations rather than metaphors imposed in advance.
+
+For now Crucible remains the integrated Terrordrome. The log preserves where reusable machinery was earned; later unzipping can follow provenance back to executable evidence.
