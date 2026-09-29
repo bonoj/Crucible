@@ -13,7 +13,7 @@ export function createCinnabarKiteSystem({THREE,scene,field,dome}){
   const spine=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,length,6),seam);spine.position.y=-length*.5;root.add(spine);
   const lineGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),line=new THREE.Line(lineGeo,lineMat);scene.add(line);
   root.visible=false;scene.add(root);
-  const scored=field.turn(2),snap=field.turn(7),anchorLocal=new THREE.Vector3(0,3.36,0),anchor=new THREE.Vector3(),target=new THREE.Vector3(),linePos=lineGeo.getAttribute("position");
+  const scored=field.turn(2),snap=field.turn(7),flag=field.turn(9),anchorLocal=new THREE.Vector3(0,3.36,0),anchor=new THREE.Vector3(),target=new THREE.Vector3(),linePos=lineGeo.getAttribute("position");
   let progress=0,tension=0,snapped=false,snapOrigin=new THREE.Vector3();
   function smooth(t){return t*t*(3-2*t)}
   function update(fieldNow){
@@ -26,7 +26,14 @@ export function createCinnabarKiteSystem({THREE,scene,field,dome}){
     if(snap&&fieldNow>=snap.at){
       if(!snapped){snapped=true;snapOrigin.copy(target);}
       const age=(fieldNow-snap.at)/1000;
-      root.position.set(snapOrigin.x+.62*age+Math.sin(phase*.73)*.18,snapOrigin.y+.16*age-.018*age*age+Math.sin(phase*1.31)*.12,snapOrigin.z-.35*age+Math.cos(phase*.67)*.20);
+      if(flag&&fieldNow>=flag.at){
+        const q=THREE.MathUtils.clamp((fieldNow-flag.at)/flag.duration,0,1),e=q*q*(3-2*q);
+        root.position.set(THREE.MathUtils.lerp(snapOrigin.x+.62*age,-6.1,e),THREE.MathUtils.lerp(snapOrigin.y+.16*age-.018*age*age,7.15,e),THREE.MathUtils.lerp(snapOrigin.z-.35*age,-4.4,e));
+        root.scale.set(THREE.MathUtils.lerp(1,.42,e),THREE.MathUtils.lerp(1,.68,e),1);
+      }else{
+        root.position.set(snapOrigin.x+.62*age+Math.sin(phase*.73)*.18,snapOrigin.y+.16*age-.018*age*age+Math.sin(phase*1.31)*.12,snapOrigin.z-.35*age+Math.cos(phase*.67)*.20);
+        root.scale.set(1,1,1);
+      }
       line.visible=false;
     }else{snapped=false;root.position.copy(target);line.visible=true;}
     root.rotation.set(.16+Math.sin(phase*.61)*.07,Math.atan2(-2.4,4.2)-Math.PI/2,.18+Math.sin(phase*.83)*.11+(snapped?Math.sin(phase*2.2)*.14:0));
