@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm test && node tools/build.mjs",
-    "test": "node tests/spatial-evidence.test.mjs"
+    "test": "node tests/spatial-evidence.test.mjs && node tests/inference-parcel.test.mjs"
   },
   "devDependencies": {
     "esbuild": "0.25.10"
