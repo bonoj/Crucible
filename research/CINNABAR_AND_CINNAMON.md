@@ -559,3 +559,14 @@ The human observed that the intensified field's actual coupled result was an inw
 Turn 7 begins at the Turn 6 frontier. The pale kite is released from the dome: its tether disappears and tension falls to zero. The existing cloth remains the same object and continues its deterministic analytic wind motion, but its world position becomes a free downwind drift from the release state rather than remaining anchored to the dome. No replacement kite is spawned.
 
 Clockchain remains terminal and speaks after the scored snap interval.
+
+
+## Turn 8 — Human
+
+> A tall, thin brass spire begins to rise in the distance. My empire expands!
+
+### Executable consequence
+
+A new, deliberately simple brass landmark rises from beneath the terrain at a distant point over 10 simulated seconds. It is tall and narrow, with an octagonal shaft, restrained base collar, and needle crown. It does not yet claim a network, function, influence field, or relationship to the dome beyond the human move that places both within the emerging empire.
+
+The Turn 7 Clockchain result was observed as Human. Turn 8 begins at that frontier. Clockchain remains terminal after the spire finishes rising.
