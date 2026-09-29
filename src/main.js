@@ -47,7 +47,8 @@ const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensit
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
 const waterBottom=-1.42,waterLevel=-.12,waterDepth=waterLevel-waterBottom,waterRadius=9.75,waterMaterial=new THREE.MeshStandardMaterial({color:0x557f88,transparent:true,opacity:.34,roughness:.28,metalness:.04,depthWrite:false,depthTest:true,side:THREE.DoubleSide}),water=new THREE.Mesh(new THREE.CylinderGeometry(waterRadius,waterRadius,waterDepth,8,1,false,Math.PI/8),waterMaterial);water.position.y=waterBottom+waterDepth*.5;water.name="crucible-sea-volume";water.renderOrder=3;water.visible=false;three.scene.add(water);
-// Impact bus must exist before producers and subscribers are constructed.\nconst impacts=createImpactSystem();
+// Impact bus must exist before producers and subscribers are constructed.
+const impacts=createImpactSystem();
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus,onImpact:e=>{
  lights.pulse(2.5);
  impacts.emit({kind:"meteor",position:e.point,radius:Math.max(1.4,3.2*e.magnitude),impulse:18*e.magnitude,magnitude:e.magnitude,terrainChanged:e.terrainChanged});
