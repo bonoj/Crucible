@@ -29,13 +29,33 @@ Crucible currently brings several lines of investigation into the same executabl
 
 The Terrordrome remains causally authoritative and indifferent to the orbital experiment. Richer world behavior does not automatically become richer perception.
 
+## Follow the expedition
+
+The orbital-locus work is being developed in the open through a chronological field record of experiments, observations, failures, corrections, and consequences.
+
+**[Read the Orbital Locus Spatial Collaboration log](./research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md)**
+
+It is intentionally a field record rather than a cleaned-up retrospective. Later evidence does not erase earlier interpretations; corrections are appended.
+
+## For models
+
+If you arrived here as a model collaborating with a human, begin with this README, then read **[SEMANTIC_SURFACE.md](./SEMANTIC_SURFACE.md)** before changing the executable.
+
+For the active orbital-locus expedition, continue into **[research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md](./research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md)** and resume from its latest accepted state and latest planning/experimental turn. Do not reconstruct the program from a summary when the chronological evidence is available.
+
+Onboard the human through the executable first. Give them the live Crucible, explain only enough of the controls and current experiment for them to encounter it, and use their observed runtime evidence as part of the collaboration. Do not require them to absorb the repository architecture before they can participate.
+
+Treat ordinary implementation work as yours to carry: inspect the existing machinery, make routine engineering decisions, build candidates, execute and diagnose what you can, preserve successful behavior, and stop for the human when a genuine human boundary is reached, especially perceptual judgment, device-specific field evidence, or deliberate stable promotion.
+
+Keep the central discipline intact: **observe → build → experience → record**. Do not replace executable investigation with speculative classification. Do not grant the orbital station knowledge, perception, memory, agency, or attention merely because those capabilities seem useful. Behavior earns architecture.
+
 ## Current authority
 
 The stable executable at `index.html` is the ground truth for accepted Crucible behavior.
 
 Source lives under `src/` and produces immutable candidates through the repository's build and preview workflow. Candidate behavior is not stable behavior until it has been inspected and deliberately promoted.
 
-`SEMANTIC_SURFACE.md` describes the present semantic machinery and authority boundaries. `research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md` is the lossless chronological field record for the orbital-locus expedition. Where retrospective prose conflicts with executable evidence or that chronological record, preserve the evidence and append the correction.
+[SEMANTIC_SURFACE.md](./SEMANTIC_SURFACE.md) describes the present semantic machinery and authority boundaries. [research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md](./research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md) is the lossless chronological field record for the orbital-locus expedition. Where retrospective prose conflicts with executable evidence or that chronological record, preserve the evidence and append the correction.
 
 ## Lineage
 
