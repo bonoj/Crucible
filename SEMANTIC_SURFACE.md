@@ -6,6 +6,8 @@ This file states present-tense truths about Crucible's executable systems. It is
 
 Crucible autonomously produces deterministic-but-erratic meteor weather. Weather events alternate unpredictably among isolated singlets, short bursts, and occasional denser showers. Individual impacts vary in magnitude and are targeted across the material field.
 
+Meteor weather events are packetized. A singlet is a one-member packet; bursts and showers share one packet identity and central target while their rendered members carry noisy spatial and temporal offsets. Multi-member packets can stretch and wobble during flight while remaining one weather event. The central packet node is structural rather than an additional impactor.
+
 Meteor weather does not query the orbital station, its footprint, its observations, or its analysis. It is Terrordrome activity rather than stimulus scheduled for the locus.
 
 Consequently, station observations may contain direct deformation, partial consequences, old consequences encountered later in the sweep, or no meteor-relevant evidence at all.
