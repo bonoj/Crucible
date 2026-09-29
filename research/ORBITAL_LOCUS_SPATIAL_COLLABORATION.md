@@ -489,3 +489,16 @@ Within that fixed depth, the existing meteor impact kernel was extended without 
 The first implementation exposed a mundane source-generation error: a literal escaped newline was written into the JavaScript and CI rejected the candidate. The source was corrected without changing the morphology decision; the subsequent candidate build passed.
 
 This is intentionally a cheap morphology experiment. If the central uplift does not survive test depth legibly, the first response is to tune or remove the term, not increase terrain resolution.
+
+
+## The evidence window becomes a summoned station feed
+
+The human immediately reframed the small station-mounted evidence window as the beginning of a larger diegetic interface:
+
+> "Let's make it pop up on tap station. It can ornit with the station but orient it towards the camera. Basically a Jarvis hud. In fact let's give it a faint translucent blue rather than hard white/black. Then we can expand the whole thing into a diegetic station feed."
+
+The implementation changed presentation rather than sensing. The old tiny physical panel became a larger translucent blue HUD that is hidden by default, summoned by tapping the station, remains spatially associated with the station as it follows its apparatus orbit, and billboards toward the active camera each frame for legibility.
+
+The HUD still receives only the latest recorded scene-summary observation. It does not receive a renderer camera, terrain-system reference, meteor history, faster hidden sampling, or another route to world truth. Station tapping is given priority over the existing terrain-tap meteor interaction so selecting the apparatus does not accidentally call an impact beneath it.
+
+This creates a potentially extensible diegetic station-feed surface without prematurely deciding what future controls or sensor channels belong there. The presentation has expanded; the epistemic boundary has not.
