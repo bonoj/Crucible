@@ -9,6 +9,14 @@ export function createCinnabarSpireSystem({THREE,scene,terrain,field}){
   // The spire belongs to the apparatus, not deformable terrain: terrain may move around it.
   const buried=plinthTop-9.4,settled=plinthTop;root.position.set(x,buried,z);scene.add(root);
   let progress=0;
-  function update(fieldNow){progress=THREE.MathUtils.clamp((fieldNow-scored.at)/scored.duration,0,1);const e=progress*progress*(3-2*progress);root.position.y=THREE.MathUtils.lerp(buried,settled,e);}
+  function update(fieldNow){
+    progress=THREE.MathUtils.clamp((fieldNow-scored.at)/scored.duration,0,1);
+    const e=progress*progress*(3-2*progress);
+    root.position.y=THREE.MathUtils.lerp(buried,settled,e);
+    // The apparatus is an opaque plinth. Do not render the buried portion through its sides.
+    const visibleHeight=Math.max(0,root.position.y+9.25-plinthTop);
+    root.visible=visibleHeight>0;
+    root.traverse(o=>{if(o.isMesh)o.material.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,1,0),-plinthTop)];});
+  }
   return{object:root,update,inspect:()=>({kind:"distant-brass-spire",turn:8,riseProgress:Number(progress.toFixed(3)),position:[root.position.x,root.position.y,root.position.z]})};
 }
