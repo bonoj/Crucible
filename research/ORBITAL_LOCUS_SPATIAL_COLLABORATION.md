@@ -1056,3 +1056,22 @@ The heading calculation itself was not the facing failure. The extruder wrote ya
 Source commit `48aa27e15b9dbe4cbbe8da3b1e6435985b11d3e5` contains both repairs atomically.
 
 The diagnostic lesson is useful beyond the extruder: when visible behavior repeatedly resists a locally correct assignment, inspect the authority chain before compensating with offsets. Likewise, population-construction APIs and physical-emitter APIs should remain distinct even when both ultimately append the same substrate.
+
+
+## Engineering watchlist — preserving pressure without manufacturing debt
+
+While inspecting the extruder repairs and render path, several concrete implementation characteristics were identified that may matter if Crucible grows: static light synchronization every frame, unconditional orbit application, repeated footprint presentation allocation, per-particle meteor wake geometry/material allocation, and the increasing concentration of unrelated runtime responsibilities in `main.js`.
+
+The first draft called these "code smells." The human rejected that term because it implies that observed friction is already a defect requiring cleanup. The replacement is **Engineering Watchlist**.
+
+The distinction is intentional practice:
+
+- record concrete implementation pressure when it becomes visible;
+- do not convert observation into technical debt by naming alone;
+- do not refactor merely because a cleaner abstraction can be imagined;
+- let scale, behavior, profiling, or the arrival of another system provide the evidence for extraction;
+- remove or revise watchlist entries when the underlying code changes.
+
+Terrain support rebuilding provided an immediate example. It initially appeared on the performance watchlist because every local terrain mutation rebuilt the complete support raster. Inspection showed that terrain already owned the mutation footprint. The smallest repair kept that footprint inside terrain and reused it for both visual and support refresh. Meteor and extruder callers remained ignorant of the representation. Once repaired, the item was explicitly removed from the watchlist rather than retained as historical debt.
+
+This watchlist pattern is itself candidate reusable practice for later extraction: preserve architectural and performance pressure without allowing the record to become a speculative refactoring queue. The Crucible field log remains the chronological bag of holding for how such practices were earned; the semantic surface carries only the current truth.
