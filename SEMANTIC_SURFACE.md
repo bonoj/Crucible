@@ -169,3 +169,15 @@ World impacts are distributed through a generic impact seam. Meteors emit an imp
 Spacing, stacking quality, and bearing-bearing contact remain outside this restoration pass.
 
 The bearing batch is a Crucible entity, but it does not currently expose a single `SpatialBounds` component. A batch-wide bound would falsely represent many distributed bearings as one footprint occupant. Per-bearing observational availability remains a separate future seam.
+
+
+## Code smells under observation
+
+This is a small watchlist, not a refactor docket. Entries belong here when the current code has a concrete scaling or ownership smell but executable evidence has not yet justified broader machinery. Remove or revise an entry when the code changes.
+
+- **Frame-wide static synchronization.** `lights.syncAll()` currently runs every frame although the present lights are static. `orbit.applyAll()` likewise runs every frame even when orbit state has not changed. Both are cheap at current scale but are unnecessary steady-state work.
+- **Footprint presentation allocation.** The moving station footprint rebuilds a small 56-vertex position array/attribute and recomputes its bounding sphere every frame. The footprint genuinely moves; the repeated allocation is the smell, not the update itself.
+- **Meteor wake allocation.** Wake particles currently create and later dispose individual sphere geometries and materials. Current weather keeps this bounded, but substantially richer meteor activity would make pooling, shared geometry/material, or instancing preferable.
+- **Main-loop concentration.** `main.js` currently owns composition, frame scheduling, fixed-step body physics, interaction routing, UI wiring, and debug exposure. This is still legible at present scale; another independent physical process may provide evidence for extracting scheduling or ordinary-body physics rather than refactoring preemptively.
+
+Terrain support rebuilding is deliberately **not** on this list: terrain mutations now carry their already-known dirty footprint into terrain-owned support rebuilding, so callers remain ignorant of the support representation and local mutations do not require a global support refresh.
