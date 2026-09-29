@@ -655,3 +655,26 @@ The current apparatus does not need another aperture yet.
 A smaller continuation is available: allow more authoritative Crucible history to occur under the same observation machinery, then confront a later inference with Crossing 001's preserved trajectory plus genuinely new bounded observations. The earlier static-morphology account can then survive, change, or fail because of subsequent experience rather than because the experimenter explains the hidden meteor process.
 
 This turns the inference's own proposed investigation into experimental pressure without scripting a goal for it. Time and bounded re-observation can answer before new sensing capability does.
+
+
+## Crossing 002 returns with change, but no cause
+
+A second natural biography was allowed to continue under the same bounded scene-summary aperture until 232 observations had accumulated, ending at `sampledAtMs: 706187.3`. Collection stopped before the 240-entry rolling ledger could erase the pristine beginning. The full chronology was handed to a fresh OUTSIDE inference with the same neutral prompt and no explanation of Crossing 001.
+
+The returned response was preserved verbatim under `research/evidence/continuity/crossing-002/outside-response.md` before interpretation.
+
+The response differs materially from Crossing 001. The first crossing organized accumulated morphology into a largely static spatial theory: a depression ring, crescent or trench, relief peaks, and a static geographic artifact. Crossing 002 instead organized the evidence temporally: an initially flat phase, a transition in which deviations appear, and a later high-relief phase. It still did not infer the omitted meteor process, but it no longer treated the measured morphology as simply static.
+
+That difference matters because no new aperture or hidden explanation was supplied between crossings. The later inference received more experience through the same instrument. A longer bounded trajectory was sufficient to change the kind of account produced: from primarily spatial structure toward observed change through time.
+
+The response also made a clear bookkeeping error. It reported **104 distinct terrain profiles**, while the frozen Crossing 002 parcel contains **232 chronological observations**. It nevertheless cited the true final sample time of `706187.3` and reported extrema consistent with the longer record, including maximum roughness near `0.276` and maximum local height range near `1.044`. The error is preserved rather than repaired. At minimum, it shows that useful temporal interpretation does not imply faithful accounting of the evidence set.
+
+As in Crossing 001, `boundedOccupants` remained empty and the inference correctly noticed that absence. It again volunteered possible next investigations: map strongest-deviation paths or filter by timestamp/roughness.
+
+### Resolution against hidden Crucible history
+
+Authoritative Crucible history still contains the omitted cause: autonomous meteor weather repeatedly impacted and deformed terrain while the orbital locus sampled only resulting morphology. Crossing 002 was not told this.
+
+The second encounter therefore demonstrates a narrower and more useful result than causal identification. Repeated bounded observations made **change itself legible** to an independently instantiated inference even while the cause remained unavailable. The inference moved closer to the world's temporal structure without being granted privileged access to it.
+
+No new sensing capability is earned merely because the causal explanation remains absent. The present evidence supports continuing to distinguish three things: what changed in the authoritative world, what crossed the aperture, and what an inference constructed from that history.
