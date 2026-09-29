@@ -2,6 +2,14 @@
 
 This file states present-tense truths about Crucible's executable systems. It is not an implementation plan, experiment diary, or instruction manual.
 
+## Meteor weather is independent world noise
+
+Crucible autonomously produces deterministic-but-erratic meteor weather. Weather events alternate unpredictably among isolated singlets, short bursts, and occasional denser showers. Individual impacts vary in magnitude and are targeted across the material field.
+
+Meteor weather does not query the orbital station, its footprint, its observations, or its analysis. It is Terrordrome activity rather than stimulus scheduled for the locus.
+
+Consequently, station observations may contain direct deformation, partial consequences, old consequences encountered later in the sweep, or no meteor-relevant evidence at all.
+
 ## The orbital station is a permanent Crucible fixture
 
 Crucible contains one persistent orbital station descended visually from World Lab's `OrbitalConstruction T1`.
