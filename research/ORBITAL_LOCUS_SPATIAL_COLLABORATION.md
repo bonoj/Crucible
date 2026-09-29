@@ -211,3 +211,28 @@ A future locus may use such evidence, combine it with another instrument, attend
 ### Collaboration observation
 
 The human contribution at this step was conceptual rather than corrective: they identified the emerging pattern as provision of optional tools rather than seeded agent behavior. That interpretation materially clarifies the experiment while leaving implementation choices with the model.
+
+
+## Controlled spatial probes without behavioral seeding
+
+The model continued under the delegated instruction rather than requesting a new human choice.
+
+A repeatable probe apparatus was added around the existing sensor chain. It does not add behavior to the locus or special knowledge to the analyzer. Instead it constructs known physical conditions, captures them through the same footprint/aperture, and submits the resulting frozen observations to the same blind analysis system.
+
+The initial cases are:
+
+- untouched flat terrain;
+- one impact centered under the footprint;
+- one impact near the footprint edge;
+- overlapping impacts;
+- footprint coverage near the apparatus boundary.
+
+Each case resets terrain before construction, uses the real terrain deformation machinery, relocates the existing locus for capture, then restores the live world. The analyzer is not told which case produced an observation.
+
+### Why this matters for spatial collaboration
+
+Until this point, human visual inspection was the principal external check on whether model-built spatial machinery corresponded to the experienced world. The controlled probe apparatus creates a second route: known world construction can now be compared against what survives through bounded sensing and blind derivation.
+
+This does not remove the human perceptual role. It gives the collaboration a way to distinguish failures in world construction, sensing, representation, and interpretation before asking the human to diagnose the whole stack from a screenshot.
+
+No additional human spatial prescription was required for the test layout or instrumentation.
