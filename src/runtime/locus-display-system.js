@@ -1,32 +1,19 @@
 export function createLocusDisplaySystem({THREE,station}){
-  const canvas=document.createElement("canvas");canvas.width=192;canvas.height=192;
-  const ctx=canvas.getContext("2d");
+  const canvas=document.createElement("canvas");canvas.width=384;canvas.height=256;const ctx=canvas.getContext("2d");
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
-  const mat=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
-  const screen=new THREE.Mesh(new THREE.PlaneGeometry(.24,.24),mat);
-  screen.position.set(.18,.31,.02);screen.rotation.set(-Math.PI/2,0,0);
-  const frame=new THREE.Mesh(new THREE.BoxGeometry(.27,.018,.27),new THREE.MeshStandardMaterial({color:0x4d5659,roughness:.55,metalness:.25}));
-  frame.position.copy(screen.position);frame.position.y-=.012;
-  station.object.add(frame);station.object.add(screen);
-
+  const root=new THREE.Group();root.name="station-feed-hud";root.visible=false;station.object.add(root);
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(1.72,1.10),new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));glow.position.z=-.012;root.add(glow);
+  const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));root.add(screen);
+  let open=false;function setOpen(v){open=!!v;root.visible=open;return open}function toggle(){return setOpen(!open)}
+  function updatePresentation(camera){if(!open||!camera)return;const sw=new THREE.Vector3();station.object.getWorldPosition(sw);const p=sw.clone().add(new THREE.Vector3(.95,.65,0));station.object.worldToLocal(p);root.position.copy(p);const cw=new THREE.Vector3();camera.getWorldPosition(cw);root.lookAt(cw)}
   function draw(observation){
-    ctx.fillStyle="#111713";ctx.fillRect(0,0,192,192);
-    ctx.strokeStyle="#d5ddd6";ctx.lineWidth=3;ctx.beginPath();ctx.arc(96,96,82,0,Math.PI*2);ctx.stroke();
-    const profile=observation?.measurement?.terrainProfile;
-    if(!profile?.samples?.length){ctx.fillStyle="#9aa59d";ctx.font="14px sans-serif";ctx.fillText("NO SAMPLE",54,100);texture.needsUpdate=true;return;}
-    const fp=observation.footprint, r=Math.max(.001,fp.radius), samples=profile.samples;
-    const min=profile.minHeight,max=profile.maxHeight,span=Math.max(.001,max-min);
-    for(const s of samples){
-      const dx=(s.x-fp.center[0])/r,dz=(s.z-fp.center[2])/r;
-      const v=(s.height-min)/span;
-      const light=Math.round(28+v*65);
-      ctx.fillStyle=`hsl(36 18% ${light}%)`;
-      ctx.beginPath();ctx.arc(96+dx*82,96+dz*82,7,0,Math.PI*2);ctx.fill();
-    }
-    ctx.fillStyle="#e6a14a";ctx.beginPath();ctx.arc(96,96,3,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#d5ddd6";ctx.font="11px monospace";ctx.fillText(`R ${(max-min).toFixed(3)}`,8,184);
-    texture.needsUpdate=true;
+    ctx.clearRect(0,0,384,256);ctx.fillStyle="rgba(30,145,205,.09)";ctx.fillRect(8,8,368,240);ctx.strokeStyle="rgba(122,220,255,.70)";ctx.lineWidth=2;ctx.strokeRect(8,8,368,240);
+    ctx.strokeStyle="rgba(122,220,255,.28)";ctx.beginPath();ctx.moveTo(24,38);ctx.lineTo(360,38);ctx.stroke();ctx.fillStyle="rgba(170,235,255,.88)";ctx.font="15px monospace";ctx.fillText("ORBITAL LOCUS // SCENE SUMMARY",24,29);
+    const profile=observation?.measurement?.terrainProfile;if(!profile?.samples?.length){ctx.fillStyle="rgba(150,220,245,.68)";ctx.font="16px monospace";ctx.fillText("AWAITING APERTURE SAMPLE",72,138);texture.needsUpdate=true;return}
+    const fp=observation.footprint,r=Math.max(.001,fp.radius),samples=profile.samples,min=profile.minHeight,max=profile.maxHeight,span=Math.max(.001,max-min),cx=192,cy=139,rr=82;
+    ctx.strokeStyle="rgba(110,215,255,.55)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,rr,0,Math.PI*2);ctx.stroke();ctx.strokeStyle="rgba(110,215,255,.16)";ctx.lineWidth=1;for(const q of [.33,.66]){ctx.beginPath();ctx.arc(cx,cy,rr*q,0,Math.PI*2);ctx.stroke()}
+    for(const s of samples){const dx=(s.x-fp.center[0])/r,dz=(s.z-fp.center[2])/r,v=(s.height-min)/span,alpha=.28+v*.67,rad=3.5+v*2.5;ctx.fillStyle=`rgba(130,225,255,${alpha.toFixed(3)})`;ctx.beginPath();ctx.arc(cx+dx*rr,cy+dz*rr,rad,0,Math.PI*2);ctx.fill()}
+    ctx.fillStyle="rgba(220,250,255,.95)";ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(170,235,255,.88)";ctx.font="12px monospace";ctx.fillText(`RELIEF ${(max-min).toFixed(3)}`,24,231);ctx.fillText(`FOOTPRINT R ${r.toFixed(2)}`,224,231);texture.needsUpdate=true
   }
-  draw(null);
-  return{update:draw,inspect(){return{kind:"locus-evidence-display",source:"latest recorded aperture observation",privilegedWorldAccess:false}}};
+  draw(null);return{update:draw,toggle,setOpen,updatePresentation,containsObject(object){for(let o=object;o;o=o.parent)if(o===root)return true;return false},inspect(){return{kind:"locus-evidence-display",presentation:"station-local camera-facing summoned HUD",open,source:"latest recorded aperture observation",privilegedWorldAccess:false}}}
 }
