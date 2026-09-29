@@ -25,6 +25,13 @@ export function createTerrainSystem({THREE,scene}){
   const CHUNK=10,CX=Math.ceil((NX-1)/CHUNK),CZ=Math.ceil((NZ-1)/CHUNK),chunks=[],mesh=new THREE.Group();mesh.name="deformable-world-substance";scene.add(mesh);
   for(let cz=0;cz<CZ;cz++)for(let cx=0;cx<CX;cx++){const geometry=new THREE.BufferGeometry(),part=new THREE.Mesh(geometry,material);part.receiveShadow=true;part.name=`terrain-chunk-${cx}-${cz}`;mesh.add(part);chunks.push({cx,cz,geometry,mesh:part,triangles:0});}
   const apparatusMaterial=new THREE.MeshStandardMaterial({color:0x3f4745,roughness:.78,metalness:.22}),apparatus=new THREE.Mesh(new THREE.CylinderGeometry(APPARATUS_RADIUS,APPARATUS_RADIUS,APPARATUS_DEPTH,8,1,false,Math.PI/8),apparatusMaterial);apparatus.position.y=APPARATUS_TOP-APPARATUS_DEPTH*.5;apparatus.name="crucible-octagonal-apparatus";apparatus.receiveShadow=true;scene.add(apparatus);
+  // World-space visibility boundary: anything opting into this plane is invisible below
+  // the plinth top, independent of the apparatus' finite rendered depth.
+  const belowPlinthOcclusion=new THREE.Plane(new THREE.Vector3(0,1,0),-APPARATUS_TOP);
+  function occludeBelowPlinth(object){
+    object.traverse(o=>{if(!o.isMesh||!o.material)return;const materials=Array.isArray(o.material)?o.material:[o.material];for(const mat of materials){const planes=mat.clippingPlanes||[];if(!planes.includes(belowPlinthOcclusion))mat.clippingPlanes=[...planes,belowPlinthOcclusion];mat.needsUpdate=true;}});
+    return object;
+  }
   function rebuildChunk(chunk){
     const raw=[],x0=chunk.cx*CHUNK,x1=Math.min(NX-1,x0+CHUNK),z0=chunk.cz*CHUNK,z1=Math.min(NZ-1,z0+CHUNK);
     for(let z=z0;z<z1;z++)for(let y=0;y<NY-1;y++)for(let x=x0;x<x1;x++){const ps=corners.map(c=>wp(x+c[0],y+c[1],z+c[2])),vs=corners.map(c=>field[idx(x+c[0],y+c[1],z+c[2])]);for(const t of tets)polygonize(t.map(i=>ps[i]),t.map(i=>vs[i]),raw)}
@@ -114,5 +121,5 @@ export function createTerrainSystem({THREE,scene}){
   }
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();rebuildSupport();
-  return{mesh,apparatus,field,rebuild,impact,excavate,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,excavate,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
