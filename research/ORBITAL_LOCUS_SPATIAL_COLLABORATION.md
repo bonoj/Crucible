@@ -592,3 +592,22 @@ The human explicitly chose to keep this chronological source terse but lossless:
 > "Let's capture it in the logs, when we unzip to respective repos later we can let those claras unpack and expand. That keeps this terse but lossless."
 
 Accordingly, this record preserves the co-occurrence and provenance of the ideas without assigning them to Moth, DigitalFamiliar, Phenome, Clara, or another research ontology now. Later repo-specific work can extract, expand, challenge, or reinterpret the observation while this field record remains the chronological source.
+
+
+## Expeditionary records as synthetic data
+
+A stray thought arose from the natural locus biography rather than from a planned data program:
+
+> "this is legit synthetic data. And at scale in an ea steam release or app/play store you could get cloud and local model calls as well as human in the loop playing games... just something to consider."
+
+The useful property is not merely that Crucible can generate simulated measurements. The expedition can preserve a causal sequence with unusually explicit provenance: authoritative world process, bounded availability, measured evidence, optional derivation, inference or human participation, action, consequence, and later evidence. This could make trajectories themselves useful synthetic data rather than treating isolated frames or labels as the primary unit.
+
+At larger distribution scale, the same world substrate could in principle be encountered by humans, local models, cloud models, or mixtures of them. Because the simulation retains causal authority while each participant receives bounded evidence, later analysis could distinguish what was available, what was attended to, what could not have been known from the available evidence, what was inferred, and what consequences followed.
+
+No release strategy, data-collection program, model-training claim, or product direction is established here. The thought is preserved because it emerged naturally from the apparatus.
+
+The human then made the methodological decision explicit:
+
+> "Just stick it in this log. This expeditionary format is the answer."
+
+For this investigation, the chronological expedition record remains the lossless source. Potential later research surfaces should be derived by unzipping this record rather than replacing it with prematurely separated strategy documents.
