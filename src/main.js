@@ -50,7 +50,6 @@ const waterBottom=-1.42,waterLevel=-.12,waterDepth=waterLevel-waterBottom,waterR
 // Impact bus must exist before producers and subscribers are constructed.
 const impacts=createImpactSystem();
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus,onImpact:e=>{
- lights.pulse(2.5);
  impacts.emit({kind:"meteor",position:e.point,radius:Math.max(1.4,3.2*e.magnitude),impulse:18*e.magnitude,magnitude:e.magnitude,terrainChanged:e.terrainChanged});
 }});
 const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors});
