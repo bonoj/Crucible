@@ -236,3 +236,33 @@ Until this point, human visual inspection was the principal external check on wh
 This does not remove the human perceptual role. It gives the collaboration a way to distinguish failures in world construction, sensing, representation, and interpretation before asking the human to diagnose the whole stack from a screenshot.
 
 No additional human spatial prescription was required for the test layout or instrumentation.
+
+
+## A testing-boundary miss caught before interpretation
+
+When asked to continue, the model initially described the controlled browser probe apparatus as ready to "execute." On inspection, Crucible had no automated test runner. The debug hook made the experiment callable in a live browser, but that is not equivalent to having executed and preserved its evidence.
+
+This was a model-side epistemic miss rather than a geometry bug: **testable was nearly conflated with tested.**
+
+The correction separated two claims:
+
+1. a pure spatial derivation can discriminate known synthetic height profiles;
+2. the live Crucible terrain/aperture chain can produce useful real profiles.
+
+The first claim is now executable under CI. The terrain-evidence derivation was extracted into a pure module and tested against flat, centered depression, centered rise, and asymmetric edge-deformation profiles. Candidate builds now run those tests before bundling.
+
+The second claim remains a browser/world experiment and should not be silently promoted to established evidence merely because the debug apparatus exists.
+
+### What the pure probe earned
+
+Without semantic labels, the derived evidence distinguishes:
+- flat profile: zero relief, roughness, and center/edge difference;
+- centered depression: negative center relative to edge and center as strongest deviation;
+- centered rise: positive center relative to edge;
+- asymmetric deformation: substantial relief with strongest deviation away from center.
+
+This validates the low-level geometry calculation, not crater recognition.
+
+### Collaboration consequence
+
+No human correction was required to expose this miss. The model found it while trying to close the executable-evidence loop after a one-symbol continuation request. This is worth preserving because the collaboration study is not only about whether the model understands 3D space; it is also about whether it correctly tracks the provenance and strength of its own spatial claims.
