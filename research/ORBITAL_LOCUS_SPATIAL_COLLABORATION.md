@@ -402,3 +402,20 @@ The human then made the intended persistence explicit:
 At repository scale, ordinary Markdown growth is not a meaningful storage or deployment risk here. If the record becomes very large, the likely constraint is navigability and model retrieval cost rather than Git's ability to preserve it. That can be addressed later with derived indexes or maps while retaining this source intact.
 
 From this point forward, substantive turns in the orbital-locus investigation should be captured here with their uncertainty, corrections, implementation consequences, and experienced observations preserved rather than retrospectively compressed into a cleaner theory.
+
+
+## First natural bombardment watch begins
+
+The human joked that the eventual large chronological record could be sent through "unzip city," then began watching the autonomous meteor bombardment from the orbital station for several minutes while the locus ledger accumulated naturally.
+
+This is the first deliberately hands-off observation interval after autonomous meteor weather and portable locus logging were both present.
+
+No sensing changes should be made during this interval. The point is to let the existing chain produce an ordinary record before inspecting or tuning it:
+
+**Terrordrome activity -> moving footprint -> aperture -> observation -> blind derivation -> locus ledger**
+
+While that record accumulates, the next design question can be investigated without changing the apparatus:
+
+> What is the smallest parcel of legitimate locus evidence that can be handed to an independently instantiated inference without also handing it hidden world truth, a prescribed objective, a personality, or a preinterpreted account of what matters?
+
+The current inclination is to preserve the same epistemic boundary already enforced by the ledger. A future inference parcel may expose available observations and tools, but tool availability should not prescribe attention or behavior. This remains a design question until the first natural ledger is inspected.
