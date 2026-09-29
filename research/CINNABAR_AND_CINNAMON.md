@@ -511,3 +511,14 @@ Correction accepted prospectively. The two-turn initiative rule was an intermedi
 The scored representation now makes the intended ordering explicit: ordinary turns form the array; Clockchain resolutions are terminal records keyed to the turn after which they occurred. A historical resolution may remain in the ledger without driving presentation once a later turn exists. Only a resolution for the current terminal turn may raise a token. Therefore adding Turn 3 moves the active Clockchain after Turn 3 rather than allowing the Turn 2 winner to float during Turn 3.
 
 The earlier fast-forward easing typo was also corrected while inspecting this path: the edge interpolation now ranges from 0 to 1 rather than being clamped permanently to 1.
+
+
+## Turn 4 — Human
+
+> The meteorstorm abates.
+
+### Executable consequence
+
+Turn 4 begins at the Turn 3 frontier and lasts 6.5 simulated seconds. Meteor weather enters abatement: no new weather packets begin during the interval, while already-scheduled members of an existing packet are allowed to finish. At the end of the scored consequence autonomous meteor weather is quiescent. The meteor system itself remains present; this turn does not delete meteor capability or claim that Crucible can never experience another meteor.
+
+Clockchain remains terminal. It does not speak until this Turn 4 consequence has completed.

@@ -57,10 +57,10 @@ const impacts=createImpactSystem();
 const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terrain,locus,onImpact:e=>{
  impacts.emit({kind:"meteor",position:e.point,radius:Math.max(1.4,3.2*e.magnitude),impulse:18*e.magnitude,magnitude:e.magnitude,terrainChanged:e.terrainChanged});
 }});
-const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors});
+const cinnabarAndCinnamon=createCinnabarAndCinnamon();
+const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors,field:cinnabarAndCinnamon});
 const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts});
 const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,terrain,bearings,locus});
-const cinnabarAndCinnamon=createCinnabarAndCinnamon();
 const cinnabarDome=createCinnabarDomeSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
 const cinnabarKite=createCinnabarKiteSystem({THREE,scene:three.scene,field:cinnabarAndCinnamon,dome:cinnabarDome});
 const coupletTrial=createCoupletTrialSystem({world,components,THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon,locus});

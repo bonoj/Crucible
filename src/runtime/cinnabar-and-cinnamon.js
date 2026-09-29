@@ -4,7 +4,8 @@ export function createCinnabarAndCinnamon(){
   const turns=[
     {turn:1,actor:"human",at:0,duration:12000,kind:"raise-dome"},
     {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"},
-    {turn:3,actor:"human",at:22000,duration:5200,kind:"clockchain-burrow-to-dome"}
+    {turn:3,actor:"human",at:22000,duration:5200,kind:"clockchain-burrow-to-dome"},
+    {turn:4,actor:"human",at:27200,duration:6500,kind:"meteorstorm-abates"}
   ];
   // Historical resolutions remain evidence, but only a resolution whose afterTurn
   // equals the current terminal turn may drive the visible Clockchain.
