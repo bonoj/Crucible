@@ -181,3 +181,14 @@ This is a small watchlist, not a refactor docket. Entries belong here when a con
 - **Main-loop concentration.** `main.js` currently owns composition, frame scheduling, fixed-step body physics, interaction routing, UI wiring, and debug exposure. This is still legible at present scale; another independent physical process may provide evidence for extracting scheduling or ordinary-body physics rather than refactoring preemptively.
 
 Terrain support rebuilding is deliberately **not** on this watchlist: terrain mutations now carry their already-known dirty footprint into terrain-owned support rebuilding, so callers remain ignorant of the support representation and local mutations do not require a global support refresh.
+
+
+## Granular matter exposes a cheap spatial projection, not per-grain occupants
+
+The bearing system maintains a 64 by 64 planar density projection while performing the authoritative bearing integration it already owes. Each integrated bearing increments one projection cell after collision/support resolution. This adds constant work to the existing per-bearing pass and does not create ECS entities, per-bearing bounds, spatial searches, or additional rendering work.
+
+The scene-summary aperture can sample that projection only inside its current footprint. The resulting observation reports bounded granular occupancy as presence and average cell density plus projection sampling provenance. It does not expose authoritative bearing count, individual bearing positions, bearing identity, or unrestricted access to the density field.
+
+The bearing system knows how its granular population projects into space. The aperture knows only how to request a bounded spatial measurement. This is observational availability, not object recognition: downstream inference is not told that the measured granular occupancy consists of ball bearings.
+
+This establishes a reusable seam: expensive or numerous world truth may maintain a cheap spatial availability projection as part of work already being performed, while a locus pays only for bounded sampling of that projection.

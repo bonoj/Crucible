@@ -1088,3 +1088,20 @@ This closes the embodiment/locomotion repair loop. The accepted behavior include
 The extruder is now accepted world behavior rather than a design-yard or repair candidate. Further changes should be motivated by new experimental evidence, not continued polishing.
 
 With the autonomous world process accepted, the expedition returns to the orbital-locus question: expose the existing bounded aperture to the richer world without adding extruder semantics, a new sensor, privileged ECS truth, or Clara-specific machinery, and observe what the current evidence chain can actually recover.
+
+
+## Crossing 003 preparation — granular truth becomes bounded spatial availability
+
+Before exposing the accepted autonomous extruder world to another inference crossing, the human and model aligned on a scaling constraint: the station must not discover granular matter by asking every authoritative bearing whether it lies inside the station footprint.
+
+The chosen seam preserves both performance and the epistemic boundary. During the bearing integration already required for simulation, each bearing increments one cell in a 64 by 64 planar density projection after terrain collision/support resolution. The projection is rebuilt in that same pass. No per-bearing ECS entities, bounds, secondary search, or observation loop were introduced.
+
+The existing scene-summary aperture can sample only the projection cells intersecting its bounded footprint. What crosses the aperture is granular occupancy evidence: whether material is present, average density across sampled cells, and enough sampling provenance to interpret that measurement. Individual positions, authoritative bearing count, and the semantic label "ball bearing" do not cross.
+
+The collaboration principle under test is broader than bearings:
+
+**expensive world truth → cheap world-owned spatial availability → bounded aperture measurement**
+
+A numerous system may compress its own truth into a spatial projection while doing work it already owes. A locus can then observe the projection at cost proportional to its aperture rather than the world's population. The projection does not make the observer omniscient and does not identify what the material means.
+
+This machinery was added specifically without improving Clara, adding a second aperture, or teaching the station about the extruder. Crossing 003 can therefore ask what the existing bounded observation chain recovers from the richer autonomous world.
