@@ -152,3 +152,16 @@ The chronograph is therefore not an aperture, memory mechanism, attention policy
 Meteor heads and their short particulate wakes are presentation geometry. Wake particles are emitted sequentially in simulation time, fade independently, and carry no collision, terrain, ECS, or causal meaning.
 
 The current particulate wake replaces the earlier rigid line tail. Meteor impact consequences remain separate. No bearing splash or other physical impact matter is implied by the wake; that seam is intentionally available for later work.
+
+
+## Bearings use the recovered Foundry baseline
+
+Crucible contains a spawnable bearing batch derived from the last known-good Foundry bearing vocabulary rather than from the abandoned GPU/contact experiments.
+
+A control spawns 25,000 ordinary bearings per activation. Bearings use radius 0.22, array-backed authoritative position/velocity state, and one instanced presentation mesh. They are not represented as 25,000 independent Three.js meshes.
+
+Bearing support is authored from the final clipped rendered terrain triangles on a 112 by 112 support field, matching the important Foundry terrain seam. The immutable octagonal plinth remains separate from deformable terrain: its top participates in ground support and its exposed vertical sides are resolved analytically against bearing radius.
+
+The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Spacing, stacking quality, bearing-bearing contact, and later impact splash behavior are explicitly outside this restoration pass.
+
+The bearing batch is a Crucible entity, but it does not currently expose a single `SpatialBounds` component. A batch-wide bound would falsely represent many distributed bearings as one footprint occupant. Per-bearing observational availability remains a separate future seam.
