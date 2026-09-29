@@ -75,6 +75,14 @@ These are low-level spatial derivations. The analyzer does not label craters, im
 
 The existence of an analysis tool does not imply that a future model-mediated locus must use or attend to it.
 
+## The station feed is a diegetic presentation surface
+
+Tapping the orbital station can summon a translucent blue station-feed HUD. The display remains spatially associated with the moving station while orienting toward the active camera for legibility.
+
+The HUD renders the latest recorded scene-summary aperture evidence. Its camera-facing presentation does not grant a camera aperture, renderer access, faster sampling, or additional world knowledge. It is a human-visible presentation of evidence that already crossed the station's epistemic boundary.
+
+The feed is intentionally a presentation surface that can expand as future station evidence earns additional channels. Its existence does not itself add those channels.
+
 ## Observation is not behavior
 
 The orbital station currently has no model connection, goals, attention policy, autonomous decision-making, memory summary, semantic event history, object recognition, or command authority over Crucible.
