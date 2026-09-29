@@ -1075,3 +1075,16 @@ The distinction is intentional practice:
 Terrain support rebuilding provided an immediate example. It initially appeared on the performance watchlist because every local terrain mutation rebuilt the complete support raster. Inspection showed that terrain already owned the mutation footprint. The smallest repair kept that footprint inside terrain and reused it for both visual and support refresh. Meteor and extruder callers remained ignorant of the representation. Once repaired, the item was explicitly removed from the watchlist rather than retained as historical debt.
 
 This watchlist pattern is itself candidate reusable practice for later extraction: preserve architectural and performance pressure without allowing the record to become a speculative refactoring queue. The Crucible field log remains the chronological bag of holding for how such practices were earned; the semantic surface carries only the current truth.
+
+
+## Extruder field acceptance
+
+Human field inspection after the physical-discharge, authoritative-facing, earned-turning, and local terrain-support repairs accepted the extruder without qualification:
+
+> "The extruder is stamped super fuckin cool. Approved."
+
+This closes the embodiment/locomotion repair loop. The accepted behavior includes the selected Yard #25 body, spinning cutter, streamed rear bearing discharge, continuous authoritative facing, bounded turning at material edges, autonomous excavation, and terrain-owned local support refresh.
+
+The extruder is now accepted world behavior rather than a design-yard or repair candidate. Further changes should be motivated by new experimental evidence, not continued polishing.
+
+With the autonomous world process accepted, the expedition returns to the orbital-locus question: expose the existing bounded aperture to the richer world without adding extruder semantics, a new sensor, privileged ECS truth, or Clara-specific machinery, and observe what the current evidence chain can actually recover.
