@@ -10,7 +10,10 @@ export function createCinnabarAndCinnamon(){
   // Historical resolutions remain evidence, but only a resolution whose afterTurn
   // equals the current terminal turn may drive the visible Clockchain.
   const clockchain=[
-    {afterTurn:2,owner:"human",method:"clockchain-derived",at:22000}
+    {afterTurn:2,owner:"human",method:"clockchain-derived",at:22000},
+    // Turn 3 resolved Human under the original derivation before Turn 4 was authored.
+    // Persist it here so every later Clockchain head contains the same immutable history.
+    {afterTurn:3,owner:"human",method:"clockchain-derived",at:27200,seed:4078113516}
   ];
   let origin=null,replays=0,fastForwardTarget=null;
   function update(now){if(origin==null)origin=now;return Math.max(0,now-origin);}
