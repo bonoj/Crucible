@@ -611,3 +611,24 @@ The human then made the methodological decision explicit:
 > "Just stick it in this log. This expeditionary format is the answer."
 
 For this investigation, the chronological expedition record remains the lossless source. Potential later research surfaces should be derived by unzipping this record rather than replacing it with prematurely separated strategy documents.
+
+
+## Crossing 001 leaves the apparatus
+
+The 154-observation natural biography was frozen into a full inference parcel before the first OUTSIDE encounter. The crossing protocol and primary evidence live under `research/evidence/continuity/`.
+
+For this expedition, a **crossing** is defined operationally: one bounded handoff from frozen Crucible evidence to an independently instantiated inference that is not supplied the ongoing Crucible collaboration context, followed by preservation of its first substantive response before interpretation or comparison with authoritative world state. This does not assert that a provider's underlying model is stateless, memoryless, newly initialized, or internally isolated.
+
+Crossing 001 uses all 154 chronological observations and their optional blind derivations. The neutral handoff deliberately does not explain Crucible, meteors, terrain change, continuity, Moth, Clara, the desired result, or authoritative world history.
+
+At the moment of this note, the parcel has left the expedition and no OUTSIDE response has yet been incorporated.
+
+## A tiny history surface appears while the crossing is away
+
+While Crossing 001 is OUTSIDE, a deliberately non-causal station surface was added from already-earned evidence rather than adding another aperture.
+
+A small chronograph ring presents the latest 48 ledger observations as marks around the station. Relief range controls mark lift/scale and blind roughness supplies a small radial displacement. The source is the existing locus ledger only.
+
+This is a human-legible trace that the apparatus has accumulated observations, not a station memory system or new way of knowing. The full ledger remains the evidence source; the ring is a lossy presentation window.
+
+The choice also preserves the emerging station/loci distinction: the surface is tucked into the apparatus as an instrument rather than rendered as a large halo or privileged crown.
