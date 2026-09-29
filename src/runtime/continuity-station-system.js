@@ -1,5 +1,5 @@
 export function createContinuityStationSystem({world,components,THREE,scene}){
-  const {Transform,RenderObject,ContinuityLocus}=components;
+  const {Transform,RenderObject,ContinuityLocus,Footprint}=components;
 
   const hullMat=new THREE.MeshStandardMaterial({color:0xcfd3d1,roughness:.58,metalness:.16});
   const hull2Mat=new THREE.MeshStandardMaterial({color:0xaeb6b6,roughness:.62,metalness:.13});
@@ -64,7 +64,8 @@ export function createContinuityStationSystem({world,components,THREE,scene}){
   scene.add(station);
   world.add(id,Transform,{position:new THREE.Vector3(0,8.5,0),rotation:new THREE.Euler(.20,.35,.08),scale:new THREE.Vector3(3.2,3.2,3.2),visible:true});
   world.add(id,RenderObject,{object:station});
-  world.add(id,ContinuityLocus,{kind:"orbital-station",donor:"world-lab/OrbitalConstruction T1",footprint:null,apertures:[]});
+  world.add(id,ContinuityLocus,{kind:"orbital-station",donor:"world-lab/OrbitalConstruction T1",apertures:[]});
+  world.add(id,Footprint,{kind:"cone",halfAngle:THREE.MathUtils.degToRad(18),maxRadius:4.5,segments:56,debugVisible:true});
 
   return {
     id,
@@ -75,7 +76,7 @@ export function createContinuityStationSystem({world,components,THREE,scene}){
     },
     inspect(){
       const t=Transform.get(id),locus=ContinuityLocus.get(id);
-      return {id,kind:locus.kind,donor:locus.donor,position:t.position.toArray(),scale:t.scale.x,footprint:locus.footprint,apertures:[...locus.apertures]};
+      return {id,kind:locus.kind,donor:locus.donor,position:t.position.toArray(),scale:t.scale.x,apertures:[...locus.apertures]};
     }
   };
 }
