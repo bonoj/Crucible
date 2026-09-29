@@ -158,10 +158,10 @@ The current particulate wake replaces the earlier rigid line tail. Meteor impact
 
 Crucible contains a spawnable bearing batch derived from the last known-good Foundry bearing vocabulary rather than from the abandoned GPU/contact experiments.
 
-A control spawns 25,000 ordinary bearings per activation. Bearings use radius 0.22, array-backed authoritative position/velocity state, and one instanced presentation mesh. They are not represented as 25,000 independent Three.js meshes.
+A control spawns 25,000 ordinary bearings per activation. Bearings currently use radius 0.055 at Crucible scale, array-backed authoritative position/velocity state, and one instanced presentation mesh. They are not represented as 25,000 independent Three.js meshes.
 
 Bearing support is authored from the final clipped rendered terrain triangles on a 112 by 112 support field, matching the important Foundry terrain seam. The immutable octagonal plinth remains separate from deformable terrain: its top participates in ground support and its exposed vertical sides are resolved analytically against bearing radius.
 
-The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Spacing, stacking quality, bearing-bearing contact, and later impact splash behavior are explicitly outside this restoration pass.
+The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Bearing integration runs once per rendered frame using accumulated simulation delta rather than once per fixed 1/120 world-physics substep. This restores the high-count Foundry performance shape. Presentation sampling begins above 50,000 bearings and becomes progressively sparser at higher counts while authoritative bearing state continues to update.\n\nWorld impacts are distributed through a generic impact seam. Meteors emit an impact consequence with position, radius, and impulse; the bearing system subscribes and applies radial granular impulse to bearings inside that region. Bearings do not know about meteor entities. Other future systems can emit the same impact vocabulary without coupling themselves to bearing implementation.\n\nSpacing, stacking quality, and bearing-bearing contact remain outside this restoration pass.
 
 The bearing batch is a Crucible entity, but it does not currently expose a single `SpatialBounds` component. A batch-wide bound would falsely represent many distributed bearings as one footprint occupant. Per-bearing observational availability remains a separate future seam.
