@@ -565,3 +565,30 @@ No additional sensor or continuity machinery should be built before the returned
 7. Only after that encounter decide whether the locus has earned another aperture, a way to request observations, an action surface, a persistent artifact, or no additional machinery at all.
 
 The important experimental hinge is no longer whether the station can collect data. It is whether bounded accumulated experience is enough for a discontinuous inference to construct something useful, surprising, mistaken, selective, or recognizably consequential from it without being told what matters.
+
+
+## A station may be a distribution of loci
+
+After returning the first substantial accelerated biography, the human projected the apparatus forward to a noisier station and surface:
+
+> "Yeah now imagine when we have agents on station and below running amok. Tons for a single moth to attend to selectively."
+
+The observation is preserved without turning it into a Moth design. A future Crucible may contain many simultaneously available processes: agents aboard the station, agents below, physical changes, instruments, communications, failures, construction, weather, and consequences whose causes were not attended to. Under those conditions, selective attention could determine which small fraction of a much larger causal world becomes experience.
+
+The human then connected this to an earlier Phenome suspicion:
+
+> "And we already suspected a phenome can emerge at any locus. Station is a distribution of loci."
+
+This suggests a useful reframing without establishing a theory. The orbital footprint need not be identical with *the* station locus. The station can support multiple situated relationships to the same authoritative world: instruments, compartments, agents, consoles, mobile bodies, surface relationships, or temporary encounters may each provide loci with different availability and consequence.
+
+If phenome-like continuity can emerge at a locus, then Crucible need not designate in advance which locus is the persistent subject. Some loci may remain instruments, some may be inhabited intermittently, some may overlap or disappear, and some may accumulate enough consequential history that later participation becomes observably different because earlier participation happened.
+
+No `Phenome` system, distributed-agent architecture, or Moth attention mechanism is earned by this observation. It is recorded here because the ideas arose together from the executable orbital-locus work.
+
+### Deferred unzipping
+
+The human explicitly chose to keep this chronological source terse but lossless:
+
+> "Let's capture it in the logs, when we unzip to respective repos later we can let those claras unpack and expand. That keeps this terse but lossless."
+
+Accordingly, this record preserves the co-occurrence and provenance of the ideas without assigning them to Moth, DigitalFamiliar, Phenome, Clara, or another research ontology now. Later repo-specific work can extract, expand, challenge, or reinterpret the observation while this field record remains the chronological source.
