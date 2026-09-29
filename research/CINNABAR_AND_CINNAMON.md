@@ -591,3 +591,20 @@ The human accepted the move with: “Hah, still clinging to that paper. Plant yo
 The existing pale kite is reused rather than replaced. During Turn 9 its free drift converges on the distant spire and its visible sheet contracts into the remnant caught high on the needle. The result is a pale wind-worked flag/streamer belonging to the kite's history, not a newly summoned banner.
 
 This is the first scored Model turn since Turn 2.
+
+
+## Turn 10 — Model
+
+> The Clockchain does not remain on the floor of the dome.
+>
+> The little brass oracle begins to climb.
+>
+> Slowly, absurdly, the entire mechanism crawls up the inside of the skeletal ribs, carrying both chained tokens with it. It comes to rest high inside the dome, turned sideways beneath the crown.
+>
+> It still works.
+
+### Executable consequence
+
+The existing Clockchain mechanism is moved rather than duplicated. Over seven simulated seconds it rises from the dome center into the upper structure and rotates onto its side beneath the crown. Both chained tokens remain children of the mechanism and travel with it. Its initiative function is unchanged.
+
+The human observed the Turn 9 Clockchain result as Model, giving the Model Turn 10.
