@@ -54,4 +54,8 @@ The live debug surface exposes `crucible.cinnabarAndCinnamon.replay()` and `insp
 
 ### Executable consequence
 
-Pending implementation. Preserve the move before deciding how much machinery it earns.
+Turn 2 is scored immediately after the dome rise: `12,000 ms → 10,000 ms → unfurl-kite`.
+
+The prototype is intentionally lavish but remains deterministic. A tapered pale cloth mesh uses a 15 × 29 articulated vertex grid whose billow is recomputed from analytic wind functions of field time. It climbs downwind from the dome finial, remains continuously tethered by a visible line, flexes across its surface, and never becomes a free physics body. Its pose, cloth deformation, and tether state are therefore replayable from the field score without recording per-frame state.
+
+This is expensive presentation, not a generalized cloth or weather system. The move earned a badass kite; it did not yet earn universal cloth physics.

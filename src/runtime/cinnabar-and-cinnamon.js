@@ -2,7 +2,8 @@ export function createCinnabarAndCinnamon(){
   // The play record is a deterministic score, not a wall-clock transcript.
   // New turns append after the previous scored consequence unless a turn earns explicit timing.
   const turns=[
-    {turn:1,actor:"human",at:0,duration:12000,kind:"raise-dome"}
+    {turn:1,actor:"human",at:0,duration:12000,kind:"raise-dome"},
+    {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"}
   ];
   let origin=null,replays=0;
   function update(now){if(origin==null)origin=now;return Math.max(0,now-origin);}
