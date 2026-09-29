@@ -678,3 +678,98 @@ Authoritative Crucible history still contains the omitted cause: autonomous mete
 The second encounter therefore demonstrates a narrower and more useful result than causal identification. Repeated bounded observations made **change itself legible** to an independently instantiated inference even while the cause remained unavailable. The inference moved closer to the world's temporal structure without being granted privileged access to it.
 
 No new sensing capability is earned merely because the causal explanation remains absent. The present evidence supports continuing to distinguish three things: what changed in the authoritative world, what crossed the aperture, and what an inference constructed from that history.
+
+
+# Crossings to date — compact handoff
+
+This section is a derived summary for a model or human entering the orbital-locus investigation from this file alone. The chronological field record above remains the source narrative. Verbatim OUTSIDE responses and post-hoc resolution notes remain separate primary evidence so this summary can stay compact without replacing them.
+
+## Experimental boundary
+
+The orbital station is a permanent Crucible fixture carrying a bounded `scene-summary` aperture. Its projected footprint samples terrain morphology and opt-in bounded occupants. The aperture does not receive authoritative terrain state, meteor event history, hidden ECS state, controlled-probe labels, unmeasured object identities, objectives, or personality/identity instructions.
+
+The authoritative world can change independently of the station. During the crossings below, autonomous meteor weather repeatedly deformed terrain, but meteor history did not cross the aperture boundary. Meteors also did not opt into the `SpatialBounds` occupancy route. This makes it possible for an inference to encounter consequences without receiving their causes.
+
+A **crossing** is one bounded handoff from frozen Crucible evidence to an independently instantiated inference that is not supplied the ongoing Crucible collaboration context, followed by preservation of its first substantive response before interpretation or comparison with authoritative world state. This operational definition does not claim provider-level statelessness, memorylessness, or internal isolation.
+
+## Crossing 001 — spatial structure from accumulated consequence
+
+**Input:** 154 chronological observations spanning approximately 465.4 simulated seconds. Same `scene-summary` aperture used throughout.
+
+**Primary evidence:**
+- [verbatim OUTSIDE response](evidence/continuity/crossing-001/outside-response.md)
+- [post-hoc resolution](evidence/continuity/crossing-001/resolution.md)
+
+The fresh inference correctly recovered substantial quantitative structure: 154 observations, station orbital parameters, terrain extrema, repeated spatial sampling, and empty `boundedOccupants` arrays.
+
+It organized that evidence primarily as persistent morphology. Its interpretation introduced a "Depression Ring," a localized crescent or trench, relief peaks, steep or jagged walls or built protrusions, and finally a "static, deeply scored structural arrangement or geographic artifact." It also described the parcel as authoritative evidence even though the parcel explicitly said it was bounded locus evidence rather than authoritative Crucible world state.
+
+Resolution against hidden Crucible history showed the important miss. The surface was changing under autonomous meteor impacts while the moving station sampled consequences. The inference recovered real morphology but treated temporally accumulated change as persistent geography.
+
+Its volunteered next interests were themselves preserved as evidence: inspect strongest deviations, map the proposed depression ring, or calculate station trajectory. No follow-up was given inside Crossing 001.
+
+**Compact reading:** Crossing 001 demonstrated that bounded accumulated experience was sufficient for a fresh inference to recover instrument structure and form a coherent spatial theory, but insufficient for it to recover the omitted temporal cause. Its strongest failure was epistemic rather than arithmetic: partial measurements became an overconfident static-world account.
+
+## Crossing 002 — longer experience makes change legible
+
+**Input:** 232 chronological observations ending at `sampledAtMs: 706187.3`, collected through the same aperture. Collection stopped before the 240-entry rolling ledger could erase the pristine beginning.
+
+**Primary evidence:**
+- [verbatim OUTSIDE response](evidence/continuity/crossing-002/outside-response.md)
+
+Crossing 002 received no explanation of Crossing 001 and no new sensing modality. Its response nevertheless changed character materially.
+
+Instead of centering a depression ring or static geographic artifact, it organized the evidence temporally:
+
+1. an initially flat phase,
+2. a transition in which relief and roughness appear,
+3. a later high-relief phase.
+
+It reported maximum roughness near `0.276` and local height range near `1.044`, and again noticed uniformly empty `boundedOccupants`.
+
+It did **not** recover the hidden meteor process. The causal boundary therefore held. What became more legible was change itself.
+
+The response also made a conspicuous accounting error: it claimed **104 distinct terrain profiles** although the frozen parcel contained **232 chronological observations**. It nevertheless cited the true final sample time and statistics consistent with the longer record. The error is intentionally preserved. Useful interpretation of trajectory and faithful accounting of trajectory are already separable properties.
+
+Its volunteered next interests again concerned the evidence rather than an externally supplied mission: map paths of strongest deviations or filter the ledger by timestamp or roughness threshold.
+
+**Compact reading:** With more bounded experience but no additional aperture or explanation, the later inference shifted from a predominantly static spatial account toward a temporal account of an initially flat surface becoming rugged. It still could not know why.
+
+## Comparison
+
+| Dimension | Crossing 001 | Crossing 002 |
+| --- | --- | --- |
+| Chronological observations supplied | 154 | 232 |
+| Same aperture | yes | yes |
+| Hidden meteor history supplied | no | no |
+| Empty bounded occupancy noticed | yes | yes |
+| Primary organizing account | persistent spatial morphology | temporal development of morphology |
+| Hidden cause recovered | no | no |
+| Major epistemic failure | promoted bounded morphology into authoritative/static geography | miscounted 232 observations as 104 |
+| Volunteered attention | strongest deviations, proposed depression ring, trajectory | strongest-deviation paths, timestamp/roughness filtering |
+
+The comparison does **not** establish that a model learned, remembered, became a persistent subject, or improved as an underlying model. The crossings used independently instantiated inference encounters.
+
+It does establish an executable distinction among:
+
+- authoritative world history,
+- what was available through a bounded locus,
+- the chronology of accumulated measurements,
+- what an inference attended to,
+- what it inferred beyond those measurements,
+- what it failed to account for,
+- and what it spontaneously proposed investigating next.
+
+The strongest current observation is deliberately narrower than a Digital Familiar claim:
+
+> A longer trajectory of bounded experience through the same instrument changed what kind of account a discontinuous inference could construct. Crossing 001 primarily explained accumulated consequence as structure. Crossing 002 made change through time legible while the hidden cause remained unavailable.
+
+That result is compatible with the broader working question of whether consequential trajectory can support continuity without first constructing a dedicated memory or personality architecture, but it does not answer that question by itself.
+
+## Current pressure
+
+No second aperture has yet been earned.
+
+The apparatus is already generating useful pressure by allowing authoritative world history to continue while preserving a stable epistemic boundary. Future crossings can therefore test whether later bounded experience causes earlier interpretations to survive, change, or fail before the experiment adds privileged sensing or explanatory machinery.
+
+This file is intended to be sufficient for orientation. Follow the linked primary evidence only when exact wording, audit, or re-analysis of a crossing matters.
