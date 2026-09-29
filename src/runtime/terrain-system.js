@@ -53,7 +53,7 @@ export function createTerrainSystem({THREE,scene}){
   function groundHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),tx=fx-ix,tz=fz-iz,A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];return THREE.MathUtils.lerp(THREE.MathUtils.lerp(A,B,tx),THREE.MathUtils.lerp(C,D,tx),tz);}
 
   function impact(center,{magnitude=1}={}){
-    const e=Math.max(.02,magnitude),radius=.72+.62*Math.sqrt(e),depth=.16+.72*Math.pow(e,.82),rim=.035+.16*Math.pow(e,.72);
+    const e=Math.max(.02,magnitude),radius=.72+.62*Math.sqrt(e),depth=.16+.72*Math.pow(e,.82),rim=.035+.16*Math.pow(e,.72),peakStrength=e>=.72?(.035+.13*Math.pow((e-.72)/.83,.72)):0,peakRadius=radius*.24;
     const ix0=Math.max(1,Math.floor((center.x-radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+radius-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1);
     const iz0=Math.max(1,Math.floor((center.z-radius-MIN.z)/(MAX.z-MIN.z)*(NZ-1))-1),iz1=Math.min(NZ-2,Math.ceil((center.z+radius-MIN.z)/(MAX.z-MIN.z)*(NZ-1))+1);
     const yr=radius*.62,iy0=Math.max(1,Math.floor((center.y-yr-MIN.y)/(MAX.y-MIN.y)*(NY-1))-1),iy1=Math.min(NY-2,Math.ceil((center.y+yr-MIN.y)/(MAX.y-MIN.y)*(NY-1))+1);
@@ -61,10 +61,10 @@ export function createTerrainSystem({THREE,scene}){
       const p=wp(x,y,z),dx=p.x-center.x,dz=p.z-center.z,radial=Math.hypot(dx,dz),dy=p.y-center.y;
       const bowl=Math.hypot(dx,dy*.82,dz);
       if(bowl<radius*.72){const w=1-bowl/(radius*.72);field[idx(x,y,z)]-=depth*w*w;}
-      if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}
+      if(radial>radius*.62&&radial<radius&&Math.abs(dy)<radius*.48){const ring=Math.sin(Math.PI*(radial-radius*.62)/(radius*.38)),vertical=Math.max(0,1-Math.abs(dy-radius*.08)/(radius*.48));field[idx(x,y,z)]+=rim*ring*vertical;}\n      if(peakStrength>0&&radial<peakRadius&&Math.abs(dy)<radius*.32){const radialWeight=1-radial/peakRadius,vertical=Math.max(0,1-Math.abs(dy-radius*.02)/(radius*.32));field[idx(x,y,z)]+=peakStrength*radialWeight*radialWeight*vertical;}
     }
     const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
-    return{magnitude:e,radius,depth,rim};
+    return{magnitude:e,radius,depth,rim,centralUplift:peakStrength};
   }
   function reset(){field.set(initial);rebuild();rebuildSupport();}
   function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();rebuildSupport();return seed;}
