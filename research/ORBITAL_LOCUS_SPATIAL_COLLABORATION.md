@@ -161,3 +161,24 @@ Continue this case study when a turn materially changes one or more of:
 - what becomes recoverable from executable evidence without human explanation.
 
 Prefer concrete turns and consequences over generalized claims. Preserve failures. Do not rewrite earlier uncertainty to make later understanding appear inevitable.
+
+
+## Continuing without a new human spatial prescription
+
+After accepting the first footprint visually, the human asked to continue and keep this collaboration record current:
+
+> "Yeah. Let's keep going and update this collab as we go."
+
+No new geometry, sensor type, sampling density, or desired answer was prescribed. The model therefore continued from the limitation exposed by the crater rather than asking the human to choose an implementation.
+
+### Terrain shape probe
+
+The existing scene-summary aperture was extended to sample raw terrain height at deterministic points distributed across its resolved footprint: a center sample plus three radial rings. The measurement records the sample coordinates and heights, along with minimum height, maximum height, and height range.
+
+The aperture is still not told that a crater exists, whether a meteor occurred, which terrain is "normal," or what shape the samples represent. It receives geometry-derived measurements only.
+
+This is a deliberate spatial-understanding probe: determine how much structure can become recoverable from bounded measurements before introducing semantic labels or a richer modality.
+
+### Steering burden
+
+For this change the human supplied direction only at the research-program level: continue the work and continue observing the collaboration. Sampling layout and representation were model-owned ordinary decisions. The next useful human intervention should be driven by executable/perceptual evidence rather than requested preemptively.
