@@ -28,7 +28,7 @@ Crucible has a simulation-time bucket with **1×, 4×, and 8×** rates. It defau
 
 Simulation time governs autonomous world processes whose passage defines Terrordrome experience: orbital-station motion and attitude, meteor-weather scheduling, meteor trajectories and impact timing, aperture sampling cadence, and therefore locus-ledger accumulation.
 
-Loose-matter physics participates in accelerated world time through bounded fixed substeps rather than by multiplying a single integration step. Excess physics debt is discarded if a render frame cannot safely service it.
+Ordinary ECS loose-matter physics participates in accelerated world time through bounded fixed substeps rather than by multiplying a single integration step. Excess physics debt is discarded if a render frame cannot safely service it. The separate high-count bearing batch is an explicit exception: it integrates once per rendered frame using a bounded accumulated simulation delta so bearing cost does not multiply with the fixed-substep count.
 
 Human and presentation time remain real-time. Camera/orbit input, pointer tap and drag thresholds, FPS measurement, HUD responsiveness and orientation, log download behavior, and browser/render cadence are not accelerated.
 
@@ -162,6 +162,10 @@ A control spawns 25,000 ordinary bearings per activation. Bearings currently use
 
 Bearing support is authored from the final clipped rendered terrain triangles on a 112 by 112 support field, matching the important Foundry terrain seam. The immutable octagonal plinth remains separate from deformable terrain: its top participates in ground support and its exposed vertical sides are resolved analytically against bearing radius.
 
-The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Bearing integration runs once per rendered frame using accumulated simulation delta rather than once per fixed 1/120 world-physics substep. This restores the high-count Foundry performance shape. Presentation sampling begins above 50,000 bearings and becomes progressively sparser at higher counts while authoritative bearing state continues to update.\n\nWorld impacts are distributed through a generic impact seam. Meteors emit an impact consequence with position, radius, and impulse; the bearing system subscribes and applies radial granular impulse to bearings inside that region. Bearings do not know about meteor entities. Other future systems can emit the same impact vocabulary without coupling themselves to bearing implementation.\n\nSpacing, stacking quality, and bearing-bearing contact remain outside this restoration pass.
+The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Bearing integration runs once per rendered frame using accumulated simulation delta rather than once per fixed 1/120 world-physics substep. This restores the high-count Foundry performance shape. Presentation sampling begins above 50,000 bearings and becomes progressively sparser at higher counts while authoritative bearing state continues to update.
+
+World impacts are distributed through a generic impact seam. Meteors emit an impact consequence with position, radius, and impulse; the bearing system subscribes and applies radial granular impulse to bearings inside that region. Bearings do not know about meteor entities. Other future systems can emit the same impact vocabulary without coupling themselves to bearing implementation.
+
+Spacing, stacking quality, and bearing-bearing contact remain outside this restoration pass.
 
 The bearing batch is a Crucible entity, but it does not currently expose a single `SpatialBounds` component. A batch-wide bound would falsely represent many distributed bearings as one footprint occupant. Per-bearing observational availability remains a separate future seam.
