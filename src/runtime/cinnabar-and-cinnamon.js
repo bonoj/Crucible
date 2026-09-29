@@ -3,9 +3,11 @@ export function createCinnabarAndCinnamon(){
   // New turns append after the previous scored consequence unless a turn earns explicit timing.
   const turns=[
     {turn:1,actor:"human",at:0,duration:12000,kind:"raise-dome"},
-    {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"}
+    {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"},
+    {turn:3,actor:"human",at:22000,duration:5200,kind:"clockchain-burrow-to-dome"}
   ];
-  const draws=[];
+  // First Clockchain result is now historical evidence: Human won the first couplet.
+  const draws=[{couplet:1,owner:"human",method:"clockchain-derived",at:22000}];
   let origin=null,replays=0,fastForwardTarget=null;
   function update(now){if(origin==null)origin=now;return Math.max(0,now-origin);}
   function replay(){origin=null;fastForwardTarget=null;replays++;}

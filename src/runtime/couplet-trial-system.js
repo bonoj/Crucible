@@ -7,7 +7,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   const base=new THREE.Mesh(new THREE.CylinderGeometry(.72,.86,.18,8),dark);base.position.y=.09;root.add(base);
   const rail=new THREE.Mesh(new THREE.BoxGeometry(1.45,.10,.22),brass);rail.position.y=.36;root.add(rail);
   const plunger=new THREE.Mesh(new THREE.CylinderGeometry(.16,.20,.42,10),brass);plunger.position.y=.62;root.add(plunger);
-  const px=-3.3,pz=2.7;root.position.set(px,terrain.groundHeight(px,pz),pz);scene.add(root);
+  const px=-3.3,pz=2.7,domeX=2.7,domeZ=1.8;root.position.set(px,terrain.groundHeight(px,pz),pz);scene.add(root);
 
   const linkGeo=new THREE.TorusGeometry(.045,.012,5,8);
   const specs=[
@@ -23,6 +23,7 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   });
 
   const seatedY=.70,raisedY=1.92,riseMs=1800,bob=.045;
+  const transit=field.turn(3);
   let state="parked",winner=null,resolvedAt=null,lastFieldNow=0;
   function hash32(text){let h=2166136261>>>0;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
   function updateChain(t){
@@ -37,7 +38,16 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
   }
   function update(fieldNow){
     lastFieldNow=fieldNow;
-    const ground=terrain.groundHeight(px,pz);if(Number.isFinite(ground))root.position.y=ground;
+    // Turn 3: the whole mechanism descends through the plinth, travels while buried,
+    // then re-emerges at the center of the brass dome. Children come with it.
+    let x=px,z=pz,depth=0;
+    if(transit&&fieldNow>=transit.at){
+      const u=Math.min(1,Math.max(0,(fieldNow-transit.at)/transit.duration));
+      if(u<.34){const q=u/.34;depth=-2.35*(q*q*(3-2*q));}
+      else if(u<.62){const q=(u-.34)/.28,e=q*q*(3-2*q);x=THREE.MathUtils.lerp(px,domeX,e);z=THREE.MathUtils.lerp(pz,domeZ,e);depth=-2.35;}
+      else {x=domeX;z=domeZ;const q=(u-.62)/.38,e=q*q*(3-2*q);depth=THREE.MathUtils.lerp(-2.35,0,e);}
+    }
+    const ground=terrain.groundHeight(x,z);root.position.set(x,(Number.isFinite(ground)?ground:0)+depth,z);
     if(!field.draws.length&&fieldNow>=field.frontier())resolve(fieldNow);
     if(field.draws.length&&!winner){winner=field.draws[0].owner;resolvedAt=field.draws[0].at;state="resolved";}
     for(const t of tokens){

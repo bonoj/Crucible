@@ -488,3 +488,12 @@ Human:
 > Okay. Works well. Chain could be a tiny bit shorter. Also no tap should be required to cause it to roll winner. It just rolls when turn sequence and all Cinnabar clock time reaches t now.
 
 Accepted. The resolved suspension is shortened slightly. Clockchain no longer waits for a separate invocation at the scored frontier: when Cinnabar and Cinnamon field time naturally or through stepped fast-forward reaches the end of the known turn sequence, the immutable head is resolved immediately and the winner presentation begins. Tapping remains a way to advance through historical turn boundaries, not a requirement for Clockchain to tick.
+
+
+## Turn 3 — Human
+
+> The clockchain mechanism descends well into the world plinth. It reemerges quickly in the center of the brass dome.
+
+### Executable consequence
+
+The first Clockchain result is promoted from transient runtime state into the scored history: the pale Human token won the first couplet at the Turn 2 frontier. Turn 3 begins there. The entire Clockchain mechanism, including its child tokens and chains, descends more than two world units beneath the local terrain, traverses while buried, and re-emerges at the dome center over 5.2 seconds. Its surface height continues to be taken from terrain at its current location, so the motion is relative to the world plinth rather than a fixed world Y. No teleport or duplicate device is introduced.
