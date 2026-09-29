@@ -1041,3 +1041,18 @@ This pass demonstrated a useful collaboration pattern:
 **state physical/visual constraints → generate a bounded family directly in the executable environment → inspect simultaneously under real world conditions → select spatially → preserve useful surplus → return immediately to simulation work**
 
 For this kind of low-poly embodiment question, the temporary in-world design yard removed repeated prose/render translation and made one human inspection turn sufficient to choose a production direction. It is therefore retained as procedural evidence, not merely asset history.
+
+
+## Extruder repair — authority errors exposed by field inspection
+
+Human field inspection of the selected vehicle reported two persistent failures despite the successful embodiment pass: bearings appeared in mid-air rather than leaving the machine, and the body still failed to face its direction of travel.
+
+Code inspection isolated both as authority/API errors rather than aesthetic tuning problems.
+
+The extruder was using the bulk `spawnBatch` API to emit individual process yield. That API intentionally builds a population above its supplied center and adds one world unit to the base height, so `spawnBatch(1, point)` necessarily produced the observed airborne bearing. The bearing system now exposes a generic `spawnOne(position, velocity)` seam for physical emitters. The extruder uses it at its rear discharge with a modest rearward/upward impulse while preserving the earned total yield of 48 bearings and the existing 1 s / 2 s / 3 s streaming windows.
+
+The heading calculation itself was not the facing failure. The extruder wrote yaw directly to its Three.js root, but the authoritative ECS render-sync subsequently copied the unchanged `Transform.rotation` over that presentation object every frame. The repair writes `Transform.rotation.y = -heading`; render-sync remains authoritative and carries the orientation to presentation. Cutter spin remains local child animation because it is presentation-local mechanical motion rather than entity orientation.
+
+Source commit `48aa27e15b9dbe4cbbe8da3b1e6435985b11d3e5` contains both repairs atomically.
+
+The diagnostic lesson is useful beyond the extruder: when visible behavior repeatedly resists a locally correct assignment, inspect the authority chain before compensating with offsets. Likewise, population-construction APIs and physical-emitter APIs should remain distinct even when both ultimately append the same substrate.
