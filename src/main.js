@@ -13,6 +13,7 @@ import {createFootprintSystem} from "./runtime/footprint-system.js";
 import {createFootprintOccupancySystem} from "./runtime/footprint-occupancy-system.js";
 import {createApertureSystem} from "./runtime/aperture-system.js";
 import {createObservationAnalysisSystem} from "./runtime/observation-analysis-system.js";
+import {createSpatialProbeSystem} from "./runtime/spatial-probe-system.js";
 import {installDebugApi} from "./runtime/debug-api.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));
@@ -48,7 +49,8 @@ const apertureSystem=createApertureSystem({world,components,footprints,occupancy
 const sceneAperture=world.entity();world.add(sceneAperture,components.Aperture,{owner:continuityStation.id,kind:"scene-summary"});
 components.ContinuityLocus.get(continuityStation.id).apertures.push(sceneAperture);
 const observationAnalysis=createObservationAnalysisSystem({world,components});
-let lastObservation=null,lastAnalysis=null,lastSampleAt=-Infinity;
+const spatialProbes=createSpatialProbeSystem({world,components,THREE,terrain,footprints,apertures:apertureSystem,analysis:observationAnalysis,ownerId:continuityStation.id,apertureId:sceneAperture});
+let lastObservation=null,lastAnalysis=null,lastProbeResults=null,lastSampleAt=-Infinity;
 const impactBuckets=[.18,.42,.85,1.55];let impactBucket=1,lastImpactTarget=meteors.targetAt();
 function setImpactBucket(index){impactBucket=THREE.MathUtils.clamp(index,0,impactBuckets.length-1);document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.classList.toggle("active",i===impactBucket));}
 function callImpact(target=lastImpactTarget){lastImpactTarget=target.clone();return meteors.meteor(target.clone(),impactBuckets[impactBucket]);}
@@ -62,8 +64,8 @@ let last=performance.now(),fpsWindowStart=last,fpsFrames=0;const fpsCounter=docu
 function frame(now){if(now-lastSampleAt>=3000){lastSampleAt=now;const evidence=apertureSystem.sample(continuityStation.id,sceneAperture,now);if(evidence){const observation=world.entity();world.add(observation,components.Observation,evidence);lastObservation={entity:observation,...evidence};lastAnalysis=observationAnalysis.analyze(observation);}}
 const dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;fpsFrames++;if(now-fpsWindowStart>=500){fpsCounter.textContent=`fps ${Math.round(fpsFrames*1000/(now-fpsWindowStart))}`;fpsWindowStart=now;fpsFrames=0;}physics(dt);meteors.update(now);continuityStation.update(now);footprints.update();orbit.applyAll();lights.syncAll();renderSync();cameras.render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
 const inspect=()=>({entities:world.alive.size,looseMatter:world.query(Transform,Body,Gravity).length,impactBucket:impactBucket+1,impactMagnitude:impactBuckets[impactBucket],build:globalThis.__CRUCIBLE_BUILD__,pixelRatio:three.renderer.getPixelRatio(),activeCamera:cameras.activeId(),cameras:cameras.inspect().map(c=>({...c,orbit:orbit.inspect(c.id)})),lights:lights.inspect(),terrain:terrain.inspect(),water:{visible:water.visible,level:waterLevel},meteors:meteors.inspect(),continuityStation:{...continuityStation.inspect(),footprint:footprints.inspect(continuityStation.id),occupants:footprintOccupancy.inspect(continuityStation.id),apertures:apertureSystem.inspect(),lastObservation,lastAnalysis}});
-const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
-globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,inspect};
+const systems={renderSync,cameras,orbit,lights,meteors,continuityStation,footprints,footprintOccupancy,apertureSystem,observationAnalysis,spatialProbes},entities={locus,continuityStation:continuityStation.id,overviewCamera,skyLight,keyLight,fillLight};
+globalThis.crucible={spawnMatter,meteor:callImpact,groundHeight:terrain.groundHeight,runSpatialProbes:()=>lastProbeResults=spatialProbes.run(),spatialProbeResults:()=>lastProbeResults,inspect};
 installDebugApi({world,components,terrain,three,systems,entities,water,inspect});
 document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.addEventListener("click",()=>setImpactBucket(i)));setImpactBucket(1);
 document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
