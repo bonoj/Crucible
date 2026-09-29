@@ -2,17 +2,17 @@ export function createLocusDisplaySystem({THREE,station}){
   const canvas=document.createElement("canvas");canvas.width=384;canvas.height=256;const ctx=canvas.getContext("2d");
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   const root=new THREE.Group();root.name="station-feed-hud";root.visible=false;station.object.add(root);
-  const displayWidth=1.98,displayHeight=1.10,displayCenterX=.205;
+  const displayWidth=2.06,displayHeight=1.10,displayCenterX=.245,innerHeight=.96,sceneWidth=1.55,bayWidth=.40,gap=.035;
   const displayMat=new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
   const glow=new THREE.Mesh(new THREE.PlaneGeometry(displayWidth,displayHeight),displayMat);glow.position.set(displayCenterX,0,-.012);root.add(glow);
   const rimMat=new THREE.LineBasicMaterial({color:0xcff6ff,transparent:true,opacity:.90,depthWrite:false});
   const outerRim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(displayWidth,displayHeight)),rimMat);outerRim.position.set(displayCenterX,0,.010);root.add(outerRim);
-  const screen=new THREE.Mesh(new THREE.PlaneGeometry(1.55,1),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));root.add(screen);
+  const screen=new THREE.Mesh(new THREE.PlaneGeometry(sceneWidth,innerHeight),new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.92,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));screen.position.x=-.012;root.add(screen);
   // CLARA's peripheral bay is a subdivision of one bounded translucent surface.
-  const bay=new THREE.Group();bay.name="clara-cinnabar-control-bay";bay.position.set(.995,0,.012);root.add(bay);
-  const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(.40,1)),rimMat);rim.position.z=.002;bay.add(rim);
+  const bay=new THREE.Group();bay.name="clara-cinnabar-control-bay";bay.position.set(sceneWidth*.5+gap+bayWidth*.5-.012,0,.012);root.add(bay);
+  const rim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(bayWidth,innerHeight)),rimMat);rim.position.z=.002;bay.add(rim);
   const controlMat=new THREE.MeshBasicMaterial({color:0x163f52,transparent:true,opacity:.82,depthWrite:false,side:THREE.DoubleSide});
-  const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.30,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(0,.37,.004);bay.add(stowButton);
+  const stowButton=new THREE.Mesh(new THREE.PlaneGeometry(.30,.26),controlMat);stowButton.name="cinnabar-stow-toggle";stowButton.position.set(0,innerHeight*.5-.13-.045,.004);bay.add(stowButton);
   const arrowShape=new THREE.Shape();arrowShape.moveTo(-.065,.042);arrowShape.lineTo(.065,.042);arrowShape.lineTo(0,-.062);arrowShape.closePath();
   const arrow=new THREE.Mesh(new THREE.ShapeGeometry(arrowShape),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide}));arrow.position.z=.003;stowButton.add(arrow);
   let cinnabarPacked=false,cinnabarPacking=false;
