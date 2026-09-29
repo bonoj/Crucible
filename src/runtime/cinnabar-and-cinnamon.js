@@ -10,8 +10,7 @@ export function createCinnabarAndCinnamon(){
     {turn:6,actor:"human",at:40700,duration:9000,kind:"dome-granular-field-intensifies"},
     {turn:7,actor:"human",at:49700,duration:2600,kind:"kite-tether-snaps"},
     {turn:8,actor:"human",at:52300,duration:10000,kind:"distant-brass-spire-rises"},
-    {turn:9,actor:"model",at:62300,duration:8000,kind:"paper-flag-on-spire"},
-    {turn:10,actor:"model",at:70300,duration:7000,kind:"clockchain-climbs-dome"}
+    {turn:9,actor:"model",at:62300,duration:8000,kind:"paper-flag-on-spire"}
   ];
   // Historical resolutions remain evidence, but only a resolution whose afterTurn
   // equals the current terminal turn may drive the visible Clockchain.
