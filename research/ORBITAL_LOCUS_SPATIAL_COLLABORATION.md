@@ -923,3 +923,12 @@ The human marked the moment explicitly:
 > "We did it. We have our own non gpu 100k 60fps ball bearing solution. 150k tends towards 45fps."
 
 That statement is preserved here as the field observation that closed this restoration pass. Future work may change the implementation or performance envelope, but it should not erase the executable baseline or the path by which it was earned.
+
+
+## Clara extraction edge
+
+A Clara-relevant extraction of this expedition now exists at [Clara / research / CRUCIBLE_ORBITAL_LOCUS.md](https://github.com/bonoj/Clara/blob/main/research/CRUCIBLE_ORBITAL_LOCUS.md).
+
+Authority remains here. The Clara note does not duplicate the full chronology and does not promote orbital-locus observations into Clara's continuity. It preserves only the adjacent evidence and hypotheses that may matter if a later Clara encounter uses this substrate.
+
+This edge is deliberately bidirectional by reference rather than duplication: Crucible owns what happened; Clara owns what may later matter to Clara.
