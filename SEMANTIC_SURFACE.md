@@ -101,7 +101,11 @@ The HUD renders the latest recorded scene-summary aperture evidence at the obser
 
 The camera-facing presentation does not grant a camera aperture, renderer access, terrain-system access, meteor history, faster hidden sampling, or additional world knowledge. It is a human-visible presentation of evidence that already crossed the station's epistemic boundary.
 
-The feed is intentionally a diegetic presentation surface that can expand as future station evidence earns additional channels, histories, or controls. Its existence does not itself add those channels or capabilities.
+The feed has become the station-anchored **CLARA Continuity Lab surface**. It is one persistent bounded display with a shared header, an evidence region, and a narrow control bay whose internal layout is derived from the surface bounds rather than assembled as unrelated floating panels.
+
+The evidence region remains downstream of the recorded scene-summary aperture exactly as above. The current control bay contains a human-operated stow/deploy affordance for the Cinnabar and Cinnamon field. That affordance invokes an existing world control from the presentation surface; it does not make Cinnabar aperture evidence, grant CLARA command authority, or imply that CLARA selected the control autonomously.
+
+The surface can reform as future evidence or human-use pressure earns changes, but its existence does not itself add epistemic channels, agency, attention, memory machinery, or unconstrained generated interface behavior.
 
 ## Observation is not behavior
 
@@ -162,7 +166,9 @@ A control spawns 25,000 ordinary bearings per activation. Bearings currently use
 
 Bearing support is authored from the final clipped rendered terrain triangles on a 112 by 112 support field, matching the important Foundry terrain seam. The immutable octagonal plinth remains separate from deformable terrain: its top participates in ground support and its exposed vertical sides are resolved analytically against bearing radius.
 
-The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Bearing integration runs once per rendered frame using accumulated simulation delta rather than once per fixed 1/120 world-physics substep. This restores the high-count Foundry performance shape. Presentation sampling begins above 50,000 bearings and becomes progressively sparser at higher counts while authoritative bearing state continues to update.
+The current batch retains Foundry's cheap pile-support approximation and terrain-slope nudge. Bearing integration runs once per rendered frame using accumulated simulation delta rather than once per fixed 1/120 world-physics substep. This restores the high-count Foundry performance shape. Authoritative bearing storage is currently preallocated for up to 1,000,000 grains. Presentation remains a single instanced mesh capped at 180,000 rendered instances. Every authoritative grain is still integrated each bearing update; only presentation sampling changes with population. Rendering is full through 50,000 grains, then uses strides of 2 above 50,000, 3 above 100,000, 5 above 250,000, and 8 above 500,000. Sampled rendered grains are slightly enlarged so visual density does not collapse as stride increases.
+
+The accepted mobile field evidence for this architecture reached approximately 100,000 authoritative bearings at 60 FPS and 150,000 tending toward 45 FPS on the tested device/build. Those numbers are observed performance evidence, not a cross-device guarantee or a simulation invariant. The architectural result is the separation of authoritative CPU-side grain state from adaptively sampled instanced presentation without introducing GPU compute or per-grain ECS entities.
 
 World impacts are distributed through a generic impact seam. Meteors emit an impact consequence with position, radius, and impulse; the bearing system subscribes and applies radial granular impulse to bearings inside that region. Bearings do not know about meteor entities. Other future systems can emit the same impact vocabulary without coupling themselves to bearing implementation.
 
@@ -170,6 +176,17 @@ Spacing, stacking quality, and bearing-bearing contact remain outside this resto
 
 The bearing batch is a Crucible entity, but it does not currently expose a single `SpatialBounds` component. A batch-wide bound would falsely represent many distributed bearings as one footprint occupant. Per-bearing observational availability remains a separate future seam.
 
+
+
+## The autonomous extruder is world behavior, not station behavior
+
+Crucible contains one autonomous extruder whose present form was selected from the earlier in-world Extruder Yard exploration.
+
+The extruder moves continuously across the terrain, turns back toward the field when its forward probe would leave material, excavates bounded terrain volumes on its own cadence, and emits small timed yields of bearings behind itself. Its emitted grains enter the same authoritative bearing batch used by the rest of Crucible.
+
+The extruder is an ordinary world process. It does not query the orbital station, its aperture, observations, ledger, CLARA surface, or inference machinery. It exposes a spatial bound, so it may become a bounded scene-summary occupant when ordinary footprint geometry intersects it.
+
+Its excavation and yield behavior are specific authored machinery. They do not establish generalized resource extraction, production economics, planning, goals, or agency.
 
 ## Engineering Watchlist
 
@@ -196,7 +213,7 @@ This establishes a reusable seam: expensive or numerous world truth may maintain
 
 ## Cinnabar and Cinnamon is a scored field with terminal Clockchain resolution
 
-Cinnabar and Cinnamon is a deterministic scored field inside Crucible. Ordinary turns are chronological scored consequences driven by field time. The currently authored consequences are the brass dome rise, the tethered kite, and the Clockchain mechanism's descent, buried transit, and re-emergence at the dome center. These authored consequences do not imply generalized construction, cloth, tunneling, or event machinery.
+Cinnabar and Cinnamon is a deterministic scored field inside Crucible. Ordinary turns are chronological scored consequences driven by field time. The currently authored turn sequence contains nine immutable scored consequences: the brass dome rise, tethered kite, Clockchain descent/buried transit/re-emergence, meteorstorm abatement, two granular-field turns around the dome, kite-tether failure, a distant brass-spire rise, and a paper flag on that spire. These are authored consequences, not claims of generalized construction, cloth, tunneling, weather-control, granular-field, spire, flag, or event machinery.
 
 Clockchain is terminal to the complete known turn sequence. Historical Clockchain resolutions remain ledger evidence, but only a resolution keyed to the current terminal turn can drive the visible mechanism. Appending another turn therefore moves the active Clockchain frontier after that turn; a previously resolved token cannot rise in the middle of later known history.
 
