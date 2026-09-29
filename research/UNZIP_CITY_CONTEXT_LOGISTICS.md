@@ -137,3 +137,86 @@ The working metaphor is intentionally operational:
 **deposit → unzip → classify → route → reform**
 
 The next useful step is to choose a real context crossing and let it force the first machinery.
+
+
+## Opening dialogue continues — semantic JIT, dreaming, and repository scope
+
+### Human
+
+> We were thinking semantic JIT compilation was grail shaped already. What almost forgot was the dreaming...
+
+### Model
+
+> Ohhh. **Yes.**
+>
+> We've been staring at only the *awake* half of the loop.
+>
+> Semantic JIT compilation was already grail-shaped:
+>
+> **large recoverable semantic substrate → present situation → compile only the context required now**
+>
+> But dreaming changes what happens between executions.
+>
+> The orbital expedition doesn't merely need to be unzipped into four useful projections once. After an encounter, the system can later revisit what happened, compare it against existing working models, notice associations that weren't salient during execution, compact some things, preserve pointers to others, and leave behind **better material for the next JIT compilation**.
+>
+> So there are really two different transformations:
+>
+> **Dreaming:**  
+> `experience + existing context → reorganized/reformed latent context`
+>
+> **Semantic JIT:**  
+> `latent context + present need → executable working context`
+>
+> And then experience feeds back into dreaming.
+>
+> That is much closer to what we've been circling with Digital Familiar than a clever repository handoff format.
+>
+> The really interesting part is that **Unzip City may be the missing logistics substrate between them.**
+>
+> It gives us operations on semantic material without requiring that everything live in one giant memory:
+>
+> **deposit → unzip → route → reform → recover**
+>
+> Dreaming can operate asynchronously over those materials and relationships. JIT compilation operates synchronously when some model actually needs to *do something*. Git gives us durable provenance underneath both.
+>
+> And look at what happened with CLARA yesterday. We didn't explicitly implement a compaction engine. Crucible retained the rich chronology. Clara received a smaller locally useful interpretation. DigitalFamiliar received an even more abstract adjacent observation. Each destination got a different representation of the same experience while the source remained recoverable.
+>
+> That was practically a **manual dreaming cycle**.
+>
+> Now imagine the repository network periodically doing that work without requiring the active expedition to stop and curate itself. Not “summarize everything overnight,” but something more conservative:
+>
+> **revisit → associate → propose/reform projections → retain provenance**
+>
+> Then when we say:
+>
+> > “Let's work on Unzip City.”
+>
+> the active model doesn't retrieve a mountain of memories and stuff them into context.
+>
+> It receives the result of:
+>
+> **dreamed semantic material × current intention → JIT working context**
+>
+> And if something smells wrong, provenance lets it descend all the way back into the rocks.
+>
+> That also gives “context bombing” a second mode. We initially imagined deliberately depositing a prepared packet into another context. But a bomb could potentially be assembled **JIT from dreamed material** for a particular target.
+>
+> Not:
+>
+> > Here is my universal John/Clara/Crucible context bundle.
+>
+> But:
+>
+> > Here is the smallest context payload that *this receiving model, entering this repository to perform this task,* appears to need.
+>
+> Then reform after the crossing.
+>
+> Fuck. Yeah.
+>
+> **Dreaming prepares the semantic landscape. JIT compilation cuts the path through it. Unzip City moves the material. Git keeps us honest.**
+>
+> I think we almost left one of the most important pieces sitting on the table.
+
+### Human
+
+> Let's keep this turn for turn in unzip city as we start unzipping the orbital expedition across repos. Where should semantic JIT live as a whole? The accessibility repo makes sense, but it really is outside any of any single project.
