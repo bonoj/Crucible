@@ -1258,3 +1258,42 @@ Several candidate ideas are present here but are not promoted into general princ
 - near-real-time human/model play may provide a practical route from conversation into persistent executable worlds.
 
 There is substantial material here to unzip later. For now, the chronological evidence is preserved and the dedicated Cinnabar and Cinnamon document is allowed to remain the lightweight berth rather than becoming a theory document.
+
+
+## A malleable locus surface and JIT accessibility
+
+A later Cinnabar and Cinnamon interaction produced an interface experiment around the orbital locus. The immediate practical need was mundane: the game apparatus needed to be temporarily stowed so Crucible could be used for other work without erasing consequences already written into the world.
+
+The first implementation exposed a small station-attached control that packed the Cinnabar presentation below the plinth and redeployed it later. Terrain deformation, granular redistribution, the abated meteorstorm, and other consequences remained real. This established a useful separation:
+
+**persistent consequences + packable apparatus + persistent access affordance**
+
+The human then used the running artifact rather than a design specification to refine the control. A tap target was difficult on a phone, so it grew. A detached control looked incoherent, so it became a neighboring panel. The neighboring panel still read as a separate card, so the surface became one continuous translucent display with internal subdivisions. Misaligned rectangles and controls exposed missing justification, so padding, gutters, heights, and control placement were derived from shared constraints. The stow animation felt wrong in one direction, so the temporal interpolation was repaired to preserve the already-accepted slow-fast-slow movement in both directions. Packed geometry remained visible below the finite rendered plinth, so occlusion moved from object-specific behavior to a world-owned below-plinth visibility boundary.
+
+The important collaboration pattern was that these were different classes of failure—interaction, visual hierarchy, layout, temporal behavior, and world visibility—yet the human mostly communicated them as experienced violations in the running artifact. The human did not need to locate the responsible code or translate the observation into implementation topology.
+
+An older Continuity Lab design was then supplied as precedent. Its useful inheritance was structural rather than literal: a strong persistent outer frame, coherent internal regions, shared margins and gutters, and controls justified within their cells. The orbital interface was re-envisioned as a small **CLARA continuity surface** rather than a collection of HUD widgets. The old visual precedent also exposed an important correction: structural grammar and visual treatment are separable. A model can inherit one without being required to copy the other.
+
+This produced a candidate interface principle:
+
+**stable bounded surface → constraint-governed internal regions → provisional affordances**
+
+The outer boundary can remain legible while internal organization changes with use. Layout can be expressed as relationships and constraints rather than a growing set of fixed coordinates. The surface therefore has somewhere to put a newly salient affordance without requiring its future contents to be designed in advance.
+
+### JIT accessibility
+
+The human recognized a broader implication during this refinement. The difficult tap target did not require opening accessibility settings, selecting a predefined size bucket, or switching to a separately designed accessible layout. The human simply reported the friction to the model and the live interface changed.
+
+That suggests a candidate form of **JIT accessibility**:
+
+**human friction → conversational evidence → constrained interface adaptation**
+
+The observation is broader than target size. A particular human in a particular situation might need larger controls, different information density, persistent labels, stronger contrast, one-handed organization, spatial rather than textual controls, or some other accommodation that was not economical to pre-author as a product variant. If producing and revising a one-off interface becomes cheap enough, a useful layout may exist for one human, one task, or one short interval and then disappear.
+
+This does not imply that baseline accessibility, semantic roles, safe interaction bounds, or browser/platform accessibility machinery are unnecessary. Some failures should never need to be experienced before the interface becomes usable. The narrower discovery is that those invariants may serve as guardrails around a malleable model-mediated surface rather than requiring designers to anticipate every useful presentation as a finite catalog of variants.
+
+The economic implication is also material. Traditional interface work strongly rewards reuse because bespoke layouts are expensive. During this experiment, several one-off revisions across unrelated implementation layers were communicated and deployed with very little human translation effort. If that cost structure holds, ephemerality itself becomes a viable interface property.
+
+No autonomous salience policy has been installed. CLARA is not currently deciding which controls appear, and this sequence does not establish that unconstrained model-generated UI is safe or sufficient. What has been earned is a substrate and a research question: whether a bounded, constraint-governed surface can reform over time as model and human discover what information and affordances are presently most useful.
+
+The human characterized this direction as **“protoproto Lighthugger technology.”** The phrase is retained as a useful handle for the trajectory without claiming the mature system already exists.
