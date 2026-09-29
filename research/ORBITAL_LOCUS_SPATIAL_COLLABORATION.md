@@ -502,3 +502,14 @@ The implementation changed presentation rather than sensing. The old tiny physic
 The HUD still receives only the latest recorded scene-summary observation. It does not receive a renderer camera, terrain-system reference, meteor history, faster hidden sampling, or another route to world truth. Station tapping is given priority over the existing terrain-tap meteor interaction so selecting the apparatus does not accidentally call an impact beneath it.
 
 This creates a potentially extensible diegetic station-feed surface without prematurely deciding what future controls or sensor channels belong there. The presentation has expanded; the epistemic boundary has not.
+
+
+## Time acceleration is bounded to experienced world time
+
+To reduce the human wait for a natural locus ledger, the human chose a compact 1× / 4× / 8× simulation-time bucket, defaulting to 1×. The purpose is practical: ten minutes of locus experience can be accumulated in roughly 75 real seconds at 8× rather than asking the human to wait ten wall-clock minutes.
+
+The acceleration boundary is explicit. Station motion, meteor weather, meteor flight/impact timing, aperture cadence, and ledger accumulation consume simulation time. Loose-matter physics advances through bounded fixed substeps.
+
+Human interaction and presentation remain wall-clock behavior: camera gestures, tap/drag discrimination, FPS reporting, HUD response/orientation, downloads, and rendering are not sped up. Terrain test depth and epistemic access are unchanged.
+
+This avoids reproducing the Vertical Accretion failure mode in which aggressive time acceleration could become entangled with simulation correctness. Here accelerated time is a clock boundary, not a license to enlarge integration steps.
