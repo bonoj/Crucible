@@ -69,6 +69,7 @@ export function createContinuityStationSystem({world,components,THREE,scene}){
 
   return {
     id,
+    object:station,
     update(now){
       const t=now*.000075,phase=(now/motion.periodMs)*Math.PI*2+motion.phase;
       const transform=Transform.get(id);
