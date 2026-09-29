@@ -10,6 +10,14 @@ Meteor weather does not query the orbital station, its footprint, its observatio
 
 Consequently, station observations may contain direct deformation, partial consequences, old consequences encountered later in the sweep, or no meteor-relevant evidence at all.
 
+## Terrain density is fixed at test depth
+
+Crucible's deformable terrain field is currently fixed at a test depth of **60 × 44 × 60** samples across its 20 × 12 × 20 world-unit volume.
+
+This resolution is an experimental constraint, not a tuning target. Terrain behavior should earn useful physical vocabulary at this depth before any increase in density is considered. Impact morphology, sensing, and other experiments must not silently escalate terrain resolution to solve local visual problems.
+
+Meteor impacts currently express a carved bowl and raised rim. Strong impacts can additionally form a broad central uplift using the same density field, dirty bounds, and remesh path. The uplift is deliberately conditioned on impact scale so smaller craters are not asked to represent structure below the useful granularity of the field.
+
 ## The orbital station is a permanent Crucible fixture
 
 Crucible contains one persistent orbital station descended visually from World Lab's `OrbitalConstruction T1`.
