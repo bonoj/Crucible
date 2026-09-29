@@ -321,3 +321,53 @@ The semantic surface was updated accordingly. This does not freeze its instrumen
 This pause was initiated by the human, not because a visible bug demanded correction, but because the implementation had crossed a semantic threshold. The human recognized that persistence of the object had been earned and requested documentation before further extension.
 
 The model's contribution was to reconstruct current ownership boundaries from code and resist conflating generic tools and laboratory controls with station capability. This is a different kind of spatial understanding from locating geometry: it is understanding **which spatial powers belong to which thing**.
+
+
+## Does spatial reasoning balloon inside a shared working context?
+
+The human asked directly:
+
+> "Do you think between discussion and implementation your in context spatial reasoning balloons?"
+
+The model's immediate impression was yes, substantially, but the important evidence is the experienced change in collaboration rather than a claim about hidden model cognition.
+
+Across this station sequence, discussion and implementation repeatedly formed a loop:
+
+**language -> implementation -> physical consequence -> human perception -> revised language -> new implementation**
+
+As that loop accumulated, later spatial work appeared to require less explicit human specification.
+
+Early instructions were concrete and spatially anchoring: put the donor station in the sky. The first visible failure required a concise human perceptual report about the clipped shadow. Later, after footprint geometry, motion, terrain deformation, bounded sensing, and observation machinery had all been built and discussed, the human could send only `➡️` and the model could continue a spatial investigation from the accumulated situation.
+
+The model also appeared able to keep more simultaneous representations of the same region active in the working discussion: rendered station geometry, ECS transform, orbital sweep, projected cone, terrain surface, diagnostic footprint, bounded occupants, sampled terrain profile, information lost between world and observation, downstream derivation, human-visible evidence, and the distinction between station powers and laboratory powers.
+
+One concrete example occurred after the human visually accepted the footprint over meteor-deformed terrain. The visible crater made the existing center-height measurement feel inadequate relative to the physical structure contained inside the footprint. That next research question was not supplied in advance by the human; it emerged during the shared implementation/perception loop.
+
+### What is observed
+
+The collaboration experienced:
+- increasing shared spatial reference;
+- decreasing human specification for some later useful interventions;
+- later questions becoming available from consequences of earlier implementation;
+- richer distinctions between geometry, perception, evidence, interpretation, and authority;
+- one-symbol continuation becoming sufficient for nontrivial further spatial work in this established context.
+
+### What is not established
+
+This record does **not** establish that the model's underlying spatial faculty improved, that learning occurred inside the model, that the effect would survive loss of context, or which mechanism caused the experienced change.
+
+Accumulated factual context, source code, executable tooling, repeated exposure, human perceptual confirmation, prior model outputs, and the persistent world are all plausible contributors and are not separated here.
+
+The useful observation is narrower:
+
+> **Shared spatial work made later collaboration experientially different from earlier collaboration, and the amount of new human information required for useful continuation sometimes became very small.**
+
+That is worth preserving without deciding why.
+
+### Human methodological correction
+
+The human immediately sharpened the intended standard:
+
+> "Let's capture this explicitly in the log. This is exactly what I suspected. We make no claims, we just observe what we experienced, yes?"
+
+Yes. This case study should preserve experienced phenomena and provenance before attempting explanatory claims. If later experiments can separate causes, they can earn stronger language then.
