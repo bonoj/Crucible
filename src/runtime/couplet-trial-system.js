@@ -27,5 +27,5 @@ export function createCoupletTrialSystem({world,components,THREE,scene,terrain,f
   function advance(){const frontier=field.frontier();if(lastFieldNow<frontier){field.fastForwardTo(field.nextTurnStart(lastFieldNow));return "fast-forward";}if(state==="parked"&&!field.draws.length){beginTrial(lastFieldNow);frontierArmed=false;return "trial";}return state;}
   function contains(object){return root===object||root.children.includes(object)||root.children.some(c=>c===object);}
   park();updateChains();
-  return{object:root,tokens,advance,park,update,contains,inspect:()=>({kind:"clockchain-trial",state,winner,rule:"chained trial; farther excursion wins; winner floats against gravity",clockchainHead:field.clockchainHead(),tokens:tokens.map(t=>{const p=Transform.get(t.id).position;return{owner:t.owner,position:[p.x,p.y,p.z]}})})};
+  return{object:root,tokens,advance,park,update,constrain:()=>{if(state==="trial"||state==="resolved")for(const t of tokens)chainLimit(t);},contains,inspect:()=>({kind:"clockchain-trial",state,winner,rule:"chained trial; farther excursion wins; winner floats against gravity",clockchainHead:field.clockchainHead(),tokens:tokens.map(t=>{const p=Transform.get(t.id).position;return{owner:t.owner,position:[p.x,p.y,p.z]}})})};
 }
