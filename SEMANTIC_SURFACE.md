@@ -93,7 +93,7 @@ The existence of an analysis tool does not imply that a future model-mediated lo
 
 ## The station feed is a diegetic presentation surface
 
-Tapping the orbital station can summon a translucent blue station-feed HUD. The HUD is hidden by default. While open, it remains spatially associated with the moving station and reorients toward the active camera each frame for legibility rather than inheriting the station's changing attitude.
+Tapping the orbital station can summon a translucent blue station-feed HUD. The HUD is hidden by default. While open, it remains spatially associated with the moving station and reorients toward the active camera each frame for legibility rather than inheriting the station's changing attitude. The readable card is pulled slightly toward the camera and connected back to the station's upper hub by a faint translucent pyramidal tail. The tail supplies volumetric anchoring and parallax without becoming another sensor or crossing the card's primary information surface.
 
 Station selection takes precedence over the terrain-tap meteor interaction, so tapping the apparatus summons its feed rather than calling an impact through the terrain interaction beneath it.
 
@@ -126,3 +126,14 @@ The present observation path is:
 The locus ledger and diegetic station feed are downstream consumers of this evidence. Neither sits upstream of the aperture or bypasses it.
 
 Each boundary is intentionally explicit. Later systems may earn additional apertures, tools, or ways to act without collapsing these layers into direct omniscience.
+
+
+## A pure inference parcel can carry locus evidence across an inference boundary
+
+Crucible contains a pure projection that can turn an exported locus ledger into a bounded inference parcel. The projection has no dependency on the world, terrain, renderer, ECS, meteor, or station systems.
+
+A parcel carries ledger and instrument provenance plus a selected chronological window of recorded observations and their optional blind analyses. It explicitly identifies itself as recorded locus evidence rather than authoritative Crucible state.
+
+The parcel omits authoritative terrain state, meteor event history, hidden ECS state, controlled-probe labels, unmeasured object identities, objectives, and personality or identity instructions.
+
+The parcel is transport machinery only. Its existence does not connect a model to the station, prescribe what an inference should notice, or make an inference's interpretation authoritative world truth.
