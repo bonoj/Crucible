@@ -13,8 +13,8 @@ export function createCinnabarKiteSystem({THREE,scene,field,dome}){
   const spine=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,length,6),seam);spine.position.y=-length*.5;root.add(spine);
   const lineGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),line=new THREE.Line(lineGeo,lineMat);scene.add(line);
   root.visible=false;scene.add(root);
-  const scored=field.turn(2),anchorLocal=new THREE.Vector3(0,3.36,0),anchor=new THREE.Vector3(),target=new THREE.Vector3(),linePos=lineGeo.getAttribute("position");
-  let progress=0,tension=0;
+  const scored=field.turn(2),snap=field.turn(7),anchorLocal=new THREE.Vector3(0,3.36,0),anchor=new THREE.Vector3(),target=new THREE.Vector3(),linePos=lineGeo.getAttribute("position");
+  let progress=0,tension=0,snapped=false,snapOrigin=new THREE.Vector3();
   function smooth(t){return t*t*(3-2*t)}
   function update(fieldNow){
     dome.object.localToWorld(anchor.copy(anchorLocal));
@@ -23,15 +23,21 @@ export function createCinnabarKiteSystem({THREE,scene,field,dome}){
     const p=smooth(progress),phase=fieldNow*.001;
     // The kite climbs downwind and never becomes a free body; every point is derived from score time.
     target.set(anchor.x+4.2*p+Math.sin(phase*.43)*.28,anchor.y+1.2+5.8*p+Math.sin(phase*.71)*.16,anchor.z-2.4*p+Math.cos(phase*.37)*.34);
-    root.position.copy(target);root.rotation.set(.16+Math.sin(phase*.61)*.07,Math.atan2(-2.4,4.2)-Math.PI/2,.18+Math.sin(phase*.83)*.11);
+    if(snap&&fieldNow>=snap.at){
+      if(!snapped){snapped=true;snapOrigin.copy(target);}
+      const age=(fieldNow-snap.at)/1000;
+      root.position.set(snapOrigin.x+.62*age+Math.sin(phase*.73)*.18,snapOrigin.y+.16*age-.018*age*age+Math.sin(phase*1.31)*.12,snapOrigin.z-.35*age+Math.cos(phase*.67)*.20);
+      line.visible=false;
+    }else{snapped=false;root.position.copy(target);line.visible=true;}
+    root.rotation.set(.16+Math.sin(phase*.61)*.07,Math.atan2(-2.4,4.2)-Math.PI/2,.18+Math.sin(phase*.83)*.11+(snapped?Math.sin(phase*2.2)*.14:0));
     const a=geo.getAttribute("position");
     for(let r=0;r<=rows;r++)for(let c=0;c<=cols;c++){const i=r*(cols+1)+c,u=c/cols-.5,v=r/rows,baseX=u*width*(1-.38*v),baseY=-v*length;
       const edge=Math.abs(u)*2,wave=Math.sin(phase*3.1+v*9.4+u*2.7)*(.025+.095*v)+Math.sin(phase*5.7-v*14)*.028*v;
       a.setXYZ(i,baseX+Math.sin(phase*1.7+v*5)*.018*v,baseY,wave*(.45+.55*edge));
     }
     a.needsUpdate=true;geo.computeVertexNormals();
-    linePos.setXYZ(0,anchor.x,anchor.y,anchor.z);linePos.setXYZ(1,target.x,target.y,target.z);linePos.needsUpdate=true;lineGeo.computeBoundingSphere();
-    tension=THREE.MathUtils.clamp(target.distanceTo(anchor)/7.8,0,1);
+    if(!snapped){linePos.setXYZ(0,anchor.x,anchor.y,anchor.z);linePos.setXYZ(1,target.x,target.y,target.z);linePos.needsUpdate=true;lineGeo.computeBoundingSphere();}
+    tension=snapped?0:THREE.MathUtils.clamp(target.distanceTo(anchor)/7.8,0,1);
   }
-  return{object:root,line,update,inspect:()=>({kind:"tethered-pale-kite",turn:2,progress:Number(progress.toFixed(3)),tension:Number(tension.toFixed(3)),position:[root.position.x,root.position.y,root.position.z],clothVertices:count,tethered:true,behavior:"deterministic-analytic-wind"})};
+  return{object:root,line,update,inspect:()=>({kind:"tethered-pale-kite",turn:2,progress:Number(progress.toFixed(3)),tension:Number(tension.toFixed(3)),position:[root.position.x,root.position.y,root.position.z],clothVertices:count,tethered:!snapped,snapped,behavior:snapped?"deterministic-free-drift":"deterministic-analytic-wind"})};
 }
