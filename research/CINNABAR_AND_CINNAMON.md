@@ -388,3 +388,38 @@ The model further proposed that the orbital log continue to compact research imp
 The berth expanded to preserve the lived layer. Nothing in this table-talk backfill becomes a scored world action merely by being recorded here.
 
 ---
+
+
+## Table talk — rules become malleable
+
+### Human
+
+> Should we play turns in couplets and random the next couplet so it isn't always react react react? It allows you to potentially set up a two turn whammy.
+
+The rule changed prospectively: after the original alternating Turns 1 and 2, initiative would belong to one player for a two-move couplet. The owner experiences the executable result of the first move before choosing the second.
+
+The human then summarized the deeper pattern:
+
+> We have our perfectly immutable ledger with malleable rules. What was it we said? The spice must flow, but so too must the rock.
+
+Past events remain fixed. Rules may change going forward.
+
+An attempted model-side random draw was challenged because the model controlled both the randomness and its interpretation. The human chose to keep the announced toss victory but spent that privilege on something better:
+
+> I choose to let the world tell us who's turn it. Additionally, it gives an affordance to jump to next turn. So it's a dietetic world control.
+
+("dietetic" is preserved verbatim; the intended design discussion treated this as a diegetic world control.)
+
+The resulting requirement became a physical **Trial** rather than an abstract randomizer. Two rigid tokens are released into the actual Crucible terrain. Existing world state is allowed to participate. The token that finishes farther from the machine wins the next couplet. The resolved result is appended to the immutable field ledger.
+
+### Human
+
+> Hahaha. Build it and we'll tinker.
+
+### Executable consequence
+
+A first Trial prototype now lives in Crucible. It is a small brass twin-cup launcher with a central plunger, positioned away from the dome. One pale icosahedral token represents the human side; one orange octahedral token represents the model side.
+
+Tap the machine to release both tokens into the real terrain under ordinary body/gravity/support rules. They launch in opposite directions, bounce and roll against the terrain, and resolve after settling (or a bounded timeout). **Farthest planar distance from the launcher wins.**
+
+This is intentionally a prototype to tinker with. The machine is a world object and a tap target. The draw result is recorded once in the Cinnabar and Cinnamon object. No Turn 3 move is scored merely by building the apparatus.

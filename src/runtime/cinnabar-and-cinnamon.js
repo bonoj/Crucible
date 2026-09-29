@@ -5,10 +5,12 @@ export function createCinnabarAndCinnamon(){
     {turn:1,actor:"human",at:0,duration:12000,kind:"raise-dome"},
     {turn:2,actor:"model",at:12000,duration:10000,kind:"unfurl-kite"}
   ];
+  const draws=[];
   let origin=null,replays=0;
   function update(now){if(origin==null)origin=now;return Math.max(0,now-origin);}
   function replay(){origin=null;replays++;}
   function turn(number){return turns.find(entry=>entry.turn===number)??null;}
-  function inspect(now=null){const elapsed=origin==null?0:(now==null?null:Math.max(0,now-origin));return{kind:"cinnabar-and-cinnamon",clock:"simulation",origin,elapsed,replays,turns:turns.map(entry=>({...entry}))};}
-  return{turns,update,replay,turn,inspect};
+  function recordDraw(draw){if(draws.length)return draws[draws.length-1];const entry={couplet:1,...draw};draws.push(entry);return entry;}
+  function inspect(now=null){const elapsed=origin==null?0:(now==null?null:Math.max(0,now-origin));return{kind:"cinnabar-and-cinnamon",clock:"simulation",origin,elapsed,replays,turns:turns.map(entry=>({...entry})),rules:{fromTurn:3,initiative:"two-turn-couplets",draw:"diegetic-world-trial"},draws:draws.map(entry=>({...entry}))};}
+  return{turns,draws,update,replay,turn,recordDraw,inspect};
 }
