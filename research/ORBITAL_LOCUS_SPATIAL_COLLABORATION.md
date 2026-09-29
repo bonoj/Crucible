@@ -1105,3 +1105,22 @@ The collaboration principle under test is broader than bearings:
 A numerous system may compress its own truth into a spatial projection while doing work it already owes. A locus can then observe the projection at cost proportional to its aperture rather than the world's population. The projection does not make the observer omniscient and does not identify what the material means.
 
 This machinery was added specifically without improving Clara, adding a second aperture, or teaching the station about the extruder. Crossing 003 can therefore ask what the existing bounded observation chain recovers from the richer autonomous world.
+
+
+## Crossing 003 returns with a conflation
+
+The first substantive OUTSIDE response was returned and preserved verbatim under `research/evidence/continuity/crossing-003/outside-response.md` before interpretation.
+
+The response successfully recovered the instrument geometry, station motion, 127-observation extent, terrain extrema, and the newly available granular-density channel. It therefore noticed the additional bounded evidence rather than ignoring it.
+
+Its central interpretation, however, conflated two independent observation channels. It described the ledger as tracking a single recurrent `sphere` occupant and then attached the granular occupancy densities to that entity as though density were its measured cross-section or tracking signal. The parcel does not establish that relationship. `boundedOccupants` and `granularOccupancy` are separate measurements. Granular density can remain present while the bounded-occupant list is empty, and the granular channel deliberately carries no object identity.
+
+The opening phrase also called the ledger “authoritative evidence,” despite the parcel boundary explicitly distinguishing recorded bounded evidence from authoritative world state and hidden causal history. The response remained inside the supplied measurements in most numerical details, but its language blurred that epistemic distinction.
+
+Resolution against hidden Crucible truth makes the miss especially useful. The recurrent generic bounded body is the autonomous extruder when it happens to intersect the footprint. The granular field is distributed bearing matter. Meteors can redistribute that matter violently, and the extruder can also emit it, while neither causal source nor the semantic identity of the material crosses the aperture. The OUTSIDE inference saw both channels but compressed them into one tracked-object story.
+
+This is materially different from Crossing 002. A richer observation channel did not simply reveal the hidden causal model. Instead it created a new opportunity for association beyond the evidence: temporal and spatial coexistence was interpreted as identity.
+
+The response's proposed next investigations are also preserved as evidence of volunteered attention: orbital velocity vectors, a precise path for Entity 7, or terrain “roughness degradation” through time. The proposed Entity 7 path follows directly from the conflation and would therefore be a useful place for later evidence to challenge the theory without correcting it verbally.
+
+No new aperture is earned by this response alone. The current apparatus already contains evidence capable of falsifying the single-object interpretation because granular occupancy occurs without a bounded occupant. The immediate pressure is therefore on inference over the existing biography, not on sensing capability.
