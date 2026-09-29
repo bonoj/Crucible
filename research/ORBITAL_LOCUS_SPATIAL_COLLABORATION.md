@@ -883,3 +883,43 @@ This is reusable substrate rather than a Crucible-specific fix. The downstream a
 The emerging direction is intentionally broader than one extraction. The Six Cities vocabulary is becoming literal: **Unzip City** can become a place where accumulated expedition machinery is separated into earned reusable systems, while other cities can likewise become executable specializations rather than metaphors imposed in advance.
 
 For now Crucible remains the integrated Terrordrome. The log preserves where reusable machinery was earned; later unzipping can follow provenance back to executable evidence.
+
+
+## Bearing restoration reaches an accepted executable baseline
+
+The impact-seam repair exposed one final runtime failure after the corrected impact-bus declaration successfully loaded. The first meteor impact froze the candidate with:
+
+```
+TypeError: lights.pulse is not a function
+```
+
+Inspection of `createLightSystem()` established that `pulse()` was not a stale or renamed API. It had never existed in the current Crucible light system. The call was a phantom capability introduced while the meteor callback and generic impact seam were being assembled.
+
+The correction was subtraction rather than invention. Meteor impact now emits the generic world-impact consequence without an unrelated lighting side effect:
+
+**meteor impact → generic impact bus → interested systems**
+
+With that phantom API removed, candidate `698a0ef` passed the build, published to preview, survived actual meteor impact, and was accepted by the human for promotion.
+
+### Observed high-count result
+
+On the human's actual runtime/device, the restored non-GPU-compute bearing path produced the following observed performance:
+
+- **100,000 bearings: 60 FPS**
+- **150,000 bearings: trends toward approximately 45 FPS**
+
+These are field observations from this accepted Crucible run, not universal hardware benchmarks or claims about every browser/device.
+
+The result is nevertheless important to the expedition. The useful high-count behavior came from ordinary CPU-side array state, cheap terrain/pile support, one population integration per rendered frame, and sampled instanced presentation. It did **not** require the abandoned GPU/contact-physics path that had previously threatened to turn bearings into an architectural black hole.
+
+The sequence that earned this baseline was:
+
+**recover Foundry precedent → transplant → human sees wrong scale and performance cliff → inspect historical update shape → restore once-per-frame population integration → add generic impact consequence → browser falsifies broken assembly → inspect deployed executable rather than trusting source/build status → repair literal-commented declaration → expose and remove phantom light API → execute successfully at scale**
+
+This is now an accepted piece of Crucible evidence.
+
+The human marked the moment explicitly:
+
+> "We did it. We have our own non gpu 100k 60fps ball bearing solution. 150k tends towards 45fps."
+
+That statement is preserved here as the field observation that closed this restoration pass. Future work may change the implementation or performance envelope, but it should not erase the executable baseline or the path by which it was earned.
