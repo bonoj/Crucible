@@ -39,6 +39,14 @@ The aperture is not given terrain deformation history, meteor history, semantic 
 
 Observations are currently sampled every three seconds during normal runtime.
 
+## The locus ledger preserves what crossed the boundary
+
+Normal station observations and their downstream blind analyses are appended to a bounded rolling locus ledger. The current retention limit is 240 observations, approximately twelve minutes at the normal sampling cadence.
+
+The ledger can be exported from the live browser as JSON. Its payload contains build and instrument metadata plus chronological observation/analysis pairs.
+
+The export does not add authoritative terrain state, meteor history, hidden ECS state, controlled-probe labels, or other world knowledge that did not cross the station's observation boundary. It is therefore a portable record of station evidence rather than a general Crucible debug dump.
+
 ## Spatial analysis is downstream of observation
 
 A generic observation-analysis system can consume a frozen terrain-profile observation.
