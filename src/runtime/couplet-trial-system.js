@@ -31,10 +31,10 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
     for(let i=0;i<t.links.length;i++){const q=(i+1)/(t.links.length+1),link=t.links[i];link.position.set(t.x,THREE.MathUtils.lerp(ay,ty,q),0);link.rotation.set(Math.PI/2,i%2?Math.PI/2:0,0);}
   }
   function resolve(now){
-    if(field.draws.length)return field.draws[0];
+    const existing=field.terminalResolution();if(existing)return existing;
     const seed=hash32(field.clockchainHead()),owner=(seed&1)===0?"human":"model";
     winner=owner;resolvedAt=now;state="resolved";
-    return field.recordDraw({owner,method:"clockchain-derived",at:now,seed});
+    return field.recordResolution({owner,method:"clockchain-derived",at:now,seed});
   }
   function update(fieldNow){
     lastFieldNow=fieldNow;
@@ -48,8 +48,8 @@ export function createCoupletTrialSystem({THREE,scene,terrain,field}){
       else {x=domeX;z=domeZ;const q=(u-.62)/.38,e=q*q*(3-2*q);depth=THREE.MathUtils.lerp(-2.35,0,e);}
     }
     const ground=terrain.groundHeight(x,z);root.position.set(x,(Number.isFinite(ground)?ground:0)+depth,z);
-    if(!field.draws.length&&fieldNow>=field.frontier())resolve(fieldNow);
-    if(field.draws.length&&!winner){winner=field.draws[0].owner;resolvedAt=field.draws[0].at;state="resolved";}
+    if(!field.terminalResolution()&&fieldNow>=field.frontier())resolve(fieldNow);
+    const resolved=field.terminalResolution();if(resolved&&!winner){winner=resolved.owner;resolvedAt=resolved.at;state="resolved";}
     for(const t of tokens){
       if(t.owner===winner){
         const age=Math.max(0,fieldNow-(resolvedAt??fieldNow)),u=Math.min(1,age/riseMs),ease=1-Math.pow(1-u,3);
