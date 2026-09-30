@@ -214,3 +214,144 @@ No source code is changed by this turn.
 **Do not build yet from historical memory alone.**
 
 Next, inspect the actual Crucible UI/dev-control and C&C runtime wiring, then return with the smallest first playable Syntax Reroll slice implied by those seams. The archaeology remains open independently and can resume when raster uploads become available.
+
+
+## Turn 1 — fast and loose mutation rules before choosing a book
+
+### Human
+
+> Excellent. Let's get our fast and loose rules for syntax reroll mutations in there before we pick a book.
+
+### Consequence
+
+The first game rules are established **before** selecting literary source material so the chosen book does not quietly dictate the mutation system.
+
+These rules are intentionally playable case law, not a complete language engine. When a strange move appears, prefer making a narrow ruling, playing it, and recording the consequence over expanding the rules preemptively.
+
+## Mutation rules v0
+
+### The basic unit is an occurrence
+
+A manipulable word is one particular occurrence from encountered source text, not permission to alter every matching string in the book.
+
+Each occurrence should retain enough provenance to answer at least:
+
+- what source it came from;
+- where in that source it came from;
+- whether it is currently available, committed somewhere else, or otherwise spent.
+
+We do not need a universal lexical identity system to accomplish this.
+
+### Encounter before extraction
+
+Only language the run has actually encountered may become manipulable material.
+
+Unreached prose is not a warehouse the player can search for the perfect noun. Future text may exist in the source, but it is not presently available game material.
+
+### Words are conserved by default
+
+A useful word does not appear because the player needs it.
+
+If an occurrence is moved out of one place and committed elsewhere, the game should account for that move. Copying, conjuring, respawning, or synthesizing lexical material requires a later rule earned through play.
+
+### Mutation should be literal enough to bite
+
+The player may use an available occurrence to make a small textual mutation. The world then owes the smallest coherent consequence necessary to honor the resulting language.
+
+The mutation does **not** authorize unrelated scene regeneration.
+
+Historical example: inserting `azure` into the final stone made that stone azure; it did not rewrite the catacombs.
+
+### Grammar is a constraint, not a prison
+
+Prefer mutations that leave the local phrase interpretable. Do not require a full parser or reject every delightful malformed construction.
+
+If the altered language has a reasonably legible reading, play may proceed and the world may discover what that reading costs.
+
+If it has no coherent reading, the move can simply fail to commit and the occurrence remains available.
+
+### Removal creates absence of language, not automatic opposite truth
+
+Taking a word away removes or damages an assertion. It does not automatically establish the antonym or reverse the world's history.
+
+Removing `alive`, for example, does not by itself mean `dead`.
+
+### Pictures may propose; commitment makes history
+
+Rendering, visualization, or provisional interpretation may fill ambiguity so the human can experience a candidate consequence.
+
+That proposal is not automatically authoritative semantic truth.
+
+Once a move is accepted/committed and its consequence enters Crucible, the resulting event can become causal history.
+
+### Causal residue survives lexical cleanup
+
+Changing or restoring language later does not automatically rewind physical consequences that already occurred.
+
+If `electric` kelp shocks someone and `electric` is subsequently removed, the injury does not vanish merely because the current phrase changed.
+
+Undoing history, if it ever exists, must be an explicit game/world operation rather than a side effect of editing prose.
+
+### References bind to things, not spelling alone
+
+A proper name or other referring expression may establish a referent. Later references can continue to point to that thing even when the lexical occurrence that introduced it has moved or changed.
+
+Do not implement global textual replacement as a substitute for referential continuity.
+
+### Word, referent, and historical instance can diverge
+
+A word occurrence is lexical material.
+
+A referent is what language points at.
+
+A historical instance is a particular world participant that has accumulated consequences.
+
+They may begin tightly coupled and later separate. This is especially important if a literary character or object crosses into the Terrordrome and acquires history the source text never contained.
+
+### Crucible gets the last word on physical consequence
+
+Syntax Reroll determines lexical legality and the semantic obligation created by a committed move.
+
+Once that obligation is realized as Crucible world state, ordinary Crucible causality applies. Terrain, bearings, meteors, C&C systems, and later earned machinery may change what happens next.
+
+Syntax Reroll does not get to continuously force reality to resemble the sentence after the sentence has done its causal work.
+
+### Narrow rulings beat broad machinery
+
+When a move exposes ambiguity, record the ruling that was actually needed.
+
+Do not generalize from one adjective insertion into a universal adjective system, from one proper noun into a character ontology, or from one physical consequence into a semantic compiler.
+
+The rulebook should accrete through play.
+
+## Minimal move lifecycle
+
+For v0, a successful move can be understood without committing to UI or data schema:
+
+**encounter → extract/hold → propose mutation → test local coherence → commit → honor minimum semantic delta → release consequence to Crucible → preserve provenance/history**
+
+A failed proposal returns to the pre-commit state rather than consuming the occurrence merely for being attempted.
+
+## Deliberately unresolved
+
+The first book and actual play should decide rather than this document:
+
+- how many occurrences can be held at once;
+- whether extraction must leave a visible wound in source prose immediately;
+- which parts of speech are initially legal;
+- whether moving punctuation is allowed;
+- whether morphology can change (`stone` → `stones`, tense, possessive, etc.);
+- whether source text advances continuously, by page, by scene, or by some other encounter unit;
+- whether a mutation can target only current prose or previously encountered prose;
+- what exact action counts as human commitment;
+- whether restoration returns a word to availability or closes its history;
+- how referential bindings are represented internally;
+- what happens when Crucible physically destroys or transforms a representation that still participates in Syntax Reroll state.
+
+Those are game questions now. Let the first run make them concrete.
+
+## Book-selection pressure
+
+The first source should not be chosen because it conveniently validates these rules. Prefer a public-domain text with concrete objects, places, actors, and actions that gives the game something to bite without requiring exhaustive literary parsing.
+
+The book is substrate, not specification.
