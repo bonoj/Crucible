@@ -126,14 +126,14 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const edgeKey=(a,b)=>{const ak=a.x.toFixed(6)+","+a.z.toFixed(6),bk=b.x.toFixed(6)+","+b.z.toFixed(6);return ak<bk?ak+"|"+bk:bk+"|"+ak};
     const onMaterialEdge=p=>Math.abs(terrain.materialBoundary(p.x,p.z).distance)<SURFACE_STEP*.08;
     const rememberSideEdges=poly=>{for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(!onMaterialEdge(a)||!onMaterialEdge(b))continue;const key=edgeKey(a,b);if(sideEdges.has(key))sideEdges.delete(key);else sideEdges.set(key,[a,b])}};
-    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y+.008,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1);rememberSideEdges(poly)};
+    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1);rememberSideEdges(poly)};
     for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
       const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),cc=sample(x1,z1),d=sample(x,z1);
       emit(clipSupport(clipWet([a,b,cc])));emit(clipSupport(clipWet([a,cc,d])));
     }
     for(const [a,b] of sideEdges.values()){
       const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
-      const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y+.008,a.z,b.x,b.y+.008,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
+      const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
     sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
