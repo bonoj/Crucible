@@ -526,3 +526,21 @@ The first interior should leave substantial unclaimed space. Its emptiness is ca
 ### Frontier
 
 Inspect current plinth interaction, camera/scene ownership, developer controls, and the existing CLARA surface. Build the smallest reversible transition into an interior volume, with a reliable route back out. Then experience it before deciding what the room wants to become.
+
+
+### Executable consequence — first interior candidate
+
+The first Lighthugger interior has now been implemented as a candidate without changing the stable release.
+
+Implementation shape:
+
+- new focused runtime module: `src/runtime/lighthugger-interior.js`;
+- tapping the existing octagonal apparatus switches from the Overview camera into a dedicated interior camera and scene locus;
+- the interior is physically staged below the Terrordrome rather than implemented as a second web application;
+- its first geometry is an octagonal dark-metal room with brass structural ribs, a warm service spine, one installed translucent surface, a low work island, rails, and deliberately unclaimed volume;
+- exterior developer chrome is hidden while inside;
+- a minimal `↖ RETURN` affordance restores the Overview camera and Terrordrome;
+- the interior exposes a small inspect surface and no authored interaction rules beyond entry/exit;
+- ordinary Terrordrome simulation continues while the human is inside rather than becoming a separate saved universe.
+
+The candidate build for source head `6069da17c0492a57e66b6bebcfc72ecf097cf0b7` passed the repository build/test workflow. Stable promotion has **not** occurred. Human perceptual judgment is now the next boundary.
