@@ -525,3 +525,132 @@ The provisional future questions inherited from the Syntax record remain cheap a
 - later GitHub genesis-authority investigation.
 
 No additional archaeology document or repository is earned by these possibilities.
+
+
+## Turn — the old notebook reaches its own machinery
+
+### Human evidence
+
+The human supplied ten additional notebook spreads from the pre-GitHub sequence. This shard is unusually valuable because it records the old collaboration reasoning explicitly rather than requiring the present model to infer machinery from pretty-world rasters.
+
+The visible progression is:
+
+**Language Becomes Matter → Literary Roguelike → Occurrence-Based Lexical Matter → Lexical Conservation → Rendered Proposal vs Established Truth → Tethers / Causal Commitment → Poe Expedition → Word vs Entity → Verne Semantic Chains → Semantic State vs Causal Residue → Verne × Stevenson Crossing → Historical Instances → Characters / Specimens → Divergent Histories → Home → Geography → Physical Interface → Attention Geometry.**
+
+Important contemporaneous claims preserved by the pages include:
+
+- prose is treated as manipulable world-state rather than merely description;
+- mutations should produce the smallest coherent semantic delta;
+- plausible renderer invention is not the same as established world truth;
+- lexical extraction operates on occurrences, not global word types;
+- lexical instances have provenance and are conserved rather than freely generated;
+- removing an assertion does not automatically assert its opposite;
+- a rendered picture proposes; accepted consequences commit;
+- semantic state and causal residue can occupy different timescales;
+- a lexical proper name, its source referent, and a later historical instance are distinct things;
+- referential binding can propagate a mutation through references without global text replacement;
+- extracted characters can branch from their source counterparts rather than erasing or replacing them;
+- specimens become residents, and their post-extraction experiences belong to the extracted historical branch;
+- Home emerged because words, specimens, books, visual continuity, and expedition history needed somewhere to persist;
+- repeated use can stabilize generated space into recognizable geography;
+- interface abstractions were progressively replaced with physical things inside the world: word bank, specimen tube, field notebook, charts/models/architectural surfaces;
+- reading physically occupies attention by occluding the world;
+- the notebook ends by asking whether a representation physically inside the world can itself be affected by that world.
+
+Two phrases are especially diagnostic:
+
+> **Pictures propose. Actions commit.**
+
+and
+
+> **Books begin canonical and become ours. Home begins generative and becomes canonical.**
+
+### Clara — immediate archaeological reading
+
+This shard substantially reduces the amount of the old Syntax Reroll machinery that must be reconstructed by inference. The notebooks themselves preserve a staged epistemic model.
+
+A useful compression of the trajectory is:
+
+**language → matter → conservation → provenance → interpretation → commitment → causal residue → entities → divergent histories → residents → Home → geography → physical interface → embodied attention**
+
+The important result is not that every notebook idea should now be rebuilt. Many of these pages explicitly contain working hypotheses, open questions, incomplete case law, and speculative interfaces. They are high-density historical evidence, not a current implementation specification.
+
+The strongest continuity with present Crucible is the terminal question. Current Crucible now contains a diegetic CLARA surface inside the world, while the Orbital Locus work independently separated authoritative world truth, bounded observation, immutable evidence, derivation, and inference. The old notebook had already arrived at the question:
+
+> **If a representation exists physically inside the world, can the world affect it?**
+
+The present collaboration did not reach that state by implementing this notebook. The resemblance therefore matters as recurring pressure rather than proof of direct architectural inheritance.
+
+### Evidence status
+
+This shard is strong evidence for the old collaboration's explicit conceptual vocabulary at the time the notebook was made. It is not by itself evidence that every diagrammed mechanism existed in executable code or that later Crucible machinery is a direct implementation descendant.
+
+No deeper historical conversation was consulted.
+
+
+## Turn — raster banks become continuity evidence
+
+### Human
+
+> And we want to preserve raster banks for future raster > memory context recovery as well. This is perfect because we have a ton of rich notebook case studies and specs coming up and our 3d projects already capture the pretty worlds in a single image.
+
+### Consequence
+
+The archaeology now has a second experimental product besides historical interpretation: a future **raster → context recovery corpus**.
+
+The collaboration has observed two complementary raster roles:
+
+- **3D-world hero rasters** can cheaply recover visual identity while executable worlds and repositories carry most machinery and causal truth;
+- **notebook rasters** can carry unusually dense semantic residue: questions, experiments, diagrams, failures, provisional rules, open questions, and the collaboration's interpretation at a historical moment.
+
+Raster banks should therefore be preserved as evidence rather than treated as disposable illustrations merely because Git text and executables now exist.
+
+A future cold-recovery experiment may deliberately begin from a very small selected raster set and ask how much working context can be reconstructed before consulting durable provenance.
+
+Candidate recovery ladder:
+
+**raster → recovered working model → selective provenance → executable evidence**
+
+This is not yet a memory architecture or a raster schema. It is an earned experimental opportunity created by the archaeology itself.
+
+
+## Current expedition assessment — 2026-09-29
+
+The archaeology has now crossed an important threshold. It no longer needs more historical material merely to prove that raster residue can recover useful context. That result is already strong.
+
+What has been earned so far:
+
+- memory-first Syntax Reroll recovery followed by measurable raster snap-back;
+- raster shards functioning as high-density, lossy continuity surfaces;
+- explicit correction that bounded visible working state did not imply historical loss: rolling context remained a latent continuity channel;
+- modern Git provenance adding a durable, selectively addressable cold channel;
+- recovery of Syntax Reroll's explicit distinction among lexical matter, referents, historical instances, rendered proposals, semantic state, and causal residue;
+- recovery of Home as an emergent persistence/geography problem rather than a designed hub-menu requirement;
+- recovery of physical/diegetic interface pressure and attention geometry;
+- preservation of notebook rasters as a future raster-first recovery corpus;
+- a plausible cheap path from archaeology into executable investigation without resurrecting the old engine.
+
+The expedition therefore has a legitimate fork rather than an obligation to keep excavating.
+
+### Menu from here
+
+**A. Continue archaeology while the raster bank is available.**  
+Additional notebook case studies can sharpen or falsify the recovered model. This is useful, but no longer required to establish the basic result.
+
+**B. Run a tiny 3D Syntax Reroll probe in Crucible.**  
+Do not rebuild the literary roguelike. Choose one earned question and make it physical. The strongest current candidate is a world-resident representation whose state can be affected by world events, because both the old notebook and current Crucible independently create pressure there.
+
+**C. Close Dig 001 without code and preserve it as archaeology.**  
+The dig is already successful. A prototype is optional, not a completion criterion.
+
+**D. Later invert the recovery experiment with Foundry → Six Cities.**  
+Begin from rasters before memory/provenance and measure what the images themselves recover. This remains a distinct future dig, not unfinished Syntax Reroll work.
+
+**E. Later test expedition → expedition Unzip.**  
+Feed this completed local record to a cold receiver and see whether it can orient and launch a successor expedition with minimal human transport.
+
+### Present recommendation encoded as frontier, not commitment
+
+There is **more historical material available, but no archaeological debt**. The most valuable next move should come from curiosity rather than completeness pressure.
+
+If the upload window reopens and the notebook sequence remains fun, continue feeding the rich case studies. If executable pressure wins first, make one tiny Crucible probe. If neither feels necessary, Dig 001 may stop here without losing the result.
