@@ -126,7 +126,27 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const edgeKey=(a,b)=>{const ak=a.x.toFixed(6)+","+a.z.toFixed(6),bk=b.x.toFixed(6)+","+b.z.toFixed(6);return ak<bk?ak+"|"+bk:bk+"|"+ak};
     const onMaterialEdge=p=>Math.abs(terrain.materialBoundary(p.x,p.z).distance)<SURFACE_STEP*.08;
     const rememberSideEdges=poly=>{for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(!onMaterialEdge(a)||!onMaterialEdge(b))continue;const key=edgeKey(a,b);if(sideEdges.has(key))sideEdges.delete(key);else sideEdges.set(key,[a,b])}};
-    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1);rememberSideEdges(poly)};
+    const emit=poly=>{
+      if(poly.length<3)return;
+      // Validate the whole clipped polygon before mutating shared geometry. A failed
+      // sample must never leave partial vertices behind for later patches.
+      const verts=[];
+      for(const p of poly){
+        let y=p.y;if(!Number.isFinite(y))y=renderSample(p.x,p.z).surface;
+        if(!Number.isFinite(y))return;
+        verts.push({x:p.x,y,z:p.z});
+      }
+      // Every polygon originates inside one SURFACE_STEP triangle. Reject impossible
+      // spans rather than allowing disconnected wet components to acquire a bridge.
+      const maxSpan=SURFACE_STEP*1.5,maxSpan2=maxSpan*maxSpan;
+      for(let i=0;i<verts.length;i++)for(let j=i+1;j<verts.length;j++){
+        const dx=verts[i].x-verts[j].x,dz=verts[i].z-verts[j].z;
+        if(dx*dx+dz*dz>maxSpan2)return;
+      }
+      const base=vi;for(const p of verts){pos.push(p.x,p.y,p.z);vi++}
+      for(let j=1;j+1<verts.length;j++)ind.push(base,base+j,base+j+1);
+      rememberSideEdges(verts);
+    };
     for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
       const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),cc=sample(x1,z1),d=sample(x,z1);
       emit(clipSupport(clipWet([a,b,cc])));emit(clipSupport(clipWet([a,cc,d])));
