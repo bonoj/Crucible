@@ -708,3 +708,18 @@ Correct the implementation rather than continuing to tune the mistaken interpret
 Proceed with the constrained geometry recovery established in the preceding turn. Preserve current camera, lighting, world/station transforms, Lighthugger altitude, portal behavior, interior camera, and hard interior walls. Recover the first-attempt exterior vessel geometry from commit `b3410ae` rather than rolling back repository state.
 
 The recovered exterior is the invariant: original hull slabs, core, collars, service arrays, windows, four long rails, mast arrays, and rectangular brass end teeth. The sole experimental change is tooth bite direction. Keep each tooth's original rectangular vocabulary and mouth placement; orient it diagonally from the octagonal rim into the dark aperture and longitudinally toward vessel center. No other exterior geometry is to be tuned in this cut.
+
+
+## Turn 13 — 2D slash as 3D rake instruction
+
+### Human
+
+> Excellent. And I changed my mind about the horizontal rails. We just want 4 more so the octagon has 8 total.
+>
+> And the teeth are all /. We want them all \\. Did i successfully communicate 2d into 3d?
+
+### Interpretation
+
+Yes. In the current vessel-local geometry, the slash is a compact screen-space description of the tooth rake seen along the mouth: preserve the same roots, dimensions, and inward bite, but mirror the longitudinal component so the visible rake changes from `/` to `\\`. This is a local visual instruction, not a request to rotate the entire tooth ring or change its radial inwardness.
+
+The rail request is equally constrained: preserve the existing four longitudinal rails and add four more at the missing octagonal directions, producing eight evenly distributed rails around the hull. Preserve the mast arrays.
