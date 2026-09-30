@@ -92,7 +92,7 @@ function setScienceMode(active){
  active=!!active;if(active===scienceMode)return scienceMode;
  if(active){
    scienceSnapshot={terrain:terrain.snapshot(),bearings:bearings.snapshot(),cinnabarVisible:cinnabarLayer.visible,extruderEnabled:extruder.inspect().enabled,weatherEnabled:meteorWeather.inspect().enabled};
-   scienceMode=true;meteorWeather.setEnabled(false,simNow);extruder.setEnabled(false);transport.reset();transport.setEnabled(true);cinnabarLayer.visible=false;bearings.clear();terrain.reset();lastImpactTarget=meteors.targetAt();
+   scienceMode=true;meteorWeather.setEnabled(false,simNow);extruder.setEnabled(false);cinnabarLayer.visible=false;bearings.clear();terrain.reset();terrain.raise({x:-4.8,z:0},{radius:3.1,height:2.35});transport.reset();transport.setSource({x:-4.8,z:0,rate:.9});transport.setEnabled(true);lastImpactTarget=meteors.targetAt();
  }else{
    const s=scienceSnapshot;scienceMode=false;if(s){terrain.restore(s.terrain);bearings.restore(s.bearings);cinnabarLayer.visible=s.cinnabarVisible;extruder.setEnabled(s.extruderEnabled);transport.setEnabled(false);meteorWeather.setEnabled(s.weatherEnabled,simNow)}scienceSnapshot=null;lastImpactTarget=meteors.targetAt();
  }
