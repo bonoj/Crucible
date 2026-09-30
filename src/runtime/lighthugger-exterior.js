@@ -1,7 +1,7 @@
 export function createLighthuggerExterior({THREE,scene}){
   const root=new THREE.Group();root.name="lighthugger-exterior";
   // Horizontal over the Continuity Station: monumental enough to read, small enough to share Crucible.
-  root.position.set(-1.2,11.4,-1.2);root.rotation.z=Math.PI/2;scene.add(root);
+  root.position.set(-1.2,13.0,-1.2);root.rotation.z=Math.PI/2;scene.add(root);
 
   const hull=new THREE.MeshStandardMaterial({color:0x3b3934,roughness:.58,metalness:.72}),
     brass=new THREE.MeshStandardMaterial({color:0x8f6333,roughness:.43,metalness:.78}),
