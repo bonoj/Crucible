@@ -131,7 +131,8 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     acc+=Math.min(.05,Math.max(0,(now-lastNow)/1000));lastNow=now;
     sampleBed();
     let guard=0;while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
-    refresh();
+    // Diagnostic: presentation reconstruction intentionally frozen while the solver runs.
+    // If FPS returns, refresh() is the dominant cost and will be replaced with persistent geometry.
   }
   function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
