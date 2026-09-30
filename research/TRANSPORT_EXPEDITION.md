@@ -113,6 +113,10 @@ This is intentionally not a CFD solver, shallow-water solver, or particle liquid
 
 **Turn 2 intervention selected:** Preserve the physical representation unchanged. Encode authoritative cell mass more strongly in presentation so accumulation and depletion are perceptually distinct before earning a separate scientific instrument.
 
+**Specimen correction requested from human observation:** A continuously observable transport experiment needs persistent elevation head rather than a flat domain that simply wets outward. S0 Transport now raises one authoritative terrain hill and places the continuous source near its crown. The transport solver receives no hill-specific path or behavior; it continues to sample ordinary terrain height. Meteor impacts can therefore alter the downstream terrain while fresh material continues entering upstream.
+
+This changes the specimen's initial geometry, not the transport law. The hill is constructed through a new terrain-owned `raise` mutation so its consequence is available to every system through the same authoritative terrain seams.
+
 
 
 ## Why this expedition exists
