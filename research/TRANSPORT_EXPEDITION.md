@@ -1536,3 +1536,81 @@ Do not first lower the 64×64 state resolution, replace the water with cosmetic 
 A performance improvement that raises FPS while destroying that sequence is a regression.
 
 This benchmark is deliberately recorded before the next solver optimization so the existing behavior remains the reference evidence rather than something reconstructed from memory afterward.
+
+
+### Model visual observation — accepted live stress scene
+
+After promotion of the accepted water/transport candidate, the human supplied three screenshots from the live Crucible on a phone. The images are not required as repository evidence; the useful artifact is the model's visual reading of the executable behavior they exposed.
+
+The three views showed the same bounded terrain specimen under increasingly demanding water/material conditions, with the on-screen live build identity `53dce660`. The visible FPS readings were approximately 26, 19, and 16. These should not be interpreted as a controlled benchmark curve: camera position, visible geometry, water state, and accumulated material differ between frames. They do establish a useful live stress range and, more importantly, show what behavior remains coherent while the frame budget is under pressure.
+
+#### What is visually present
+
+The terrain is no longer behaving like a convenient test basin. It has been heavily excavated into steep, irregular relief: broad bowls and shelves connect through narrow cuts; tall walls and ridges divide catchments; deep dark channels run between orange-brown terrain masses; abrupt ledges and locally severe slopes force the water through constrained passages.
+
+Across that terrain, the discrete bearings do not read as uniformly scattered particles.
+
+They form several distinct spatial signatures:
+
+- long, narrow strings following channels and low corridors;
+- curved trains whose geometry records the route taken by moving water;
+- compact groups accumulated in local pockets;
+- sparse isolated bearings stranded away from the main concentrations;
+- denser deposits near low or quiet regions;
+- separated populations on different elevations and in different basins.
+
+In the first view, numerous bearings are visibly gathered across a dark low basin and along branching low routes. A conspicuous narrow train descends along a channel while other groups have accumulated near the front/lower boundary of the specimen. The result reads as transported material that has been sorted by the terrain and flow rather than as particles placed decoratively.
+
+In the second view, the terrain exposes a particularly legible transport network. Dark wet/low corridors connect separated regions through a steep central descent. Bearings appear as elongated packets along those corridors: some lie in nearly continuous lines, others have stopped as short bars or small clusters. The material distribution therefore preserves a visible history of movement even in a still screenshot.
+
+The third view is the strongest stress case. A large steep catchment narrows into a deeply incised, irregular passage. Bearings remain organized into thin trains and curved deposits through and below that constriction rather than exploding into incoherent scatter. The water/material system is therefore negotiating topology substantially harsher than the broad shallow basin for which a simple shallow-water demonstration might normally be staged.
+
+The visible free surface also remains coherent against this terrain. It occupies low regions and constrained passages without presenting as a rectangular solver grid. The reconstructed surface and the discrete transported matter agree sufficiently that the scene reads as one physical event rather than a fluid visualization overlaid with unrelated particles.
+
+#### What the images support
+
+Taken together with the human's live temporal observation, the screenshots strengthen the earlier river/log-jam benchmark.
+
+The still images cannot by themselves prove the direction or timing of flow, buoyant lift, or velocity decay. Those were observed interactively by the human. What the model can independently observe in the frames is the *resulting spatial organization*: material has resolved into route-following strings, localized jams, sparse stranded grains, and deposits separated by terrain topology.
+
+That distinction matters. The human supplied temporal evidence:
+
+> “When the water surface spreads out sufficiently and stops flowing, the bearings slow to a crawl, stopping in places.”
+
+and:
+
+> “water surface will lift buoyant sediment.”
+
+The model's visual evidence is compatible with and materially richer than a generic “bearings float” result: the final distributions visibly encode channels, constrictions, basins, and low-energy accumulation zones.
+
+A useful interpretation is:
+
+    terrain topology
+        → flow corridors and constrictions
+        → discrete material trajectories
+        → route-shaped strings and trains
+        → jams / pockets / stranded grains
+        → a persistent spatial trace of prior transport
+
+This is not a claim that the solver has earned quantitative fluvial geomorphology. There is still no general erosion law, suspended-sediment field, grain-size distribution, or validated sediment mechanics. But the coupled system has earned a stronger qualitative statement:
+
+> **Transport history is becoming legible in the distribution of matter.**
+
+That is an important Crucible property. The simulation is not merely producing convincing motion while it runs; some of its history remains inspectable afterward in where material comes to rest.
+
+#### Performance benchmark implied by the scene
+
+The live screenshots also prevent an overly comfortable interpretation of the earlier ~32 FPS observation. Under these more demanding accumulated states, the accepted build was visibly running at about 26, 19, and 16 FPS.
+
+Therefore the optimization benchmark should include both regimes:
+
+- ordinary convincing coupled play can be around the low-30-FPS range;
+- heavily developed terrain/water/material scenes can fall into the high teens.
+
+The goal is not to optimize an empty or freshly reset world to 60 FPS. The stress case worth preserving contains irregular excavated terrain, active/accumulated water state, and enough transported matter to leave route-shaped deposits.
+
+The acceptance condition remains behavioral:
+
+> **Make the expensive scene cheaper without making its history less legible.**
+
+In particular, an optimization is suspect if it erases the slow settling, route-following trains, local jams, or stranded deposits that make the coupled transport convincing.
