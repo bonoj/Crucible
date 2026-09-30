@@ -621,3 +621,20 @@ Two perceptual corrections are requested:
 - rotate the warm/orange end teeth so each end's teeth rake diagonally inward toward the vessel center, giving the open throats a convergent structural bite rather than perpendicular pegs.
 
 The accidental “Lighthugger Shai-Hulud” read is useful visual evidence, not a requirement to literalize a sandworm or copy Dune geometry. Preserve the monumental hollow-body impression while improving spatial separation and end-directionality.
+
+
+## Turn 8 — breathing room and wider exterior framing
+
+### Human
+
+> Up a little higher so the station has breathing room. And raise the skylight. Gimme a little more leash on the pinch zoom back, too, so I can take it all in.
+
+### Consequence
+
+The accepted exterior composition needs another small spatial tuning pass rather than new machinery:
+
+- raise the Lighthugger a little farther above the station;
+- raise the station skylight/upper observation surface so it still reads clearly beneath the vessel rather than being visually compressed downward;
+- increase the Overview camera's maximum orbit distance enough that mobile pinch zoom can frame the station and suspended Lighthugger together.
+
+This is explicitly a human perceptual framing correction. Preserve the vessel, interior, entry behavior, and current station machinery.
