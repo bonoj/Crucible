@@ -36,18 +36,15 @@ export function createLighthuggerExterior({THREE,scene}){
   // Long rails and small antenna forests establish comprehensible machinery bands.
   const railGeo=new THREE.CylinderGeometry(.025,.025,length*.78,5);
   for(const a of [0,Math.PI/2,Math.PI,Math.PI*1.5]){const rail=new THREE.Mesh(railGeo,brass);rail.position.set(Math.sin(a)*2.02,0,Math.cos(a)*2.02);root.add(rail);}
-  for(const y of [-3.6,-2.9,2.8,3.55])for(let k=-2;k<=2;k++){
-    const mast=new THREE.Mesh(new THREE.CylinderGeometry(.018,.026,.38+Math.abs(k)*.06,5),brass);mast.position.set(2.02,y,k*.22);mast.rotation.z=Math.PI/2;root.add(mast);
-  }
   // End-cap spars around the open throat.
   for(const end of [-1,1])for(let i=0;i<8;i++){
     const a=Math.PI/8+i*Math.PI/4;
     const radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
     const inward=new THREE.Vector3(0,-end,0);
-    const dir=radial.clone().multiplyScalar(-.72).add(inward.multiplyScalar(.70)).normalize();
+    const dir=radial.clone().multiplyScalar(-.86).add(inward.multiplyScalar(.52)).normalize();
     const toothLength=.62;
     const b=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,toothLength,5),brass);
-    b.position.copy(radial).multiplyScalar(1.38);b.position.y=end*length*.515;
+    b.position.copy(radial).multiplyScalar(1.62);b.position.y=end*length*.535;
     b.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
     root.add(b);
   }
