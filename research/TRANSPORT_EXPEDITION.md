@@ -111,7 +111,7 @@ This is intentionally not a CFD solver, shallow-water solver, or particle liquid
 
 **Result:** The first terrain-coupling prediction passes qualitatively: Transport responds to authoritative terrain mutation without crater-specific logic. The quantitative/interpretive question remains unanswered because presentation does not expose mass concentration strongly enough.
 
-**Turn 2 intervention selected:** Preserve the physical representation unchanged. Encode authoritative cell mass more strongly in presentation so accumulation and depletion are perceptually distinct before earning a separate scientific instrument.
+**Turn 1 iteration selected:** Preserve the physical representation unchanged. Encode authoritative cell mass more strongly in presentation so accumulation and depletion are perceptually distinct before earning a separate scientific instrument.
 
 **Specimen correction requested from human observation:** A continuously observable transport experiment needs persistent elevation head rather than a flat domain that simply wets outward. S0 Transport now raises one authoritative terrain hill and places the continuous source near its crown. The transport solver receives no hill-specific path or behavior; it continues to sample ordinary terrain height. Meteor impacts can therefore alter the downstream terrain while fresh material continues entering upstream.
 
@@ -471,3 +471,16 @@ Do not stop at a representation survey or architecture plan.
 Implement, execute, inspect, diagnose, and refine until the first crossing either satisfies the success conditions or reaches a boundary that genuinely requires human evidence.
 
 The first tool should be whatever the first physical discrepancy earns.
+
+
+### Turn 1 acceptance specimen — watershed
+
+Human acceptance criterion was strengthened before crossing: Transport Phase 1 should begin from recognizable geology rather than an isolated hill. The plinth should behave as a tiny watershed with hills, shallow river/channel structure, multiple continuous springs, and transport capable of leaving the plinth edge. The human should be able to create and observe continuous flowing behavior across that terrain.
+
+A deterministic watershed specimen now composes ordinary terrain-owned `raise` and `excavate` mutations. Three continuous sources are configured as springs. Transport contains no river, hill, spring, or watershed-specific routing rule; it continues to respond to sampled terrain and persistent directional flux.
+
+The previous closed grid boundary was identified as incompatible with the acceptance criterion. Unsupported destinations at the material edge are now open outflow: transported mass crossing them is removed from stored field mass and accumulated in `mass.escaped`. Conservation inspection therefore distinguishes stored mass, escaped mass, and numerical error.
+
+Presentation sampling is independently controllable at sparse, medium, and dense levels. This changes only which authoritative wet cells are drawn; it does not change transport grid resolution, mass, flux, source rates, or dynamics. The UI control cycles `▦`, `▦▦`, and `▦▦▦`.
+
+**Turn 1 remains open pending human target-device acceptance:** recognizable continuous flow through the watershed and sustained drainage off the plinth edge. If accepted, bundle the Turn 1 representation and evidence before opening the next scientific question.
