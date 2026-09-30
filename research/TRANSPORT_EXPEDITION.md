@@ -123,6 +123,12 @@ This changes the specimen's initial geometry, not the transport law. The hill is
 
 **Prediction before next observation:** A meteor crater placed downstream on the slope or just beyond its foot should continuously reorganize incoming mass around and/or into the depression. If the visible field does not develop a persistent concentration/path response, stronger density presentation is insufficient and a dedicated measurement instrument is earned.
 
+**Human observation 4:** The field responds to impact terrain: material moves radially away from the impact region. However, transport is too fast and spreads too uniformly; local density is too low for the behavior to read as fluid or as a coherent stream.
+
+**Result:** Terrain coupling passes again, but the first flux law fails the intended transport regime. Its memoryless redistribution toward every lower neighbor behaves too diffusively: it rapidly equalizes mass instead of preserving directional flow structure.
+
+**Decision:** Do not add a measurement instrument yet. The ambiguity is not merely observational; the authoritative dynamics themselves are producing an over-diffusive regime. Preserve the scalar mass field, but replace memoryless neighbor repartition with a minimal stateful flux/momentum representation. The next candidate should retain direction long enough for dense downhill streams to form and for terrain changes to deflect them rather than simply causing immediate radial redistribution.
+
 
 
 ## Why this expedition exists
