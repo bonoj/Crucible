@@ -638,3 +638,29 @@ The accepted exterior composition needs another small spatial tuning pass rather
 - increase the Overview camera's maximum orbit distance enough that mobile pinch zoom can frame the station and suspended Lighthugger together.
 
 This is explicitly a human perceptual framing correction. Preserve the vessel, interior, entry behavior, and current station machinery.
+
+
+## Turn 9 — bite inward, remove rails, fix interior camera containment
+
+### Human
+
+> Teeth bite in, not out. And nuke those two thin floating side rails. Don't need em. Also internal camera starts in wall. Pull in a little and make sure wall edges are hard geometry for internal camera.
+
+### Correction
+
+A mistaken image-generation action was triggered after this request. The human immediately clarified:
+
+> Not an image. The build :).
+
+The requested target is the Crucible executable candidate.
+
+### Consequence
+
+This is another perceptual correction pass:
+
+- reverse the Lighthugger end teeth so both mouths visibly bite inward toward the hollow core and vessel center rather than flaring away from it;
+- remove the thin floating longitudinal side rails;
+- move the interior starting camera farther inside the room;
+- replace the interior's visually one-sided wall treatment with hard wall geometry that remains legible/occluding from the internal camera near room edges.
+
+No new interaction or semantic machinery is implied.
