@@ -663,3 +663,14 @@ Minimum target relationships:
 The next crossing is therefore not “does it look geological?” It is:
 
 **Can Crucible construct a dry terrain whose sampled elevations demonstrate a watershed capable of constraining later transport?**
+
+
+### Geological Diversity T1 board — Aeon-style n representations
+
+Transport now invokes the existing Geological Diversity expedition directly rather than creating a parallel hydraulic-terrain vocabulary. The Aeon-style “make me n versions” pattern is used as the human review surface: one control cycles a deterministic board of meaningfully separated compiled geological representations.
+
+The first board contains twelve stable specimens. Each is generated into Crucible's ordinary signed-density terrain from combinations of broad mass/relief, regional slope, dominant trunk incision, tributary incision, drainage width, plateau mass, and large-scale warp. Named landscapes are not presets. The board is deliberately biased toward T1 drainage morphology while varying causal emphasis enough to seek perceptually distinct outcomes.
+
+The UI control is `🪨 n/12`. Tapping advances to the next stable representation and disables Transport Candidate A so morphology is reviewed dry. Specimen identity is deterministic within this board so human judgments can refer to numbers without losing the world being discussed.
+
+This is an initial executable board, not evidence that the proposed causal vocabulary has crossed. Human review should prefer direct perceptual reactions or the expedition's cheap judgments: KEEP, BORING, BROKEN, MORE, or CROSS A × F. The implementation should be revised from those observations rather than exposing parameter sliders.
