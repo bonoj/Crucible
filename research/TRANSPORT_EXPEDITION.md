@@ -1221,3 +1221,109 @@ And the practical surface rule is now:
 This is not yet a claim that arbitrary water geometry has been solved. The accepted surface still belongs to the supported shallow-water regime. Waterfalls, detached bodies, breaking surfaces, undercuts, and other multiply-valued water geometry remain outside what this representation has earned.
 
 What *has* been earned is narrower and extremely useful: a computationally cheap material water state can drive a visibly continuous surface without exposing its lattice, while leaving enough budget and semantic separation for bearings, measured forcing, terrain mutation, and later representation crossings.
+
+
+### Material crossing — bearings begin to care
+
+Immediately after the reconstructed surface was accepted as “beautiful water,” the next demand was deliberately semantic rather than mechanical:
+
+> **Human:** “Alright. Now that the surface exists, bearings have to give a shit. Make it so!”
+
+The first implementation made bearings consume the shallow-water state directly. Water remained unaware of bearings. Each bearing queried local depth, free-surface elevation, and horizontal velocity, then applied a local buoyancy/drag response.
+
+That first attempt failed human inspection:
+
+> **Human:** “Bearings don't care. Check your math for collision?”
+
+Inspection found that collision was not the primary failure. The buoyancy model itself was wrong for the intended behavior. It treated submerged height fraction as displaced-volume fraction and, at full submersion, supplied only enough upward acceleration to cancel gravity. A sunken bearing was therefore approximately neutrally buoyant rather than positively driven toward its floating equilibrium. Force ordering was also poor: motion was integrated before buoyancy was evaluated.
+
+The correction used the actual submerged volume fraction of a sphere. If t is submerged height divided by sphere diameter, then
+
+    submerged volume fraction = t²(3 - 2t)
+
+and Archimedean acceleration can be expressed from displaced-volume fraction and the bearing's density relative to water. For the visible proof, bearings were assigned relative density 0.55. A fully submerged bearing therefore receives genuine net upward acceleration, while equilibrium occurs when approximately 55% of its volume is submerged.
+
+The corrected order is:
+
+    sample water state
+        → calculate spherical displaced volume
+        → gravity + buoyancy + fluid drag
+        → integrate bearing motion
+        → resolve terrain contact
+
+The earlier artificial free-surface restoring spring was removed. The free surface is not a collision plane. Floating emerges from gravity, displaced volume, density, and damping/drag.
+
+The human then raised an architectural question before allowing the implementation to harden:
+
+> **Human:** “You're writing buoyancy as a component, right?”
+
+The answer was no: during this crossing buoyancy had deliberately been implemented directly in the optimized bearing path. The intended architecture is eventually a first-class material interaction rule/system, but extracting it before proving the behavior would be premature.
+
+The human chose the sequence explicitly:
+
+> **Human:** “Let's make sure it works first. Then we'll lift it out. Bearing gravity is already a system, right?”
+
+This exposed another useful distinction. Ordinary loose Crucible matter already carries a real ECS Gravity component consumed by the general physics loop. The high-volume bearing regime does not instantiate one ECS entity/component set per bearing; gravity is specialized inside the packed bearing system to preserve the performance regime that supports tens or hundreds of thousands of grains.
+
+Therefore “lift buoyancy into a system” must not accidentally mean “turn 100,000 bearings into 100,000 heavyweight ECS entities.” A general material rule may have both ordinary-ECS and packed/batched consumers, just as optimized material regimes can share semantics without sharing storage layout.
+
+The reason for preserving that distinction became explicit in the next turn:
+
+> **Human:** “Yeah, because once we have a sufficiently rich set of systems and surfaces for materials to encounter, we're going to introduce lots of new materials.”
+
+This gives the emerging material architecture a useful constraint. New materials should increasingly be compositions of properties encountering already-earned systems, rather than collections of bespoke object behavior.
+
+The desired direction is not:
+
+    water knows how bearings behave
+    wood knows how to float
+    iron knows how to sink
+
+but:
+
+    water exposes state
+        +
+    buoyancy defines a physical interaction
+        +
+    material exposes properties such as density
+        ↓
+    consequence emerges
+
+Future properties may include restitution, friction, cohesion, permeability, thermal behavior, or others, but they should not be designed speculatively. Each should enter only when an executable crossing earns it.
+
+The human accepted the corrected behavior:
+
+> **Human:** “Absolutely nuts. And I didn't have to mess with statics formulae. And we basically have hydrodynamics now. This water flows, the bearings float.”
+
+The important claim is narrow. Crucible has not become a general CFD solver or quantitatively validated hydrodynamics package. It now has a real causal material chain:
+
+    mutable terrain
+        → shallow-water routing and horizontal momentum
+        → reconstructed continuous free surface
+        → spherical displaced-volume buoyancy
+        → current-coupled floating bearings
+
+The interaction is especially significant for the model-forward workbench because the human supplied semantic constraints—“bearings have to give a shit,” then the observation that they did not—without manually deriving or implementing the mechanics. The repository remained inspectable enough for the model to locate the failed physical assumption, replace it with a better one, and return executable evidence.
+
+### Continue by crossing, not by completing “water”
+
+The next methodological decision was explicit:
+
+> **Human:** “Let's keep crossing for the rest of the water implementation.”
+
+Do not respond to the successful surface and buoyancy interaction by designing a complete Water Architecture.
+
+Continue with the established experimental method:
+
+    encounter a representational failure
+        → inspect the seam
+        → add the smallest machinery that can cross it
+        → experience the executable result
+        → preserve what was actually earned
+
+Likely future boundaries are already nameable—overflow, unsupported/falling water, re-entry, impact/splash, displacement by other material, erosion—but naming them does not authorize their implementation. The world should first produce evidence that a boundary matters.
+
+The governing instruction for the remaining water work is therefore:
+
+> **Cross until it breaks. Then learn why.**
+
