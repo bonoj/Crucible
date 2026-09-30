@@ -1,4 +1,4 @@
-# Syntax Reroll — Crucible Expedition
+# Malleable Middle — Crucible Expedition
 
 **Status:** fresh executable expedition; planning/orientation only  
 **Started:** 2026-09-29  
