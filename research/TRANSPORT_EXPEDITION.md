@@ -753,3 +753,109 @@ The first fresh liquid candidate is a purpose-built **depth-averaged shallow-wat
 This candidate is deliberately matched to the present apparatus: bowls, slopes, raised barriers, carved channels, point sources, and mutable terrain. It is not a claim to general 3D fluid behavior. Acceptance begins with simpler obligations: source water must spread under gravity; depressions must retain it; resting water should tend toward a level free surface; raised terrain must impede it; a sufficiently low carved escape path must redirect/release it; and no motion may exist solely because presentation asked for motion.
 
 Only after this representation is experienced and diagnosed do we decide whether to refine it, preserve it in the liquid bucket, or discard it and implement the next known representation independently.
+
+
+## Terrain genesis crossing — author in 2D, become mutable in 3D
+
+The dry-geology detour eventually exposed a representation problem more important than another round of geological parameter tuning. Crucible's authoritative terrain is a signed-density volume, but requiring genesis itself to be authored directly in that volume made the initial-condition problem unnecessarily difficult.
+
+The useful decomposition is now explicit:
+
+```text
+deterministic seed
+      ↓
+model-authored 2D height field H(x,z)
+      ↓
+simple lift into density D(x,y,z) = H(x,z) - y
+      ↓
+ordinary Crucible signed-density terrain
+      ↓
+meteors / excavation / raising / later systems mutate D directly
+```
+
+The height field is therefore **genesis, not reality**. It supplies a cheap initial surface. Once lifted into the density volume, the heightmap has no authority over subsequent terrain. Crucible can then express consequences that a height field cannot: undercuts, caves, tunnels, overhangs, disconnected surfaces, buried structures, and arbitrary volumetric destruction.
+
+This resolved an important false constraint. The representation easiest for the model to author does not need to be the representation the simulation executes.
+
+### Evidence that led here
+
+Several approaches failed or proved inadequate before this decomposition became obvious.
+
+The first Geological Diversity board produced twelve deterministic terrains, but human review found only specimen 6 acceptable; its bowl was specifically useful. That result was preserved as Land Candidate A rather than treating numerical parameter diversity as geological diversity.
+
+A later A–Z caldera study failed more sharply. The generated specimens were variations of one construction grammar: angular, squat radial depressions/rims at too small a scale. Semantic recognition of a hand-sculpted caldera had been compressed prematurely into a procedural vocabulary. Twenty-six parameterizations did not constitute twenty-six topologies.
+
+A subsequent deterministic volumetric “history” approach applied sequential seeded deformation passes to the density field. It was adequate, but difficult to compare and unnecessarily expensive conceptually: genesis was being forced to speak the same representation required by later world mutation.
+
+The key reframing came from looking at the volume through simpler projections. A top-down terrain surface can be represented as an ordinary 2D height field; fixed-Y density planes and vertical cross-sections remain available later when topology exceeds what a heightmap can express. Heightmaps are dramatically easier for the model to visualize, compose, generate, and reason about than an entire signed-density volume.
+
+The first 2D-genesis implementation was immediately judged substantially better than the previous terrain-generation attempts.
+
+### Current deterministic mechanism
+
+`terrain-genesis.js` constructs a floating-point height field at the terrain's XZ resolution. It composes simple geometric influences such as broad relief, ridges, trenches, basins, shelves, faults, and tilt. Each operation receives its own deterministic asymmetric noise/domain transform rather than sharing one noise map that would average the landscape toward a common texture.
+
+The initial authored mechanism preserves four explicit recipes:
+
+1. folded mountain system;
+2. basins and sinkholes;
+3. broken highlands and deep valleys;
+4. unnamed asymmetric terrain.
+
+These recipes remain available as a known-good baseline.
+
+A second layer, `terrain-recipe-generator.js`, makes the terrain addressable by a single integer. The seed deterministically chooses large-scale structural family, operation count/order, geometry, amplitudes, placement, orientation, scale, and independent noise domains. Current structural families include ranges, basin fields, rifts, plateaus, knotted terrain, and lowlands, with deterministic cross-family intrusions.
+
+Science mode currently begins at seed `741`. `NEXT` advances through integer addresses:
+
+```text
+741 → 742 → 743 → …
+```
+
+There is no runtime randomness in this sequence. A seed is an address into the genesis machinery, not a saved mesh or image. The generated recipe is provenance derived from that address.
+
+The current procedural family has only just crossed into human review. Its ability to produce genuinely broad terrain diversity is therefore **a target under observation, not yet an accepted result**. In particular, shared primitive vocabulary and fixed global height normalization may still collapse apparently different recipes toward similar experienced terrain.
+
+### Why this fits Crucible's model-forward constraint
+
+The immediate engineering problem was unusually constrained: development is being steered from a smartphone; the artifact must remain browser-native and self-contained; terrain authoring should require no Blender/editor detour, external terrain service, specialist asset pipeline, or new runtime dependency; and the model must be able to author and revise the mechanism directly.
+
+Under those constraints, the useful pipeline is small:
+
+```text
+conversation
+  → model-authored deterministic math
+  → 2D numeric field
+  → dumb deterministic lift
+  → mutable 3D density
+  → mesh / executable evidence
+```
+
+The smartphone is not an intended compute architecture. It is the human steering surface. The practical constraint has nevertheless been productive: workflows that require the human to leave the model/repository/browser loop repeatedly become obvious friction and are either automated or removed.
+
+This terrain crossing joins several similar pressures encountered during Crucible development: file transport, deployment, first-class DevUI, and now terrain genesis have all become simpler because routine implementation mechanics are pushed toward model-owned executable machinery rather than human-operated specialist tooling.
+
+### Reinvented wheel, useful seam
+
+Nothing here requires a novelty claim. Procedural heightfields, deterministic seeded terrain, and conversion from heightmaps into voxel/density terrain are established techniques. The earlier search for “AI terrain generation” did not make this simple composition obvious because it framed the problem as generation of the final 3D representation.
+
+The useful local lesson is architectural rather than algorithmic:
+
+> **Author in the representation that makes the desired structure cheap to express; compile into the representation that makes the desired consequences possible.**
+
+For Crucible, 2D is currently the cheap language of terrain genesis and 3D density is the language of consequence.
+
+This also explains why the solution became apparent only after the volumetric approaches were experienced. The difficult part was not discovering a new terrain algorithm. It was dropping the assumption that initial-condition authoring and runtime world state had to share a representation.
+
+### Workbench consequence
+
+This crossing suggests a broader Scientific Workbench pattern without yet claiming it as a universal rule:
+
+- models may author compact projections, fields, recipes, diagrams, or other semantically convenient intermediate representations;
+- a deliberately simple compiler can translate those into richer authoritative simulation state;
+- the authoritative state then owns physical consequence;
+- projections and sections can be regenerated later as instruments for model reasoning without becoming world authority.
+
+For terrain specifically, the next evidence should come from experience rather than more architecture. Sequential seeds should be reviewed for actual structural diversity. Successful and failed seeds can then tell us which 2D vocabulary is missing. Cross-sections remain available when the experiment reaches topology that the heightmap genesis language cannot express.
+
+**Current terrain principle: 2D is imagination; 3D is consequence.**
