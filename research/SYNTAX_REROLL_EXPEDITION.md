@@ -695,3 +695,16 @@ The previous pass changed the wrong geometry in both cases. Fresh source inspect
 - the teeth were moved outward to radius `1.62` and given a strong negative radial component, which physically pushed their bodies outside the vessel even though the intent was an inward bite.
 
 Correct the implementation rather than continuing to tune the mistaken interpretation: delete the `railGeo` construction entirely. Place each tooth's outer/root end at the rim and aim its other end toward a point inside the aperture and longitudinally toward vessel center, constructing the cylinder directly between those two endpoints. This makes tooth direction geometrically explicit instead of relying on an ambiguous rotation vector.
+
+
+## Turn 12 — ✂️ constrained recovery cut
+
+### Human
+
+> Okay. ✂️
+
+### Authorized cut
+
+Proceed with the constrained geometry recovery established in the preceding turn. Preserve current camera, lighting, world/station transforms, Lighthugger altitude, portal behavior, interior camera, and hard interior walls. Recover the first-attempt exterior vessel geometry from commit `b3410ae` rather than rolling back repository state.
+
+The recovered exterior is the invariant: original hull slabs, core, collars, service arrays, windows, four long rails, mast arrays, and rectangular brass end teeth. The sole experimental change is tooth bite direction. Keep each tooth's original rectangular vocabulary and mouth placement; orient it diagonally from the octagonal rim into the dark aperture and longitudinally toward vessel center. No other exterior geometry is to be tuned in this cut.
