@@ -5,6 +5,8 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const K=N*N,idx=(x,z)=>x+N*z,wx=x=>MIN+(x+.5)*DX,wz=z=>MIN+(z+.5)*DX;
   const h=new Float32Array(K),hu=new Float32Array(K),hv=new Float32Array(K),bed=new Float32Array(K);
   const nh=new Float32Array(K),nhu=new Float32Array(K),nhv=new Float32Array(K);
+  const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
+  function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
   let enabled=false,lastNow=null,acc=0,steps=0,totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25;
   let sources=[{x:0,z:0,rate:.9}];
 
@@ -76,8 +78,8 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     // The material octagon is a geometric slip wall. State remains Cartesian, but
     // boundary-cell momentum obeys the actual nearest octagonal plane normal.
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(!valid(k)||h[k]<=DRY)continue;
-      const b=terrain.materialBoundary(wx(x),wz(z));if(b.distance>DX*1.5)continue;
-      const un=(hu[k]*b.nx+hv[k]*b.nz)/h[k];if(un>0){hu[k]-=h[k]*un*b.nx;hv[k]-=h[k]*un*b.nz;}
+      if(!wallNear[k])continue;const nx=wallNx[k],nz=wallNz[k];
+      const un=(hu[k]*nx+hv[k]*nz)/h[k];if(un>0){hu[k]-=h[k]*un*nx;hv[k]-=h[k]*un*nz;}
     }
     steps++;
   }
@@ -148,6 +150,6 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   }
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps}}
-  sampleBed();refresh();
+  cacheBoundary();sampleBed();refresh();
   return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface};
 }
