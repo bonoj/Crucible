@@ -769,3 +769,18 @@ The A–Z greeble deck is not yet executable evidence: candidate `129cc62` faile
 ### Consequence
 
 The A–Z visual-search instrument has completed its job. Variant H is accepted as the Lighthugger exterior greeble treatment. Collapse the temporary search machinery into H as ordinary fixed vessel geometry: remove the other 25 variants, deterministic variant generator/state, and the bottom dev-bar variant button/wiring. Preserve the accepted vessel body, teeth, world state, portal, cameras, lighting, and H's exact visible greeble arrangement. The residue should be the chosen ship, not the experiment used to choose it.
+
+
+## Turn 18 — H candidate runtime regression
+
+### Human
+
+> CRUCIBLE — runtime
+> Error: Error creating WebGL context.
+>     at new WebGLRenderer (...)
+>
+> Whatever changed broke the build.
+
+### Consequence
+
+Treat CI success as insufficient: the published H candidate has a runtime regression before Three can create its WebGL renderer. Diagnose the candidate against the last known-good executable rather than modifying H blindly. Preserve H only if it is not the cause; restore executable runtime first. Do not promote.
