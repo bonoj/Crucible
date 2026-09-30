@@ -747,3 +747,14 @@ The screenshot makes the remaining defect explicit: the backslash rake now reads
 ### Consequence
 
 This is an executable visual-search instrument, not a request for concept art. Preserve the accepted vessel body, mouth/teeth, palette, portal behavior, and world state. Add one bottom-dev-bar control that cycles deterministic greeble treatments A through Z on the live Lighthugger. Variants may redistribute rails, running lights, service boxes, masts, panels, pipes, ribs, antennae, and asymmetry while retaining a coherent installed-machinery vocabulary. The deck is deliberately broad: some sparse and architectural, some dense and industrial, some symmetric, some lopsided. The button is the sole new human control surface for this experiment.
+
+
+## Turn 16 — repair the unpublished A–Z deck
+
+### Human
+
+> Engage!
+
+### Consequence
+
+The A–Z greeble deck is not yet executable evidence: candidate `129cc62` failed the repository build and Pages correctly skipped publication. Diagnose the actual source/build failure, repair it without changing the accepted vessel body, teeth, cameras, lighting, portal, or A–Z experiment intent, run the repository-defined verification path, and only then hand the human a preview that is known to exist.
