@@ -859,3 +859,87 @@ This crossing suggests a broader Scientific Workbench pattern without yet claimi
 For terrain specifically, the next evidence should come from experience rather than more architecture. Sequential seeds should be reviewed for actual structural diversity. Successful and failed seeds can then tell us which 2D vocabulary is missing. Cross-sections remain available when the experiment reaches topology that the heightmap genesis language cannot express.
 
 **Current terrain principle: 2D is imagination; 3D is consequence.**
+
+
+## Shallow-water candidate — what the representation has earned
+
+The current independent shallow-water candidate is worth preserving before changing its geometry or extending its ontology. Human testing against the new deterministic terrain genesis produced substantially better evidence than the earlier tame substrate: the candidate **does flow, route, pool, and fill useful terrain well**.
+
+The present implementation is a 64×64 depth-averaged field over XZ. Its authoritative state is water depth plus two horizontal momentum components over sampled terrain. At this resolution the solver owns only 4,096 cells and is computationally cheap relative to Crucible's other regimes.
+
+### What it currently knows
+
+Within terrain that satisfies its shallow-water assumptions, the representation provides useful knowledge about:
+
+- whether water occupies a supported region;
+- approximately how much water is present;
+- total represented volume;
+- free-surface elevation through `bed + depth`;
+- horizontal momentum / intended transport direction;
+- wet-cell extent;
+- source injection and other quantities suitable for conservation accounting.
+
+This is enough state to make the candidate scientifically useful even if its current rendered mesh is rejected.
+
+The useful distinction is:
+
+> **The candidate has earned water state, not water geometry.**
+
+### Current surface is not authoritative geometry
+
+The present renderer exposes the solver grid too directly. `refresh()` constructs visible surface quads from the 64×64 cells and omits a quad when any of its four sampled corners is dry or unsupported. The resulting shoreline therefore advertises the computational lattice as conspicuous squares and rectangles.
+
+Increasing solver resolution would make smaller rectangles without repairing the underlying representation mismatch. The current field should remain cheap unless evidence shows the physics itself needs additional resolution.
+
+A separate surface reconstruction should consume the authoritative water state and produce presentation geometry. Marching-squares-style wet/dry contour reconstruction is an obvious inexpensive first candidate: the 64×64 solver yields only 63×63 contour cells, and interpolated contour crossings can remove most grid-snapped shoreline geometry without changing the dynamics.
+
+This follows the same representation lesson recently earned by terrain: **the representation that is cheap to calculate does not need to carry responsibilities it is bad at.**
+
+### Where the shallow representation stops
+
+The depth field assumes water can be described as a depth above one supporting terrain sample. It should therefore not be trusted automatically for:
+
+- vertical walls;
+- undercuts;
+- waterfalls;
+- detached water;
+- breaking/overturning surfaces;
+- water with air beneath it;
+- arbitrary multiply-valued vertical geometry.
+
+Those are representational boundaries, not merely resolution problems.
+
+The current candidate should consequently be treated as a cheap description of **supported water volume and its free surface while shallow-water assumptions hold**. If water reaches a place where those assumptions fail, the experiment should identify and cross that boundary deliberately rather than silently increasing grid resolution.
+
+### Disappearing-water observation remains unresolved
+
+Human testing on the more extreme generated terrain revealed cases where water appears to die/disappear. The initial hypothesis that this was simply water reaching the unbounded plinth edge is not yet accepted.
+
+Code inspection exposes a more specific vulnerability. Terrain support is sampled through `terrain.groundHeight()`; a cell is valid only when that sample is finite. Flux interfaces involving invalid cells are skipped, and the final solver pass explicitly clears `h`, `hu`, and `hv` for invalid cells. The implementation therefore has no meaningful water state where terrain support is absent. `totalEscaped` exists but is not currently incremented by an implemented escape path.
+
+This is a strong candidate explanation for the observed disappearance, but it has not yet been isolated experimentally. Do not record the failure as NaN/divide-by-zero or as an open-boundary condition without evidence.
+
+If water actually leaves supported terrain, the shallow representation has reached an ontology boundary: “no ground height” currently means “this cell cannot contain water.” A later experiment may hand outgoing volume/momentum to another representation rather than either deleting it or pretending a depth-above-bed field can describe free-falling water.
+
+### Current direction
+
+Do not rewrite the successful flow dynamics merely to repair presentation.
+
+The next useful separation is:
+
+```text
+shallow-water state
+(depth + horizontal momentum over supported terrain)
+        ↓
+derived volume / free-surface knowledge
+        ↓
+independent surface reconstruction
+        ↓
+visible Three.js water geometry
+```
+
+Shoreline reconstruction and unsupported-terrain behavior are separate questions. The first is primarily derived geometry. The second may require an explicit representation crossing.
+
+The new terrain generator is now valuable test load for both: sequential deterministic worlds provide bowls, channels, ridges, shelves, cliffs, steep gradients, and awkward shoreline geometry without manufacturing one special fluid test case.
+
+**Preserved judgment:** the current water candidate is cheap and useful. Its blocky visible boundary should not be mistaken for failure of the state representation, and its behavior beyond supported shallow terrain has not yet been earned.
