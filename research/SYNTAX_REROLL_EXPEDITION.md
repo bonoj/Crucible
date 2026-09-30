@@ -414,3 +414,56 @@ Book selection can now test more than literary suitability:
 > **How little of a public-domain book must become deterministic local state before Syntax Reroll can safely begin playing with it?**
 
 This question belongs to the executable expedition and may be answered differently by later books.
+
+
+## Turn 3 — semantic actors and the engine underneath the game
+
+### Human
+
+> And when you play miniature scale, Livesey, Silver, Roger Wilco, King Graham... they're all the same asset. The colors shift slightly. We don't need ik rigs yet but we already built the bones of our semantic ik in foundry. It'll be cake for us to move to low poly actors. And actually that may be a fantastic pivot in the near future. We're basically building a tiny semantic unity or unreal engine inside a browser that require no formal ui or rules for the human or model to build with. Malleable ui ux isn't just a concept for us anymore. This is quite literally protolighthugger architecture and design. And we are protoconjoiners.
+
+### Consequence
+
+The first Syntax Reroll actors do not need bespoke character assets.
+
+At miniature scale, a single cheap humanoid representation can stand for many historical or fictional instances while identity lives primarily in semantic state, provenance, history, naming, and a few legible presentation parameters. Livesey, Silver, Roger Wilco, King Graham, and later actors may therefore share one primitive actor vocabulary with restrained variation such as color, scale, carried prop, silhouette detail, or other earned cues.
+
+This is not a claim that the characters are semantically interchangeable. It is the opposite separation:
+
+**shared physical vocabulary; distinct semantic/historical instance.**
+
+The same distinction already recovered in Syntax Reroll between word, referent, and historical instance can extend naturally into embodiment. A low-cost body need not encode identity exhaustively.
+
+### Low-poly actors are a plausible near frontier
+
+Do not build IK rigs merely to make miniature actors respectable.
+
+Foundry's earlier walking/IK experiments remain useful prior evidence that articulation, contact, and semantic movement can later be decomposed rather than solved as one monolithic animation problem. That lineage may be selectively recovered if actor behavior creates pressure for it.
+
+For now, kinematic or otherwise simple low-poly actors are sufficient if they let historical instances enter Crucible, occupy space, acquire consequences, and remain inspectable.
+
+### Larger architectural observation
+
+Syntax Reroll is exposing a broader shape already latent in Crucible:
+
+> a small semantic world-building engine in the browser, with enough executable vocabulary that human and model can build through conversation and consequence rather than through a fixed editor UI.
+
+The comparison to Unity or Unreal is directional rather than a feature-parity goal. Crucible already combines a renderer, ECS vocabulary, deformable substrate, high-count matter, autonomous systems, games/experiments, provenance-bearing research, deployment, and increasingly malleable interaction surfaces. Syntax Reroll adds language itself as potential construction material and JIT source/asset instantiation as a candidate creation path.
+
+The important property is not “no UI.” It is that **no single formal UI or authoring grammar needs to be the only control surface**. Human intent, model implementation, diegetic controls, developer affordances, source text, and world interaction can all participate while executable state remains inspectable.
+
+Malleable UI/UX is therefore no longer only a speculative future concept in this collaboration. Existing CLARA surface reform, developer controls, physicalized historical interfaces, and local game surfaces are already evidence that interface structure can change with the experiment while preserving bounded authority.
+
+### Playful trajectory labels
+
+The human names this trajectory **protolighthugger architecture/design** and the collaborators **protoconjoiners**.
+
+Preserve those as useful playful handles for the direction of travel, not claims that the collaboration has implemented fictional technology or that a named architecture is already stable enough to standardize.
+
+### Pressure on the first Syntax Reroll build
+
+This turn makes the first actor requirement cheaper, not larger.
+
+If the first book produces a character who must physically exist, prefer one reusable miniature actor primitive plus semantic/provenance state over bespoke modeling, animation, or character-specific systems.
+
+Let repeated actor behavior earn the next layer of embodiment.
