@@ -1472,3 +1472,67 @@ The architectural lesson from this sequence is broader than water:
 
 > **The finite specimen boundary is not a limitation to hide. It is machinery for scaling, composition, inspection, and transport.**
 
+
+
+## Benchmark crossing — convincing coupled transport before optimization
+
+After the continuous free surface, displaced-volume bearing buoyancy, and explicit material-octagon boundary were working together, the water system became expensive enough to trigger a performance investigation. This is the point at which optimization must be benchmarked against behavior rather than FPS alone.
+
+### Performance evidence so far
+
+The observed frame rate fell as low as roughly 17 FPS during boundary/water work. Several unnecessary costs were then removed without intentionally changing the water model:
+
+- material-octagon boundary geometry was cached instead of queried for every wet boundary cell on every solver substep;
+- bathymetry sampling was moved from every solver substep to once per rendered frame;
+- the old scalar carrier was made genuinely dormant rather than updated alongside the shallow-water system.
+
+The human subsequently observed roughly 25 FPS and then roughly 32 FPS in ordinary play. At ~32 FPS the system was described as respectable and fully playable.
+
+A diagnostic build also froze per-frame free-surface reconstruction while leaving the authoritative shallow-water solver and bearing interaction alive. Frame rate was only about the same, perhaps slightly faster. That is useful negative evidence: the visually elaborate surface reconstruction is not presently the dominant cost. Do not rewrite or degrade it merely because it looks expensive.
+
+The remaining primary performance suspect is solver cadence. The update loop may execute as many as 16 CFL-limited shallow-water substeps per rendered frame. Each substep traverses the 64×64 state multiple times, and stableDt() itself scans the field before each solve. Instrumentation now records substeps, min/max dt, remaining accumulator, and solve-loop milliseconds. Before changing solver cadence, expose or otherwise collect this benchmark under normal play.
+
+### Human perceptual benchmark: river transport
+
+The stronger evidence is behavioral.
+
+> **Human:** “I have to say, the simulation is incredibly convincing. Think mark twain riverboat sawmill log jams. When the water surface spreads out sufficiently and stops flowing, the bearings slow to a crawl, stopping in places.”
+
+This behavior was not authored as a log-jam animation. It emerges from the composition already present:
+
+    terrain shapes the water
+        → shallow water develops horizontal momentum
+        → buoyant bearings couple to the moving water
+        → the spreading flow loses velocity
+        → bearing motion decays with it
+        → local terrain and accumulated matter leave bearings stranded or nearly stopped
+
+The important benchmark is therefore not simply whether bearings float. The system visibly communicates the rise, transport, decay, and settling of material with the flow.
+
+The human then observed another consequence:
+
+> **Human:** “Also, water surface will lift buoyant sediment.”
+
+For the current discrete bearing material, the executable causal vocabulary is now at least:
+
+    inundation
+        → buoyant lift / entrainment
+        → current-coupled transport
+        → slowing
+        → local deposition / stranding
+
+Do not overclaim this as a general erosion or suspended-sediment model. The bearings are discrete buoyant material and there is no earned sediment concentration field or erosion law. But buoyant material transport and deposition are directly observable.
+
+### Optimization constraint earned by the benchmark
+
+The current ~32 FPS is not evidence that optimization is unnecessary. It is evidence that the expensive system is producing valuable coupled behavior.
+
+Therefore future optimization must preserve the perceptual and causal benchmark above:
+
+> **Preserve the river before chasing the frame rate.**
+
+Do not first lower the 64×64 state resolution, replace the water with cosmetic motion, or arbitrarily collapse the temporal coupling. Measure solver cadence and cost, reduce work in controlled increments, and re-run the same experiential test: moving water should lift and carry buoyant material; as the current spreads and dies, transported material should visibly slow and strand.
+
+A performance improvement that raises FPS while destroying that sequence is a regression.
+
+This benchmark is deliberately recorded before the next solver optimization so the existing behavior remains the reference evidence rather than something reconstructed from memory afterward.
