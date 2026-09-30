@@ -716,7 +716,7 @@ The recovered exterior is the invariant: original hull slabs, core, collars, ser
 
 > Excellent. And I changed my mind about the horizontal rails. We just want 4 more so the octagon has 8 total.
 >
-> And the teeth are all /. We want them all \\. Did i successfully communicate 2d into 3d?
+> And the teeth are all /. We want them all \\. Did I successfully communicate 2D into 3D?
 
 ### Interpretation
 
