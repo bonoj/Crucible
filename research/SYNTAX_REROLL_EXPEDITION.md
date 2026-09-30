@@ -812,3 +812,14 @@ The screenshot of build `21a771b` makes the remaining tooth error immediately le
 This earns a stronger seam claim, but not a full DCC replacement claim: conversational semantics can specify intent and constraints; executable geometry supplies a candidate; multimodal inspection supplies spatial error evidence; the model can then make a narrow source-level correction. The loop is **language → executable geometry → image evidence → constrained correction**. A specialist toolchain can remain downstream for richness and finish.
 
 The immediate correction should therefore be image-grounded and narrow: preserve the accepted backslash rake and H treatment, and translate the teeth as rigid pieces until their hull-side butts visibly intersect the mouth rather than floating free. Do not rotate or reshape them to solve attachment.
+
+
+## Turn 21 — tooth translation axis correction
+
+### Human
+
+> You widened radius of the teeth ring rather than lowering it onto the hull. I suspect an axis mixup.
+
+### Consequence
+
+Confirmed conceptual error: the previous correction translated each tooth along its per-face radial vector, which expands the tooth ring. The vessel's long axis is local Y (the whole exterior root is later rotated into world-horizontal orientation). “Lower the midpoint onto the hull” therefore means translate each accepted tooth rigidly along the vessel-local longitudinal Y axis toward its corresponding end/mouth, not outward in radial XZ. Revert the radial translation entirely; preserve the accepted backslash vector; apply only a symmetric local-Y midpoint translation toward the hull mouth.
