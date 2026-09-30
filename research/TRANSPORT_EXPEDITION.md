@@ -484,3 +484,64 @@ The previous closed grid boundary was identified as incompatible with the accept
 Presentation sampling is independently controllable at sparse, medium, and dense levels. This changes only which authoritative wet cells are drawn; it does not change transport grid resolution, mass, flux, source rates, or dynamics. The UI control cycles `▦`, `▦▦`, and `▦▦▦`.
 
 **Turn 1 remains open pending human target-device acceptance:** recognizable continuous flow through the watershed and sustained drainage off the plinth edge. If accepted, bundle the Turn 1 representation and evidence before opening the next scientific question.
+
+
+## Turn 1 checkpoint — transport earned, liquid not yet earned
+
+This checkpoint freezes the evidence before changing the presentation representation again.
+
+### What executable evidence has established
+
+The first implementation used a 48×48 authoritative surface mass field coupled to Crucible terrain. The initial memoryless local-flux rule was rejected after human observation: it responded causally to terrain mutation, including meteor impacts, but redistributed mass too quickly and uniformly. It behaved like aggressive diffusion and did not preserve coherent flow structure.
+
+The replacement retained scalar mass while adding persistent horizontal directional flux. Terrain slope accelerates that flux; damping removes momentum gradually. Human target-device observation then established that recognizable flowing behavior could be created. Terrain mutation remained physically consequential without crater-specific or river-specific transport rules. This is evidence for a useful terrain-coupled transport substrate, but not yet evidence that the substrate adequately represents liquid.
+
+A deterministic watershed acceptance specimen subsequently composed ordinary terrain-owned uplift and excavation into uplands and shallow channels, configured multiple continuous sources as springs, and opened the material boundary so transported mass can leave the plinth. Outflow is authoritative accounting: mass leaving supported terrain is accumulated as `mass.escaped`, rather than silently disappearing or being clamped at the edge.
+
+The presentation sampler was expanded from three provisional levels to 25 deterministic levels. The `🌊` control cycles 1 through 25 and wraps to 1. Level 25 draws the complete wet-cell presentation; lower levels draw monotonically smaller deterministic subsets. Sampling density changes presentation only. It does not change authoritative grid resolution, transported mass, flux, source rates, or dynamics.
+
+### Representational friction discovered
+
+The human can see motion and can deliberately create flowing behavior, but the current presentation consists of flat points distributed over terrain. Even at increased display density it does not read convincingly as a continuous liquid. This is a different failure from the rejected diffusive flux law: the current dynamics can produce directional transport, while the embodiment makes the material appear as samples rather than a continuous free surface.
+
+Therefore Turn 1 remains open under the strengthened hydrology-facing acceptance criterion. Do not call the current field water merely because it is colored blue or moves downhill.
+
+### Next controlled experiment — free-surface embodiment
+
+Preserve the current authoritative mass and directional-flux dynamics for the next experiment. Change presentation only.
+
+Replace the point-cloud embodiment with a continuous free-surface mesh derived from terrain elevation plus local transported depth/mass. Dry regions should not produce liquid surface. Wet neighboring cells should form contiguous geometry. Existing directional flux should inform procedural surface motion or texture/normal advection so visible motion follows authoritative flow rather than an unrelated animation.
+
+The governing question is deliberately narrow:
+
+**Is the current failure primarily a physical-dynamics failure, or are we observing an adequate transport field through the wrong embodiment?**
+
+Prediction: if contiguous geometry plus flow-informed surface motion makes springs, channels, pooling, drainage, and terrain perturbation read as liquid without changing the transport law, then presentation was the immediate bottleneck and the current field remains useful physical substrate. If the result still reads as a sliding blue sheet, carpet, or otherwise implausible liquid, stop polishing it and replace the dynamics with a more appropriate liquid solver family.
+
+The renderer must not invent wetness, routes, accumulation, or direction absent from authoritative state. Appearance may reveal the field; it may not author the scientific result.
+
+### Solver families held in reserve
+
+Do not implement these merely because they are listed. They are explicit options if the free-surface experiment shows that current dynamics are insufficient.
+
+- **Depth-averaged / shallow-water flow:** water depth plus horizontal momentum over terrain. Strong candidate for rivers, runoff, pooling, overtopping, drainage, and hydrology generally. This is the leading replacement if the current law fails after proper embodiment.
+- **Height/flux field with continuous free-surface rendering:** the minimal family nearest the current implementation. It may be sufficient if the current dynamics survive the embodiment test.
+- **Stable Fluids / 2D incompressible Navier–Stokes:** useful for velocity-driven mixing and advected scalar/species fields; a stronger candidate for chemical soups than for terrain-first watershed hydrology.
+- **SPH or other particle/Lagrangian liquids:** naturally supports blobs, splashes, and free surfaces but adds particle cost/noise and is not the default merely for visual plausibility.
+- **FLIP/PIC or full 3D grid CFD:** capable volumetric approaches, but currently disproportionate to the bite-sized Crucible scientific-workbench goal.
+- **Depth-averaged rheological/thermal flow:** candidate family for lava, mud, and related flows where viscosity, yield behavior, cooling, or solidification matter.
+- **Shallow-ice / depth-integrated ice flow:** glaciology should not be treated as water with a slower constant. Ice thickness and constitutive/stress physics can reuse spatial-field machinery while earning their own physical vocabulary.
+
+The emerging possibility is therefore not one universal fluid solver. A more credible shared substrate may be spatial fields, terrain coupling, boundaries, sources, conserved quantities, instruments, provenance, and semantic controls, with domain-appropriate evolution laws layered above them.
+
+Candidate family map:
+
+**shared field/workbench machinery → hydrology: shallow water → glaciology: shallow ice → vulcanology: depth-averaged rheological/thermal flow → chemical soup: velocity field plus advected species**
+
+This is a hypothesis about reusable machinery, not yet Crucible architecture.
+
+### Turn accounting
+
+A turn is an acceptance crossing, not an individual build. All scalar-field, visibility, hill/source, meteor-coupling, directional-flux, watershed, open-boundary, and presentation-density work above remains iteration inside **Turn 1**. Turn 1 crosses only when the strengthened acceptance criterion is met or is explicitly revised from evidence.
+
+The immediate next implementation is therefore one controlled intervention: **continuous free-surface embodiment, unchanged authoritative transport dynamics.**
