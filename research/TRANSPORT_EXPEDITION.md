@@ -83,6 +83,22 @@ The collaboration should therefore feel inverted from ordinary assistant use: **
 
 **Next:** Choose the first authoritative Transport representation.
 
+### Turn 1 — First authoritative transport candidate
+
+**Uncertainty:** What is the smallest authoritative state that can move through Crucible, respond to existing terrain, and leave inspectable evidence without prematurely claiming fluid physics?
+
+**Chosen intervention:** A 48×48 conserved scalar mass field over the Crucible surface. Each cell owns transported mass. Fixed transport steps redistribute a bounded fraction of that mass to lower cardinal neighbors according to authoritative terrain elevation plus a local mass-derived head term. The octagonal material boundary is no-flux because cells without finite terrain support do not receive flux.
+
+This is intentionally not a CFD solver, shallow-water solver, or particle liquid. The rendered points are presentation only; they do not own motion or mass.
+
+**Semantic operations:** `crucible.transport.reset()`, `inject(amount,x,z)`, `setSource({x,z,rate})`, and `inspect()`. Inspection exposes source conditions, grid/cell size, injected and stored mass, conservation error, wet-cell count, maximum cell mass, and executed step count.
+
+**Prediction before observation:** On Science S0's flat terrain, continuous injection should spread approximately symmetrically and therefore be scientifically boring. A deliberate meteor crater should alter authoritative terrain and break that symmetry, producing capture or routing without Transport containing any crater-specific rule. If the field ignores the terrain change, or if mass conservation visibly/numerically fails, this representation has failed its first coupling test.
+
+**Candidate implementation:** transport system introduced at commit `50f67cf`; wired into Science mode at `d3f891f`. Meteor control presentation also changed to ☄️ at `18859ac`.
+
+**Evidence boundary:** Human target-device observation is now required before adapting the representation.
+
 ## Why this expedition exists
 
 Crucible is beginning a Scientific Workbench direction: use bite-size applied physical science as real load for a configurable, model-forward laboratory.
