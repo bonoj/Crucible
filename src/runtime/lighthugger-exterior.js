@@ -35,7 +35,7 @@ export function createLighthuggerExterior({THREE,scene}){
   }}
   // Long rails and small antenna forests establish comprehensible machinery bands.
   const railGeo=new THREE.CylinderGeometry(.025,.025,length*.78,5);
-  for(const a of [0,Math.PI/2,Math.PI,Math.PI*1.5]){const rail=new THREE.Mesh(railGeo,brass);rail.position.set(Math.sin(a)*2.02,0,Math.cos(a)*2.02);root.add(rail);}
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;const rail=new THREE.Mesh(railGeo,brass);rail.position.set(Math.sin(a)*2.02,0,Math.cos(a)*2.02);root.add(rail);}
   for(const y of [-3.6,-2.9,2.8,3.55])for(let k=-2;k<=2;k++){
     const mast=new THREE.Mesh(new THREE.CylinderGeometry(.018,.026,.38+Math.abs(k)*.06,5),brass);mast.position.set(2.02,y,k*.22);mast.rotation.z=Math.PI/2;root.add(mast);
   }
@@ -43,7 +43,7 @@ export function createLighthuggerExterior({THREE,scene}){
   for(const end of [-1,1])for(let i=0;i<8;i++){
     const a=Math.PI/8+i*Math.PI/4,radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
     const rootPoint=radial.clone().multiplyScalar(1.38);rootPoint.y=end*length*.515;
-    const tipPoint=radial.clone().multiplyScalar(1.13);tipPoint.y=end*(length*.515-.23);
+    const tipPoint=radial.clone().multiplyScalar(1.13);tipPoint.y=end*(length*.515+.23);
     const d=tipPoint.clone().sub(rootPoint),mid=rootPoint.clone().add(tipPoint).multiplyScalar(.5);
     const b=new THREE.Mesh(new THREE.BoxGeometry(.08,d.length(),.08),brass);
     b.position.copy(mid);b.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());root.add(b);
