@@ -29,7 +29,7 @@ import {createCoupletTrialSystem} from "./runtime/couplet-trial-system.js";
 import {installDebugApi} from "./runtime/debug-api.js";
 import {createLighthuggerInterior} from "./runtime/lighthugger-interior.js";
 import {createLighthuggerExterior} from "./runtime/lighthugger-exterior.js";
-import {createTransportBucketSystem} from "./runtime/transport-bucket-system.js";
+import {createShallowWaterSystem} from "./runtime/shallow-water-system.js";
 import {buildTransportWatershed} from "./transport-watershed.js";
 import {buildTransportDamBreak} from "./transport-dam-break.js";
 
@@ -75,7 +75,7 @@ const cinnabarAndCinnamon=createCinnabarAndCinnamon();
 const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors,field:cinnabarAndCinnamon});
 const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts});
 const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,terrain,bearings,locus});
-const transport=createTransportBucketSystem({THREE,scene:three.scene,terrain});
+const transport=createShallowWaterSystem({THREE,scene:three.scene,terrain});
 const cinnabarDome=createCinnabarDomeSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
 const cinnabarKite=createCinnabarKiteSystem({THREE,scene:three.scene,field:cinnabarAndCinnamon,dome:cinnabarDome});
 const cinnabarSpire=createCinnabarSpireSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
