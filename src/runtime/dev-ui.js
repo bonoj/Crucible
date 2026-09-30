@@ -26,7 +26,7 @@ export function createDevUI({mount,statusMount,build,actions}){
   let tool="meteor",fps="…",meteorMagnitude=1;const nodes=new Map();
   mount.replaceChildren();
   if(statusMount){statusMount.replaceChildren();const o=document.createElement("output");o.className="dev-status-readout";nodes.set("status",o);statusMount.append(o)}
-  function syncStatus(){const n=nodes.get("status");if(n)n.textContent=`fps ${fps} • ${String(build||"local").slice(0,8)}`}
+  function syncStatus(){const n=nodes.get("status");if(n)n.textContent=`${String(build||"local").slice(0,8)} • fps ${fps}`}
   function button(item){
     const b=document.createElement("button");b.type="button";b.className="dev-control";b.textContent=item.text;b.setAttribute("aria-label",item.label);nodes.set(item.id,b);
     b.addEventListener("click",()=>{if(item.tool){if(item.tool===tool&&item.cycle){meteorMagnitude=(meteorMagnitude+1)%4;item.cycle(meteorMagnitude);syncMeteor()}else{tool=item.tool;syncTools();actions.tool?.(tool)} }else item.on?.(b)});return b;
