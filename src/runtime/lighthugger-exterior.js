@@ -42,7 +42,7 @@ export function createLighthuggerExterior({THREE,scene}){
   // Original rectangular end spars, now biting diagonally into the throat.
   for(const end of [-1,1])for(let i=0;i<8;i++){
     const a=Math.PI/8+i*Math.PI/4,radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
-    const rootPoint=radial.clone().multiplyScalar(1.38);rootPoint.y=end*length*.515;
+    const rootPoint=radial.clone().multiplyScalar(1.72);rootPoint.y=end*length*.505;
     const tipPoint=radial.clone().multiplyScalar(1.13);tipPoint.y=end*(length*.515+.23);
     const d=tipPoint.clone().sub(rootPoint),mid=rootPoint.clone().add(tipPoint).multiplyScalar(.5);
     const b=new THREE.Mesh(new THREE.BoxGeometry(.08,d.length(),.08),brass);
