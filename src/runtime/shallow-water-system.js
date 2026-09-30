@@ -119,37 +119,24 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=supported(a.x,a.z);
     for(const b of poly){const bin=supported(b.x,b.z);if(ain!==bin)out.push(supportBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
   }
-  function refreshBoundaryCurtain(){
-    // materialBoundary.offset is the apothem of the regular octagonal world.
-    const A=terrain.materialBoundary(0,0).offset,R=A/Math.cos(Math.PI/8),segmentsPerFace=8,inset=DX*.55;
-    const corners=[];for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;corners.push({x:Math.cos(a)*R,z:Math.sin(a)*R})}
-    const pos=[],ind=[];let vi=0;
-    for(let e=0;e<8;e++){
-      const a=corners[e],b=corners[(e+1)%8],mx=(a.x+b.x)*.5,mz=(a.z+b.z)*.5,ml=Math.hypot(mx,mz),nx=mx/ml,nz=mz/ml;
-      let prev=null;
-      for(let j=0;j<=segmentsPerFace;j++){
-        const t=j/segmentsPerFace,x=THREE.MathUtils.lerp(a.x,b.x,t),z=THREE.MathUtils.lerp(a.z,b.z,t);
-        const sx=x-nx*inset,sz=z-nz*inset,ws=sampleState(sx,sz),floor=terrain.groundHeight(sx,sz);
-        const q=ws&&Number.isFinite(floor)&&ws.surface>floor+DRY?{x,z,top:ws.surface+.006,bottom:floor}:null;
-        if(prev&&q){const base=vi;pos.push(prev.x,prev.bottom,prev.z,prev.x,prev.top,prev.z,q.x,q.top,q.z,q.x,q.bottom,q.z);ind.push(base,base+1,base+2,base,base+2,base+3);vi+=4}
-        prev=q;
-      }
-    }
-    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));sideGeometry.setIndex(ind);
-    if(pos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&pos.length>0;
-  }
   function refresh(){
-    const pos=[],ind=[];let vi=0;
+    const pos=[],ind=[],sidePos=[],sideInd=[];let vi=0,sideVi=0;
     const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
-    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y+.008,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1)};
+    const sideEdges=new Map();
+    const edgeKey=(a,b)=>{const ak=a.x.toFixed(6)+","+a.z.toFixed(6),bk=b.x.toFixed(6)+","+b.z.toFixed(6);return ak<bk?ak+"|"+bk:bk+"|"+ak};
+    const onMaterialEdge=p=>Math.abs(terrain.materialBoundary(p.x,p.z).distance)<SURFACE_STEP*.08;
+    const rememberSideEdges=poly=>{for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length];if(!onMaterialEdge(a)||!onMaterialEdge(b))continue;const key=edgeKey(a,b);if(sideEdges.has(key))sideEdges.delete(key);else sideEdges.set(key,[a,b])}};
+    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y+.008,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1);rememberSideEdges(poly)};
     for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
-      const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),c=sample(x1,z1),d=sample(x,z1);
-      // Triangles avoid square saddle ambiguity. Wet/dry is interpolated from solver depth;
-      // material support is clipped independently against the continuous terrain/plinth query.
-      emit(clipSupport(clipWet([a,b,c])));emit(clipSupport(clipWet([a,c,d])));
+      const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),cc=sample(x1,z1),d=sample(x,z1);
+      emit(clipSupport(clipWet([a,b,cc])));emit(clipSupport(clipWet([a,cc,d])));
+    }
+    for(const [a,b] of sideEdges.values()){
+      const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
+      const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y+.008,a.z,b.x,b.y+.008,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
-    refreshBoundaryCurtain();
+    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
   }
   function update(now){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
