@@ -11,7 +11,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   let sources=[{x:0,z:0,rate:.9}];
 
   const geometry=new THREE.BufferGeometry();
-  const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:true,opacity:.72,roughness:.18,metalness:0,depthWrite:false,side:THREE.DoubleSide});
+  const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:false,opacity:1,roughness:.18,metalness:0,depthWrite:true,side:THREE.DoubleSide}); // diagnostic: opaque depth-writing surface to isolate transparency/occlusion
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
   // Cheap cutaway companion: the solver already knows the water column. Render that
   // knowledge only where the finite material octagon exposes its side.
