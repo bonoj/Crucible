@@ -674,3 +674,18 @@ The first board contains twelve stable specimens. Each is generated into Crucibl
 The UI control is `🪨 n/12`. Tapping advances to the next stable representation and disables Transport Candidate A so morphology is reviewed dry. Specimen identity is deterministic within this board so human judgments can refer to numbers without losing the world being discussed.
 
 This is an initial executable board, not evidence that the proposed causal vocabulary has crossed. Human review should prefer direct perceptual reactions or the expedition's cheap judgments: KEEP, BORING, BROKEN, MORE, or CROSS A × F. The implementation should be revised from those observations rather than exposing parameter sliders.
+
+
+### Human review evidence — first Geological Diversity board
+
+Human review of the twelve-specimen first board was decisive: specimen 6 was the only representation that did not look terrible. Specimen 6 also contained a notably successful bowl. Treat this as evidence that the current generator family has not earned T1 despite one promising member. Do not average the board into success or preserve diversity merely because parameter combinations differ numerically.
+
+The review also exposed a missing workbench interaction. The human should not be limited to selecting generated worlds; direct physical perturbation is part of the scientific collaboration surface. Three point instruments are now explicit:
+
+- **Raise** — mutate ordinary signed-density terrain upward at the selected surface point.
+- **Carve** — excavate ordinary signed-density terrain at the selected surface point.
+- **Source** — place the active Transport source at the selected terrain point and observe the candidate representation from that chosen initial condition.
+
+The first UI exposes these as `⬆️`, `⛏️`, and `💧`. Repeated Raise/Carve taps supply magnitude through repeated physical action rather than parameter sliders. Source currently represents one movable source: placing it resets Candidate A, positions the source, and enables Transport. Multi-source authoring is deferred until evidence asks for it.
+
+This is a meaningful division of collaboration: the model can generate and reason through causal representations while the human can directly sculpt the shared physical world and choose where material enters it. The semantic/API surface should retain equivalent high-control operations; the graphical instruments are not a substitute for model accessibility.
