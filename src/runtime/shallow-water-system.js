@@ -134,8 +134,9 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const probeStart=performance.now();
     while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
     probeFrame={substeps:guard,minDt:Number.isFinite(minDt)?minDt:0,maxDt,remainingAcc:acc,solveMs:performance.now()-probeStart};
-    // Diagnostic: presentation reconstruction intentionally frozen while the solver runs.
-    // If FPS returns, refresh() is the dominant cost and will be replaced with persistent geometry.
+    // The frozen-surface probe showed reconstruction is not the dominant frame cost.
+    // Restore live presentation while solver cadence instrumentation remains isolated above.
+    refresh();
   }
   function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
