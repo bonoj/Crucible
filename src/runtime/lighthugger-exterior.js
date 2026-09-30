@@ -31,6 +31,6 @@ export function createLighthuggerExterior({THREE,scene}){
     if(index%7===0&&index>0)for(let j=0;j<3;j++)addRail(Math.PI*.25+j*Math.PI*.5,2.13,4.8+R()*2,cool);
     tag(greebles);return letter;
   }
-  let variant=0;buildVariant(variant);tag(fixed);
-  return{object:root,nextVariant(){variant=(variant+1)%26;return buildVariant(variant)},setVariant(i){variant=((i%26)+26)%26;return buildVariant(variant)},inspect:()=>({kind:"lighthugger-exterior",shape:"horizontal cored octagonal vessel",length,outerRadius:outer,innerRadius:inner,entryTarget:true,greebleVariant:String.fromCharCode(65+variant)})};
+  const acceptedVariant=7;buildVariant(acceptedVariant);tag(fixed);
+  return{object:root,inspect:()=>({kind:"lighthugger-exterior",shape:"horizontal cored octagonal vessel",length,outerRadius:outer,innerRadius:inner,entryTarget:true,greebleTreatment:"H"})};
 }
