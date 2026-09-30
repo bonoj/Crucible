@@ -9,7 +9,15 @@ export function createLighthuggerInterior({THREE,scene,origin=new THREE.Vector3(
 
   // An intentionally under-specified room: enough architecture to inhabit, plenty left unclaimed.
   const radius=7.2,height=5.4;
-  const shell=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,height,8,1,true,Math.PI/8),dark);shell.position.y=height*.5;root.add(shell);
+  const wallThickness=.22;
+  for(let i=0;i<8;i++){
+    const a=Math.PI/8+i*Math.PI/4;
+    const chord=2*radius*Math.sin(Math.PI/8);
+    const wall=new THREE.Mesh(new THREE.BoxGeometry(chord+.08,height,wallThickness),dark);
+    wall.position.set(Math.sin(a)*(radius-wallThickness*.5),height*.5,Math.cos(a)*(radius-wallThickness*.5));
+    wall.rotation.y=a;
+    wall.castShadow=true;wall.receiveShadow=true;root.add(wall);
+  }
   const floor=new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, .16, 8,1,false,Math.PI/8),floorMat);floor.position.y=-.08;floor.receiveShadow=true;root.add(floor);
   const ceiling=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,.12,8,1,false,Math.PI/8),floorMat);ceiling.position.y=height+.06;root.add(ceiling);
 
