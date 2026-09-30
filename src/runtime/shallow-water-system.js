@@ -62,7 +62,10 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     }
     // Bed-pressure source term balances hydrostatic pressure across varying terrain.
     for(let z=1;z<N-1;z++)for(let x=1;x<N-1;x++){const k=idx(x,z);if(!valid(k)||nh[k]<=DRY)continue;
-      const dbx=(bed[idx(x+1,z)]-bed[idx(x-1,z)])/(2*DX),dbz=(bed[idx(x,z+1)]-bed[idx(x,z-1)])/(2*DX);
+      // Invalid neighbors are closed octagonal walls, not bed elevations.
+      // Mirror this cell's bed into those ghost samples so pressure stays finite.
+      const xp=idx(x+1,z),xm=idx(x-1,z),zp=idx(x,z+1),zm=idx(x,z-1),bk=bed[k];
+      const dbx=((valid(xp)?bed[xp]:bk)-(valid(xm)?bed[xm]:bk))/(2*DX),dbz=((valid(zp)?bed[zp]:bk)-(valid(zm)?bed[zm]:bk))/(2*DX);
       nhu[k]-=dt*G*nh[k]*dbx;nhv[k]-=dt*G*nh[k]*dbz;
     }
     for(let k=0;k<K;k++){
