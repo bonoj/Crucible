@@ -2,7 +2,7 @@ export function createTransportSystem({THREE,scene,terrain}){
   const N=48,SIZE=18,CELL=SIZE/N,MIN=-SIZE/2,COUNT=N*N,DT=.035,FLOW=.42;
   const mass=new Float32Array(COUNT),next=new Float32Array(COUNT),ground=new Float32Array(COUNT),vx=new Float32Array(COUNT),vz=new Float32Array(COUNT),nextVx=new Float32Array(COUNT),nextVz=new Float32Array(COUNT);
   const index=(x,z)=>x+N*z,worldX=x=>MIN+(x+.5)*CELL,worldZ=z=>MIN+(z+.5)*CELL;
-  let totalInjected=0,totalEscaped=0,steps=0,enabled=false,lastNow=null,accumulator=0,sources=[{x:-5.4,z:0,rate:.9}],displayDensity=2;
+  let totalInjected=0,totalEscaped=0,steps=0,enabled=false,lastNow=null,accumulator=0,sources=[{x:-5.4,z:0,rate:.9}],displayDensity=25;
   function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=terrain.groundHeight(worldX(x),worldZ(z));}
   sampleGround();
   const geometry=new THREE.BufferGeometry(),positions=new Float32Array(COUNT*3),colors=new Float32Array(COUNT*3),sizes=new Float32Array(COUNT);
@@ -11,7 +11,7 @@ export function createTransportSystem({THREE,scene,terrain}){
   const points=new THREE.Points(geometry,material);points.name="transport-surface-field";points.frustumCulled=false;scene.add(points);
   function refreshPresentation(){
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=index(x,z),h=ground[k],m=mass[k],o=k*3;
-      const stride=[3,2,1][displayDensity],shown=(x%stride===0&&z%stride===0),wet=m>1e-5&&shown;positions[o]=worldX(x);positions[o+1]=wet&&Number.isFinite(h)?h+.08+Math.min(.24,m*.08):-100;positions[o+2]=worldZ(z);
+      const threshold=displayDensity/25,hash=((x*73856093)^(z*19349663))>>>0,shown=(hash%1000)/1000<threshold,wet=m>1e-5&&shown;positions[o]=worldX(x);positions[o+1]=wet&&Number.isFinite(h)?h+.08+Math.min(.24,m*.08):-100;positions[o+2]=worldZ(z);
       const q=Math.min(1,Math.sqrt(m*.9));colors[o]=.08+.3*q;colors[o+1]=.38+.58*q;colors[o+2]=.7+.3*q;
     }
     geometry.attributes.position.needsUpdate=true;geometry.attributes.color.needsUpdate=true;points.visible=enabled;
@@ -34,9 +34,9 @@ export function createTransportSystem({THREE,scene,terrain}){
   function reset(){mass.fill(0);vx.fill(0);vz.fill(0);totalInjected=0;totalEscaped=0;steps=0;accumulator=0;sampleGround();refreshPresentation()}
   function setSource({x=sources[0]?.x??0,z=sources[0]?.z??0,rate=sources[0]?.rate??0}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
   function setSources(next=[]){sources=next.map(({x=0,z=0,rate=0})=>({x,z,rate:Math.max(0,rate)}));return sources.map(s=>({...s}))}
-  function cycleDisplayDensity(){displayDensity=(displayDensity+1)%3;refreshPresentation();return inspect().display}
-  function setDisplayDensity(level){displayDensity=THREE.MathUtils.clamp(level|0,0,2);refreshPresentation();return inspect().display}
-  function inspect(){let stored=0,wet=0,max=0;for(const m of mass){stored+=m;if(m>1e-5)wet++;max=Math.max(max,m)}return{kind:"surface-mass-flux-field",enabled,grid:[N,N],cellSize:CELL,sources:sources.map(s=>({...s})),display:{density:["sparse","medium","dense"][displayDensity],level:displayDensity},mass:{injected:totalInjected,stored,escaped:totalEscaped,error:totalInjected-stored-totalEscaped},wetCells:wet,maxCellMass:max,steps}}
+  function cycleDisplayDensity(){displayDensity=displayDensity>=25?1:displayDensity+1;refreshPresentation();return inspect().display}
+  function setDisplayDensity(level){displayDensity=THREE.MathUtils.clamp(level|0,1,25);refreshPresentation();return inspect().display}
+  function inspect(){let stored=0,wet=0,max=0;for(const m of mass){stored+=m;if(m>1e-5)wet++;max=Math.max(max,m)}return{kind:"surface-mass-flux-field",enabled,grid:[N,N],cellSize:CELL,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},mass:{injected:totalInjected,stored,escaped:totalEscaped,error:totalInjected-stored-totalEscaped},wetCells:wet,maxCellMass:max,steps}}
   refreshPresentation();
   return{update,setEnabled,reset,inject,setSource,setSources,cycleDisplayDensity,setDisplayDensity,inspect,object:points};
 }
