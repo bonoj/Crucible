@@ -797,3 +797,18 @@ Treat CI success as insufficient: the published H candidate has a runtime regres
 H is accepted. The tooth correction is now precisely constrained by the previously accepted backslash state: do not alter tooth rake, endpoints relative to one another, dimensions, or vocabulary. Recover the accepted backslash geometry and translate each tooth as a rigid piece toward the hull until its base seats. The earlier attempt changed an endpoint and therefore changed rotation; that was the wrong degree of freedom.
 
 The larger evidence is the seam, not a bid to build semantic Blender. A model can rapidly turn conversational intent into crude inspectable geometry; a specialist can then receive that executable mockup through the organization's normal handoff path and enrich it in their native toolchain. The interesting loop is intent → model reform → browser inspection → ordinary team handoff → specialist refinement, with minutes between iterations and no requirement that the conversational surface become a full DCC editor.
+
+
+## Turn 20 — the image closes the semantic-geometry loop
+
+### Human
+
+> So now we can finally finish this. The last stone at the top of the pyramid. This image tells you what a thousand words cannot. This is why semantic blender can work if paired with a mutlimodal model.
+
+### Evidence
+
+The screenshot of build `21a771b` makes the remaining tooth error immediately legible: the rake is readable, the intended vessel mouth is readable, and the teeth are visibly detached as a ring of floating marks. The conversational description alone had repeatedly left multiple plausible geometric degrees of freedom. The rendered image collapses that ambiguity.
+
+This earns a stronger seam claim, but not a full DCC replacement claim: conversational semantics can specify intent and constraints; executable geometry supplies a candidate; multimodal inspection supplies spatial error evidence; the model can then make a narrow source-level correction. The loop is **language → executable geometry → image evidence → constrained correction**. A specialist toolchain can remain downstream for richness and finish.
+
+The immediate correction should therefore be image-grounded and narrow: preserve the accepted backslash rake and H treatment, and translate the teeth as rigid pieces until their hull-side butts visibly intersect the mouth rather than floating free. Do not rotate or reshape them to solve attachment.
