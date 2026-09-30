@@ -1,19 +1,19 @@
-export function createTransportSystem({THREE,scene,terrain}){
+export function createTransportSystem({THREE,scene,terrain,supportHeight=null,name="transport-free-surface",verticalOffset=.055}){
   const N=48,SIZE=18,CELL=SIZE/N,MIN=-SIZE/2,COUNT=N*N,DT=.035,FLOW=.42;
   const mass=new Float32Array(COUNT),next=new Float32Array(COUNT),ground=new Float32Array(COUNT),vx=new Float32Array(COUNT),vz=new Float32Array(COUNT),nextVx=new Float32Array(COUNT),nextVz=new Float32Array(COUNT);
   const index=(x,z)=>x+N*z,worldX=x=>MIN+(x+.5)*CELL,worldZ=z=>MIN+(z+.5)*CELL;
   let totalInjected=0,totalEscaped=0,steps=0,enabled=false,lastNow=null,accumulator=0,sources=[{x:-5.4,z:0,rate:.9}],displayDensity=25;
-  function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=terrain.groundHeight(worldX(x),worldZ(z));}
+  const support=(x,z)=>supportHeight?supportHeight(x,z):terrain.groundHeight(x,z);\n  function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=support(worldX(x),worldZ(z));}
   sampleGround();
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshStandardMaterial({color:0x2d9fc2,transparent:true,opacity:.72,roughness:.22,metalness:0,depthWrite:false,side:THREE.DoubleSide,vertexColors:true});
-  const surface=new THREE.Mesh(geometry,material);surface.name="transport-free-surface";surface.frustumCulled=false;surface.renderOrder=4;scene.add(surface);
+  const surface=new THREE.Mesh(geometry,material);surface.name=name;surface.frustumCulled=false;surface.renderOrder=4;scene.add(surface);
   function refreshPresentation(){
     const stride=Math.max(1,Math.ceil((26-displayDensity)/5)),pos=[],col=[],ind=[];let vi=0;
     for(let z=0;z<N-1;z+=stride)for(let x=0;x<N-1;x+=stride){
       const x1=Math.min(N-1,x+stride),z1=Math.min(N-1,z+stride),ks=[index(x,z),index(x1,z),index(x1,z1),index(x,z1)];
       if(ks.some(k=>mass[k]<=1e-4||!Number.isFinite(ground[k])))continue;
-      for(const k of ks){const ix=k%N,iz=Math.floor(k/N),m=mass[k],speed=Math.hypot(vx[k],vz[k]),wave=.018*Math.sin(steps*.23+ix*.9+iz*.57+speed*2.5);pos.push(worldX(ix),ground[k]+.055+Math.min(.48,m*.12)+wave,worldZ(iz));const q=Math.min(1,Math.sqrt(m*.45)+speed*.12);col.push(.08+.12*q,.42+.38*q,.62+.32*q)}
+      for(const k of ks){const ix=k%N,iz=Math.floor(k/N),m=mass[k],speed=Math.hypot(vx[k],vz[k]),wave=.018*Math.sin(steps*.23+ix*.9+iz*.57+speed*2.5);pos.push(worldX(ix),ground[k]+verticalOffset+Math.min(.48,m*.12)+wave,worldZ(iz));const q=Math.min(1,Math.sqrt(m*.45)+speed*.12);col.push(.08+.12*q,.42+.38*q,.62+.32*q)}
       ind.push(vi,vi+1,vi+2,vi,vi+2,vi+3);vi+=4;
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setAttribute("color",new THREE.Float32BufferAttribute(col,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
