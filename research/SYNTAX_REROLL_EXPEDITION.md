@@ -467,3 +467,62 @@ This turn makes the first actor requirement cheaper, not larger.
 If the first book produces a character who must physically exist, prefer one reusable miniature actor primitive plus semantic/provenance state over bespoke modeling, animation, or character-specific systems.
 
 Let repeated actor behavior earn the next layer of embodiment.
+
+
+## Turn 4 — inside the Lighthugger
+
+### Human
+
+> Let's get inside a lighthugger now, just for the fuck of it. Tapping on the octagonal plinth gives us a new scene space. No rules in there. Pure human intent that flows and reforms via model mediated architecture. You essentially anticipate wants and needs jit and even pre jit. We can let continuity lab grammar inform the new scene space. And give me some way to get back out :). We'll keep the syntax reroll as our running turn log and we can unzip it later to extract as needed. And semantic surface is just part of making changes to code that is going to stick around for a while! These rasters are just to give you some internal plinth geometry inspiration. In my head I'm seeing Martian chronicles there will come soft rains merged with rev space, with emphasis on malleable form and function.
+
+### Consequence
+
+Syntax Reroll remains the running collaboration/turn ledger even as the executable experiment temporarily widens beyond literary mutation. Durable discoveries can be unzipped from it later rather than forcing a new research taxonomy now.
+
+The octagonal Crucible plinth earns a second experiential side: **tap the plinth to enter an interior scene space**. This is not presently a game with authored rules. It is a model-mediated construction/interior where human intent may cause form and function to reform JIT, and where useful affordances may be anticipated before the human has to ask for a formal control.
+
+The supplied Continuity Lab rasters are inspiration for grammar, density, framing, and internal geometry rather than pixel targets. The intended atmosphere combines an automated domestic/architectural intelligence reminiscent of *There Will Come Soft Rains* with a spacious, reconfigurable REV-like interior: warm machinery, embedded surfaces, rooms/apparatus that feel capable of changing purpose, and strong continuity between architecture and interface.
+
+### Initial executable constraint
+
+Keep the first interior extremely small in rules:
+
+- tapping the octagonal plinth enters it;
+- it is recognizably inside/under/through the same apparatus rather than a disconnected website screen;
+- the space is three-dimensional and architectural, not a dashboard recreation;
+- Continuity Lab visual grammar may inform embedded surfaces and controls without requiring the old UI;
+- provide one obvious diegetic or minimal control to return to the Terrordrome;
+- do not pre-author a menu of future capabilities;
+- do not invent an autonomous CLARA policy merely to explain anticipated interface changes;
+- let subsequent human intent reform the interior and record what actually proves useful.
+
+### Malleability hypothesis
+
+This is the first direct attempt to make the **scene space itself** the malleable control surface.
+
+Candidate loop:
+
+**human intent → model interpretation → smallest useful architectural/interface reform → human experience → correction/acceptance → persistent executable residue**
+
+JIT and pre-JIT anticipation are allowed as design behavior by the collaborating model, but every persistent consequence remains ordinary inspectable code/world state. “Anticipation” is not a hidden autonomous agent subsystem unless later evidence earns one.
+
+### Repository discipline correction
+
+The Semantic Surface is not a mandatory diary entry for every experimental turn. Update it when a change establishes present-tense executable machinery or authority boundaries that are expected to stick around long enough to orient future work. Fast experimental turns belong here first.
+
+### Visual orientation from supplied rasters
+
+The rasters suggest several useful motifs without prescribing implementation:
+
+- octagonal/framed apertures and structural ribs;
+- warm brass/amber machinery against dark or cool spatial depth;
+- large embedded information surfaces that feel installed in architecture rather than overlaid on a viewport;
+- work surfaces, rails, recesses, bays, and equipment implying that the room can acquire functions;
+- a lived-in laboratory rather than a pristine abstract editor;
+- strong visual hierarchy with one dominant spatial focus and smaller local instruments.
+
+The first interior should leave substantial unclaimed space. Its emptiness is capacity, not missing design.
+
+### Frontier
+
+Inspect current plinth interaction, camera/scene ownership, developer controls, and the existing CLARA surface. Build the smallest reversible transition into an interior volume, with a reliable route back out. Then experience it before deciding what the room wants to become.
