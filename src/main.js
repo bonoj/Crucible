@@ -89,10 +89,10 @@ let scienceMode=false,scienceSnapshot=null;
 function setScienceMode(active){
  active=!!active;if(active===scienceMode)return scienceMode;
  if(active){
-   scienceSnapshot={terrain:terrain.snapshot(),bearings:bearings.snapshot(),cinnabarVisible:cinnabarLayer.visible,extruderEnabled:extruder.inspect().enabled,weatherEnabled:meteorWeather.inspect().enabled,meteorsEnabled:meteors.inspect().enabled};
-   scienceMode=true;meteorWeather.setEnabled(false,simNow);meteors.setEnabled(false,simNow);extruder.setEnabled(false);cinnabarLayer.visible=false;bearings.clear();terrain.reset();lastImpactTarget=meteors.targetAt();
+   scienceSnapshot={terrain:terrain.snapshot(),bearings:bearings.snapshot(),cinnabarVisible:cinnabarLayer.visible,extruderEnabled:extruder.inspect().enabled,weatherEnabled:meteorWeather.inspect().enabled};
+   scienceMode=true;meteorWeather.setEnabled(false,simNow);extruder.setEnabled(false);cinnabarLayer.visible=false;bearings.clear();terrain.reset();lastImpactTarget=meteors.targetAt();
  }else{
-   const s=scienceSnapshot;scienceMode=false;if(s){terrain.restore(s.terrain);bearings.restore(s.bearings);cinnabarLayer.visible=s.cinnabarVisible;extruder.setEnabled(s.extruderEnabled);meteors.setEnabled(s.meteorsEnabled,simNow);meteorWeather.setEnabled(s.weatherEnabled,simNow)}scienceSnapshot=null;lastImpactTarget=meteors.targetAt();
+   const s=scienceSnapshot;scienceMode=false;if(s){terrain.restore(s.terrain);bearings.restore(s.bearings);cinnabarLayer.visible=s.cinnabarVisible;extruder.setEnabled(s.extruderEnabled);meteorWeather.setEnabled(s.weatherEnabled,simNow)}scienceSnapshot=null;lastImpactTarget=meteors.targetAt();
  }
  const button=document.querySelector("#toggle-science");button?.classList.toggle("active",scienceMode);button?.setAttribute("aria-pressed",String(scienceMode));return scienceMode;
 }
