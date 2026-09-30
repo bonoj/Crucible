@@ -679,3 +679,19 @@ No new interaction or semantic machinery is implied.
 The supplied screenshots remove the ambiguity from the previous verbal correction. The orange throat members visible around the open end are raked away from the opening; their orientation must be reversed so they visually bite into the dark throat. The screenshots also identify the unwanted rail-like geometry: four long thin members riding proud of the hull on the top/side quadrants. Remove those members completely while preserving the smaller organized greeble arrays.
 
 This turn is a useful example of perceptual evidence tightening a natural-language instruction: the images identify which geometry the human means without requiring a more elaborate naming scheme or editor selection mechanism.
+
+
+## Turn 11 — implementation diagnosis after failed visual correction
+
+### Human
+
+> You are rotating the teeth in the wrong direction. They're now fully outside the vessel. And the rails still exist.
+
+### Diagnosis and consequence
+
+The previous pass changed the wrong geometry in both cases. Fresh source inspection makes the failure concrete:
+
+- the four rails were still explicitly constructed by `railGeo` at radius `2.02`; the prior pass removed the neighboring mast band instead;
+- the teeth were moved outward to radius `1.62` and given a strong negative radial component, which physically pushed their bodies outside the vessel even though the intent was an inward bite.
+
+Correct the implementation rather than continuing to tune the mistaken interpretation: delete the `railGeo` construction entirely. Place each tooth's outer/root end at the rim and aim its other end toward a point inside the aperture and longitudinally toward vessel center, constructing the cylinder directly between those two endpoints. This makes tooth direction geometrically explicit instead of relying on an ambiguous rotation vector.
