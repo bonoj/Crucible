@@ -603,3 +603,21 @@ Candidate collaboration property:
 The model may carry a massive single-turn task while the human retains the ability to intervene at the scale of architecture, behavior, presentation, a single rule, or a single typo. Trust reduces required micromanagement; it does not remove the human's capacity to steer precisely.
 
 This turn is itself preserved because the act of correcting the record demonstrates the property better than a retrospective description would.
+
+
+## Turn 7 — Shai-Hulud in low atmosphere
+
+### Human
+
+> Holy shit, you've outdone yourself. You put a lighthugger Shai hulud in low atmosphere. Raise it up a good bit above the station but make sure it doesn't swallow the skylight. And make those orange teeth on both ends point diagonally towards the center. I'm absolutely gobsmacked.
+
+### Consequence
+
+The exterior read is accepted enthusiastically enough to preserve its basic form. This is now tuning rather than redesign.
+
+Two perceptual corrections are requested:
+
+- raise the Lighthugger substantially farther above the station so it reads as a suspended arrival rather than low-atmosphere overlap, while preserving a clear skylight/view corridor beneath it;
+- rotate the warm/orange end teeth so each end's teeth rake diagonally inward toward the vessel center, giving the open throats a convergent structural bite rather than perpendicular pegs.
+
+The accidental “Lighthugger Shai-Hulud” read is useful visual evidence, not a requirement to literalize a sandworm or copy Dune geometry. Preserve the monumental hollow-body impression while improving spatial separation and end-directionality.
