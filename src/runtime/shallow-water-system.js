@@ -138,7 +138,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
       const base=sideVi;sidePos.push(a.x,ay,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,by,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
-    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
+    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=false; // diagnostic: isolate free-surface shoreline from cutaway curtain
   }
   function update(now){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
