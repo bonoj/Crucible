@@ -1614,3 +1614,46 @@ The acceptance condition remains behavioral:
 > **Make the expensive scene cheaper without making its history less legible.**
 
 In particular, an optimization is suspect if it erases the slow settling, route-following trains, local jams, or stranded deposits that make the coupled transport convincing.
+
+
+### Shared-seam side closure — visual crossing
+
+The first attempt to make the water column legible from the side sampled the shallow-water state independently along the material octagon and extruded those samples vertically. Executable evidence rejected that representation immediately. The result appeared as an isolated teal rectangular curtain behind the cutaway rather than as the side of the visible body of water.
+
+The failure clarified the representation rule:
+
+> **Do not derive the visible side independently from the visible top. The seam itself must be shared.**
+
+The replacement therefore stopped asking the solver a second time where the visible side should begin. During ordinary free-surface reconstruction, actual surface-polygon edges lying on the material octagon are captured. Those exact vertices become the top edge of inexpensive vertical side quads, which descend to terrain support. The top surface and exposed side consequently share geometry at their seam.
+
+No new water state, volumetric solver, or physical behavior was added. The side is presentation of state already earned by the shallow-water column.
+
+#### Model visual observation of the shared-seam candidate
+
+The human supplied a live screenshot of candidate `ae8a3ee7` at approximately 28 FPS after allowing the water to fill and settle.
+
+Compared with the rejected independent curtain, the primary improvement is continuity. The model no longer perceives a separate object intended to represent water depth. There is no conspicuous turquoise rectangle hanging beneath the terrain. The side treatment has become subordinate to the same body as the reconstructed free surface.
+
+Across the central basin, the water reads as a broad, nearly level body occupying low terrain. Small brighter/cyan glimpses remain visible around portions of the far surface edge. Transported bearings form a thin route-following line along a channel at the left. Together with the enclosing terrain, these cues are sufficient to infer a basin that has filled through the drainage network.
+
+The water continues to conform visually to irregular terrain rather than exposing the Cartesian solver grid. The surrounding walls descend toward the occupied low region, and the free surface does not present an obvious rectangular-cell signature.
+
+The human supplied an important temporal distinction:
+
+> **Human:** “Better. As it fills it stays very legible. Once it fills and settles it doesn't read as well, but that doesn't mean it needs to be explored right this moment.”
+
+The model's still-frame observation is consistent with that distinction. Once the water settles, its vertical extent becomes weakly communicated. A nearly level transparent surface has little geometric variation; the side is seen against similarly dark terrain; and motion no longer supplies changing boundary cues. The scene still supports the inference “water occupies this basin,” but it does not immediately communicate the full depth of the column.
+
+Interestingly, the transported matter becomes more informative as the water becomes visually quiet. Route-following bearing strings and isolated stranded material act as persistent traces of earlier transport. Even when the settled water supplies few dynamic cues, the distribution of matter continues to describe where flow occurred.
+
+The earned result is therefore deliberately narrow:
+
+> **A moving/filling water body now reads as a volume. A settled water body reads primarily as a surface occupying a basin.**
+
+The side-closure seam is substantially crossed. Still-water depth legibility remains unresolved, but it does not currently authorize another representation. Possible future cues such as depth-dependent appearance, underwater attenuation, refraction, cut-face treatment, or other optical machinery should not be implemented merely because they can be named. Wait until another executable crossing demonstrates which information is actually missing.
+
+The observed ~28 FPS does not constitute a controlled performance comparison, but it provides no evidence of catastrophic cost from the shared-seam side closure. The representation remains intentionally cheap.
+
+For now:
+
+> **Preserve the legibility of filling water. Defer settled-water depth cues until the world demands them.**
