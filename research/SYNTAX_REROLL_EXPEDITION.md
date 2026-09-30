@@ -723,3 +723,14 @@ The recovered exterior is the invariant: original hull slabs, core, collars, ser
 Yes. In the current vessel-local geometry, the slash is a compact screen-space description of the tooth rake seen along the mouth: preserve the same roots, dimensions, and inward bite, but mirror the longitudinal component so the visible rake changes from `/` to `\\`. This is a local visual instruction, not a request to rotate the entire tooth ring or change its radial inwardness.
 
 The rail request is equally constrained: preserve the existing four longitudinal rails and add four more at the missing octagonal directions, producing eight evenly distributed rails around the hull. Preserve the mast arrays.
+
+
+## Turn 14 — tooth roots marry the vessel
+
+### Human
+
+> And finally, teeth butts should marry the vessel. You can see they're floating right now.
+
+### Screenshot-grounded interpretation
+
+The screenshot makes the remaining defect explicit: the backslash rake now reads correctly, but each rectangular tooth begins in free space near the mouth instead of emerging continuously from the hull/rim. Preserve the accepted rake, tip direction, rectangular vocabulary, rails, masts, and all surrounding geometry. Move only the tooth root/butt outward to the vessel's structural mouth radius so the tooth intersects the hull/collar enough to read as installed geometry rather than a floating spar. The inward tip remains where it is.
