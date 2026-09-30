@@ -695,3 +695,20 @@ CLARA remains spatially above the shared world and may attend to these events th
 - Do not manufacture autonomous CLARA attention merely because the spatial metaphor is compelling.
 
 The precise first literary substrate, lexical inventory, mutation rule, and physical consequence should be chosen from the recovered archaeological evidence and current executable affordances rather than by rebuilding the historical implementation wholesale.
+
+
+## Turn — executable Syntax Reroll becomes its own expedition
+
+### Human
+
+> Agreed. Before we build anything let's get a fresh syntax reroll expedition going and pull in a guide based on these initial turns and pull in whatever structure and invariants are useful from cnc.
+
+### Consequence
+
+The executable branch now leaves this archaeology ledger and receives its own local expedition record:
+
+- `research/SYNTAX_REROLL_EXPEDITION.md`
+
+This archaeology remains open for future raster excavation. Historical evidence continues to land here. New executable Syntax Reroll turns belong in the fresh expedition unless they materially change the archaeological interpretation itself.
+
+The new expedition is seeded from the evidence recovered here and from the proven local structure of Cinnabar & Cinnamon, without treating either as a template that must be copied wholesale.
