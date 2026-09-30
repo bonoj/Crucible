@@ -580,3 +580,37 @@ Inspection of the construction confirms the criticism. The specimen used a broad
 **New prerequisite before the next liquid run:** validate the dry terrain as a hydraulic landscape. The next specimen must have (1) a genuine upstream basin, (2) a transverse retaining barrier, (3) a localized breach lower than the remaining barrier, (4) a downstream thalweg/channel network whose bed is materially lower than adjacent banks, (5) multiple downstream branches with deliberate relative elevations, and (6) at least one outlet that reaches the open plinth edge downhill. Geometry-only probes or sampled height profiles must demonstrate those relationships before transport mass is released.
 
 This dry validation is part of the scientific-workbench discipline: a named feature is not accepted because the builder intended it. The executable field must contain the causal geometry implied by the name.
+
+
+## Tangential crossing — bucket of liquids, geology first
+
+Do not force the first transport representation into a liquid verdict. Preserve it as **Liquid Candidate A**: a scalar mass field with persistent directional flux, terrain coupling, open-boundary accounting, semantic controls, and several known presentation/time-scale limitations. It has demonstrated transport. Its fitness for liquid remains unresolved because the first hydraulic specimen was invalid and the first free-surface renderer was defective.
+
+Candidate A stays in a **bucket of liquid/transport representations** to be compared later against other earned candidates rather than progressively mutated until it resembles whatever the current test expects. Candidate families already held in reserve include shallow-water/depth-momentum, incompressible velocity/advection fields, particle/Lagrangian approaches, depth-averaged rheological/thermal flows, and domain-specific ice formulations. A candidate may ultimately prove useful outside ordinary liquid: fog or atmospheric layers, advected fields, orbital/celestial field presentation, or other continuous-media problems. Such uses must earn their own physical interpretation; shared machinery does not imply shared physics.
+
+### Why Transport now moves into geology
+
+The failed dam apparatus exposed a prerequisite. Comparing transport representations is meaningless if the terrain cannot reliably pose a hydraulic question. Transport therefore remains the parent expedition while the active experimental edge moves tangentially into **geologic substrate**.
+
+This is not yet the broader Geological Diversity expedition and does not attempt scenic geological taxonomy. The immediate question is narrower:
+
+**Can Crucible construct and verify terrain whose causal height relationships are rich enough to make transport choose?**
+
+The substrate should earn a small composable vocabulary from executable relationships. Candidate forms include basin, divide/ridge, valley or thalweg, channel bed, bank, saddle/pass, escarpment, confluence, branch, and open outlet. These names are accepted only when sampled terrain demonstrates the relationship implied by the term.
+
+The first target remains hydraulically useful but is evaluated dry. Construct a terrain with an upstream catchment, meaningful relief, a downstream valley network with multiple branches, and at least one downhill outlet at the plinth boundary. A dam can then be introduced as a barrier *across* an already-valid drainage path rather than used to manufacture the drainage geometry itself.
+
+### Geologic-substrate discipline
+
+1. Build terrain without transport mass.
+2. Batch terrain edits before expensive derived-geometry/support rebuilds where possible.
+3. Expose terrain height through semantic probes rather than relying on visual naming.
+4. Verify longitudinal profiles: intended channels descend toward their outlets except where a deliberate basin/barrier exists.
+5. Verify cross-sections: channel beds are lower than adjacent banks.
+6. Verify divides: neighboring catchments are separated by higher terrain.
+7. Verify basins and saddles by their controlling escape elevations.
+8. Verify an outlet reaches unsupported/open boundary through a downhill path.
+9. Only after the dry substrate passes these checks introduce a transport candidate.
+10. Compare candidates against the same validated substrate where scientifically appropriate.
+
+This creates a reusable experimental asset: **geology first, bucket of liquids second.** The terrain becomes controlled load; liquid candidates become replaceable hypotheses.
