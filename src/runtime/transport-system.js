@@ -3,7 +3,8 @@ export function createTransportSystem({THREE,scene,terrain,supportHeight=null,na
   const mass=new Float32Array(COUNT),next=new Float32Array(COUNT),ground=new Float32Array(COUNT),vx=new Float32Array(COUNT),vz=new Float32Array(COUNT),nextVx=new Float32Array(COUNT),nextVz=new Float32Array(COUNT);
   const index=(x,z)=>x+N*z,worldX=x=>MIN+(x+.5)*CELL,worldZ=z=>MIN+(z+.5)*CELL;
   let totalInjected=0,totalEscaped=0,steps=0,enabled=false,lastNow=null,accumulator=0,sources=[{x:-5.4,z:0,rate:.9}],displayDensity=25;
-  const support=(x,z)=>supportHeight?supportHeight(x,z):terrain.groundHeight(x,z);\n  function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=support(worldX(x),worldZ(z));}
+  const support=(x,z)=>supportHeight?supportHeight(x,z):terrain.groundHeight(x,z);
+  function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=support(worldX(x),worldZ(z));}
   sampleGround();
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshStandardMaterial({color:0x2d9fc2,transparent:true,opacity:.72,roughness:.22,metalness:0,depthWrite:false,side:THREE.DoubleSide,vertexColors:true});
