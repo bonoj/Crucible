@@ -707,3 +707,21 @@ Human point-instrument grammar is corrected to the established compact icon lang
 - `🩸` thicker source
 
 The existing meteor control remains the meteor control and is not duplicated. The two source instruments share placement semantics and differ only in source rate for the present candidate (`.9` versus `2.7`). Their existence should survive replacement of the underlying transport representation if point-source placement remains useful.
+
+
+### Comparative crossing — Transport bucket A–F
+
+Sequential polishing is suspended in favor of one controlled n-representation comparison. Land Candidate A, direct terrain perturbation, point-source placement, reset semantics, and inspection form the shared apparatus. Six deliberately small causal representations now sit behind one Transport contract and can be selected A–F without changing the land.
+
+- **A — scalar carrier:** the parked terrain-advected conserved scalar candidate. Its former synthetic global surface undulation is not carried forward as evidence.
+- **B — shallow water:** surface depth plus persistent horizontal momentum, with both terrain slope and local depth gradient contributing to acceleration.
+- **C — incompressible grid:** advected material coupled to a projected velocity field. Pressure projection is deliberately small/iterative rather than a claim of general CFD.
+- **D — material parcels:** bounded Lagrangian transport-owned parcels moving over sampled terrain. These are not Crucible bearings and do not inherit rigid-granular ontology.
+- **E — field plus tracers:** an authoritative shallow field with sparse passive tracers exposing the field's local velocity. Tracers are evidence presentation, not authoritative material.
+- **F — cellular flux:** local conserved volume exchange driven by neighboring surface-head differences, intentionally without persistent momentum.
+
+The representations are comparative probes, not six accepted fluid solvers. Shared rendering is intentionally plain and no candidate receives cosmetic rescue before human comparison. The shell exposes one first-class `A`–`F` selector following Crucible's existing control grammar. Changing representation resets Transport state but preserves current terrain edits. A clean-board reset restores Land Candidate A and clears Transport; the semantic API exposes that operation even when no dedicated terrain-reset button is present.
+
+The legacy sea also remains semantically reachable (`show/hide/toggle/inspect`) without a UI affordance until an accepted fluid representation earns its removal.
+
+**Human evidence boundary:** use the same recognizable terrain intervention across A–F where practical. Place 💧 or 🩸, observe whether the representation responds to bowls, slopes, barriers, and carved escape paths, and report perceptual/causal differences without needing to diagnose implementation. This comparison decides which candidates deserve deeper falsification, recombination, or deletion.
