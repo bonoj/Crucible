@@ -5,14 +5,14 @@ export function createTransportSystem({THREE,scene,terrain}){
   let totalInjected=0,totalEscaped=0,steps=0,enabled=false,lastNow=null,accumulator=0,source={x:-5.4,z:0,rate:.9};
   function sampleGround(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)ground[index(x,z)]=terrain.groundHeight(worldX(x),worldZ(z));}
   sampleGround();
-  const geometry=new THREE.BufferGeometry(),positions=new Float32Array(COUNT*3),colors=new Float32Array(COUNT*3);
+  const geometry=new THREE.BufferGeometry(),positions=new Float32Array(COUNT*3),colors=new Float32Array(COUNT*3),sizes=new Float32Array(COUNT);
   geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));geometry.setAttribute("color",new THREE.BufferAttribute(colors,3));
   const material=new THREE.PointsMaterial({size:.18,vertexColors:true,transparent:true,opacity:.82,depthWrite:false,sizeAttenuation:true});
   const points=new THREE.Points(geometry,material);points.name="transport-surface-field";points.frustumCulled=false;scene.add(points);
   function refreshPresentation(){
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=index(x,z),h=ground[k],m=mass[k],o=k*3;
-      positions[o]=worldX(x);positions[o+1]=Number.isFinite(h)?h+.035+Math.min(.24,m*.08):-100;positions[o+2]=worldZ(z);
-      const q=Math.min(1,m*.7);colors[o]=.18+.08*q;colors[o+1]=.42+.38*q;colors[o+2]=.62+.34*q;
+      const wet=m>1e-5;positions[o]=worldX(x);positions[o+1]=wet&&Number.isFinite(h)?h+.08+Math.min(.24,m*.08):-100;positions[o+2]=worldZ(z);
+      const q=Math.min(1,m*.7);colors[o]=.12+.08*q;colors[o+1]=.52+.36*q;colors[o+2]=.82+.18*q;
     }
     geometry.attributes.position.needsUpdate=true;geometry.attributes.color.needsUpdate=true;points.visible=enabled;
   }
