@@ -50,7 +50,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     return s>1e-6?Math.min(MAX_DT,CFL*DX/s):MAX_DT;
   }
   function solve(dt){
-    sampleBed();nh.set(h);nhu.set(hu);nhv.set(hv);
+    nh.set(h);nhu.set(hu);nhv.set(hv);
     const scale=dt/DX;
     for(let z=0;z<N;z++)for(let x=0;x<N-1;x++){
       const L=idx(x,z),R=idx(x+1,z);if(!valid(L)||!valid(R))continue;const f=fluxX(L,R);
@@ -129,6 +129,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function update(now){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
     acc+=Math.min(.05,Math.max(0,(now-lastNow)/1000));lastNow=now;
+    sampleBed();
     let guard=0;while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
     refresh();
   }
