@@ -1327,3 +1327,148 @@ The governing instruction for the remaining water work is therefore:
 
 > **Cross until it breaks. Then learn why.**
 
+
+
+### Water disappearance investigation — the next boundary is world support
+
+Before theorizing about the observed water disappearance, the shallow-water implementation was inspected directly.
+
+The solver resamples its bed from mutable terrain every solve:
+
+    bed[k] = terrain.groundHeight(x, z)
+
+A water cell is considered valid only while that bed value is finite. Flux across an interface is skipped when either neighboring bed is invalid. Separately, the final solve pass contains a destructive path:
+
+    if (!valid(k)) {
+        h[k] = hu[k] = hv[k] = 0;
+        continue;
+    }
+
+Therefore water is not currently transported through an unsupported edge. If a wet cell becomes unsupported according to the terrain query, its depth and momentum are simply erased.
+
+The implementation already contains totalEscaped bookkeeping, but this path never increments it. There is also a much smaller intentional numerical loss: depths at or below DRY = 1e-4 are zeroed. That cleanup can discard trace mass but does not plausibly explain dramatic disappearance.
+
+The first human response reframed the problem:
+
+> **Human:** “My first thought is to ensure there is always a valid terrain or plinth floor. We already require this for bearing collisions.”
+
+The human then supplied executable evidence from deliberately abusing the world with meteors:
+
+> **Human:** “I just tested meteor abuse, it has no problem flowing into holes nor does it care if meteors eat terrain beneath it.”
+
+That evidence argues against changing the successful excavation behavior. Mutable signed-density terrain plus repeated bed sampling is already allowing water to discover newly lowered terrain and flow into it. The failure is narrower: the solver has no representation once its support query returns no finite bed.
+
+The human also rejected world-edge drainage as the desired world rule:
+
+> **Human:** “And as for world edges, I don't actually want it flowing off. I want to define a sea level and allow us to have a side view into a water volume.”
+
+This changes the intended boundary condition. Inside a Crucible world volume, unsupported XZ should not mean “water leaves existence.” There should be a finite physical lower boundary even where no terrain surface remains.
+
+#### Planned correction
+
+Do not add a falling-water representation to repair this failure. Do not alter the already successful behavior of water flowing into excavated terrain.
+
+Instead, make the shallow-water bed query total over its finite world domain:
+
+    authored/mutable terrain surface, when present
+        ↓ otherwise
+    finite Crucible/world floor
+
+The exact provider should be terrain/world-owned rather than hard-coded into the water solver, so bearings and fluids can ultimately consume the same physical support truth. The existing apparatus/plinth collision semantics should be inspected and reused where they already express that boundary correctly.
+
+Before and after the correction, expose honest mass accounting:
+
+    injected volume
+    current shallow-water volume
+    numerical dry-cell loss
+    boundary/representation transfer or escaped volume
+
+For the intended closed snowglobe boundary, ordinary world-edge escape should be zero. totalEscaped must either acquire a real meaning or be removed/replaced; it should not remain fictitious bookkeeping.
+
+Acceptance conditions for this correction:
+
+1. Existing meteor/excavation behavior remains intact: water continues to discover and fill lowered terrain.
+2. Water cannot disappear merely because terrain support ceases to exist.
+3. Water does not drain off the finite world edge.
+4. Repeated updates without sources or deliberate transfers do not exhibit material unexplained volume loss beyond explicitly measured DRY cleanup.
+5. The visible reconstructed surface continues to stop against the finite material/world boundary rather than reaching into air outside the specimen.
+6. Bearings and water are not given contradictory notions of the world's ultimate physical support.
+
+This is a boundary correction, not yet a deep-ocean implementation.
+
+### Sea level and the water column
+
+The same discussion exposed a more useful initial condition than “inject water onto land.”
+
+Define a world sea-level datum Ysea. Given finite bathymetry/bed height b(x,z), initial column depth can be derived as:
+
+    h(x,z) = max(0, Ysea - b(x,z))
+
+Terrain generation therefore remains terrain generation. The same deterministic topography can become continent, archipelago, seamount field, or mostly ocean depending on sea level.
+
+The reconstructed free surface continues to represent only the air/water interface. A side view does not require tessellating an entire 3D fluid. The occupied water column is already implied by:
+
+    bed(x,z) <= y <= surface(x,z)
+
+This permits a cutaway view through the side of the Crucible volume: visible free surface above, bathymetry below, and a finite specimen boundary around the side.
+
+The human immediately extended the scale of the intended worlds:
+
+> **Human:** “This means maps can gen with very little land but still be compelling as hell. And we want abyssal depths at scale as well. Black smokers and bioluminescent life.”
+
+The current shallow-water solver should not be rebranded as quantitatively correct abyssal-ocean dynamics. Its useful role is the cheap surface/column state it has earned. Deep-ocean phenomena can force additional representations later.
+
+### Octagonal water strata
+
+The human proposed a natural regime boundary for deep water:
+
+> **Human:** “When we move to deep ocean I think we can safely put a second volume below it. Water already has clines.”
+
+This suggests stacked octagonal regimes rather than one heroic fluid representation:
+
+    atmosphere
+    ───────────── free surface
+    surface / mixed water regime
+    ───────────── cline
+    deep-water regime
+    ───────────── bathymetry / deeper strata
+
+Thermoclines, haloclines, and pycnoclines provide physically meaningful precedents for a computational seam. The seam should eventually become a contract: matter, momentum, heat, salinity, buoyancy, or other earned quantities may cross it. The precise contract should be discovered through crossings rather than designed in advance.
+
+The human then generalized the plinth itself:
+
+> **Human:** “I'm picturing octagonal strata. Those plinths are basically our freedom to print little snowglobes. We can also make massive worlds cheap by chunking them.”
+
+This is a stronger interpretation of the apparatus. The octagonal plinth is not necessarily “the floor.” It is a finite boundary and presentation grammar for a materialized world specimen. Internally, that specimen can contain multiple strata, and large boring distances can collapse to cheap representations or metadata while computation concentrates around active interfaces.
+
+The important scaling distinction is:
+
+    semantic world scale can be enormous
+    resident computational scale can remain bounded
+
+Octagonal strata may also become natural chunk boundaries. Massive worlds need not remain uniformly resident or uniformly simulated. Relevant chunks can be richly materialized while distant/homogeneous regimes remain cheap.
+
+No chunking implementation is authorized by this observation yet.
+
+### Glitterband crossing
+
+The bounded-world idea unexpectedly connected three existing laboratories.
+
+The human observed:
+
+> **Human:** “Launcher city could fling little microworld baubles into orbit. Behold, the birth of the glitterband.”
+
+The connection is mechanically suggestive rather than merely thematic:
+
+    Six Cities already routes and launches discrete things.
+    Crucible is learning to represent bounded discrete world specimens.
+    Orbital Construction already provides an assembly context in space.
+
+A future world chunk could therefore possess a seed, state, provenance, and finite octagonal identity that allows it to become cargo rather than merely scenery. A launcher could launch such a specimen; an orbital system could receive or arrange it; many could accumulate into a band of independently meaningful microworlds.
+
+This is recorded as a discovered cross-repository possibility, not a current implementation target.
+
+The architectural lesson from this sequence is broader than water:
+
+> **The finite specimen boundary is not a limitation to hide. It is machinery for scaling, composition, inspection, and transport.**
+
