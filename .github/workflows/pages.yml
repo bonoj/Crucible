@@ -28,14 +28,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish:
+  assemble:
     if: >
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Resolve stable and candidate identities
         id: refs
@@ -120,6 +117,15 @@ jobs:
         with:
           path: site
 
+
+
+  deploy:
+    needs: assemble
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
