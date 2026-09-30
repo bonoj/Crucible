@@ -16,8 +16,32 @@ export function createTerrainSystem({THREE,scene}){
   const interp=(a,b,va,vb)=>a.clone().lerp(b,THREE.MathUtils.clamp(va/(va-vb),0,1));
   function polygonize(ps,vs,out){const inside=[],outside=[];for(let i=0;i<4;i++)(vs[i]>0?inside:outside).push(i);if(!inside.length||inside.length===4)return;if(inside.length===1||inside.length===3){const inv=inside.length===3,A=inv?outside[0]:inside[0],others=inv?inside:outside,p0=interp(ps[A],ps[others[0]],vs[A],vs[others[0]]),p1=interp(ps[A],ps[others[1]],vs[A],vs[others[1]]),p2=interp(ps[A],ps[others[2]],vs[A],vs[others[2]]);out.push(...(inv?[p0,p2,p1]:[p0,p1,p2]));return}const[a,b]=inside,[c,d]=outside,p0=interp(ps[a],ps[c],vs[a],vs[c]),p1=interp(ps[a],ps[d],vs[a],vs[d]),p2=interp(ps[b],ps[c],vs[b],vs[c]),p3=interp(ps[b],ps[d],vs[b],vs[d]);out.push(p0,p1,p2,p2,p1,p3);}
   function hash(n){const s=Math.sin(n*127.1+seed*311.7)*43758.5453123;return s-Math.floor(s)}
+  const geologyBoard=[
+    {relief:2.4,slope:.10,trunk:.72,trib:.48,width:.72,plateau:.72,warp:.18},
+    {relief:3.5,slope:.06,trunk:1.35,trib:.72,width:.42,plateau:.92,warp:.10},
+    {relief:1.7,slope:.16,trunk:.55,trib:.95,width:.50,plateau:.42,warp:.30},
+    {relief:4.2,slope:.04,trunk:1.65,trib:.38,width:.34,plateau:1.0,warp:.08},
+    {relief:2.8,slope:.12,trunk:.88,trib:1.18,width:.34,plateau:.62,warp:.36},
+    {relief:3.2,slope:.08,trunk:1.05,trib:.58,width:.92,plateau:.78,warp:.14},
+    {relief:2.1,slope:.20,trunk:.62,trib:.78,width:.46,plateau:.36,warp:.42},
+    {relief:3.8,slope:.07,trunk:1.48,trib:1.02,width:.30,plateau:.88,warp:.22},
+    {relief:2.6,slope:.14,trunk:.92,trib:.42,width:.62,plateau:.54,warp:.48},
+    {relief:4.5,slope:.03,trunk:1.82,trib:.82,width:.38,plateau:1.08,warp:.12},
+    {relief:2.3,slope:.11,trunk:.70,trib:1.28,width:.28,plateau:.66,warp:.55},
+    {relief:3.4,slope:.09,trunk:1.22,trib:.88,width:.54,plateau:.82,warp:.32}
+  ];
+  const segDist=(x,z,ax,az,bx,bz)=>{const dx=bx-ax,dz=bz-az,l=dx*dx+dz*dz||1,t=THREE.MathUtils.clamp(((x-ax)*dx+(z-az)*dz)/l,0,1);return Math.hypot(x-(ax+dx*t),z-(az+dz*t));};
   function terrainSeedHeight(x,z){
-    return SURFACE_Y;
+    const g=geologyBoard[((seed-1)%geologyBoard.length+geologyBoard.length)%geologyBoard.length];
+    const radial=Math.hypot(x*.82,z*.72),plateau=g.plateau*Math.max(0,1-Math.pow(radial/9.4,4));
+    const macro=g.relief*(.24*Math.sin(x*.34+seed*.71)+.18*Math.cos(z*.29-seed*.43)+g.warp*.12*Math.sin((x+z)*.71+seed));
+    const downhill=-g.slope*(x+8);
+    let h=SURFACE_Y+plateau+macro+downhill;
+    const bend=1.15*Math.sin(seed*1.37),trunk=segDist(x,z,-7.8,bend,-.5,.15*bend)+segDist(x,z,-.5,.15*bend,8.5,-.55*bend);
+    h-=g.trunk*Math.exp(-(trunk*trunk)/(2*g.width*g.width));
+    const joins=[[-6.2,5.8,-2.0,1.2],[-5.4,-5.9,-1.2,-.8],[.2,5.6,2.8,-.1],[.8,-5.8,3.4,-.35]];
+    for(let i=0;i<joins.length;i++){if(((seed+i)%3)===0&&g.trib<.7)continue;const [ax,az,bx,bz]=joins[i],d=segDist(x,z,ax,az,bx,bz),w=g.width*(.58+.08*(i%2));h-=g.trib*(.72+.12*i)*Math.exp(-(d*d)/(2*w*w));}
+    return h;
   }
   function synthesize(nextSeed=seed){seed=nextSeed|0;for(let z=0;z<NZ;z++)for(let y=0;y<NY;y++)for(let x=0;x<NX;x++){const p=wp(x,y,z);field[idx(x,y,z)]=terrainSeedHeight(p.x,p.z)-p.y;}initial.set(field);}
   synthesize(seed);
@@ -135,5 +159,5 @@ export function createTerrainSystem({THREE,scene}){
   }
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();rebuildSupport();
-  return{mesh,apparatus,field,rebuild,impact,excavate,raise,lower,snapshot,restore,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,excavate,raise,lower,snapshot,restore,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,geologyBoardSize:()=>geologyBoard.length,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
