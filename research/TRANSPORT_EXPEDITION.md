@@ -997,3 +997,227 @@ Current material-data principle:
 
 **A dataset does not have to color the world. It can supply material to it.**
 
+
+
+## Water-surface crossing — turn-for-turn working record
+
+This crossing is worth preserving in conversational order because the useful surface architecture was not specified in advance. It emerged by repeatedly asking what the existing shallow-water representation actually knew, refusing to make the solver carry geometry it had not earned, and borrowing the representation split that had just worked for terrain.
+
+The wording below preserves the working turns closely enough to retain the chain of reasoning rather than compressing it into a finished design.
+
+---
+
+**Human:** “Alright. What is the surface of our shallow water doing? Before we consider the scalar field.”
+
+**Model:** The solver already has a free surface: for every supported wet cell, its elevation is
+
+    surfaceY = bed + depth
+
+The current renderer is much cruder than that state. It takes four solver samples and draws a quad only when all four are wet and valid. So there are two different things hiding under the word “surface”:
+
+1. a partially defined free-surface height field known by the solver;
+2. a blocky mesh exposing the solver lattice.
+
+The second does not need to remain the geometry of the first.
+
+---
+
+**Human:** “But what happens to the height field at the edges?”
+
+**Model:** There are two importantly different edges.
+
+At an ordinary shoreline, depth tends toward zero. The water surface should meet the terrain and terminate there.
+
+At an unsupported terrain edge, the current shallow-water representation simply ceases to be qualified. Its state is “depth above one supporting bed sample.” Where there is no valid bed, the implementation currently has no water state. That is not automatically a waterfall; it is a representation boundary.
+
+This separated **shoreline reconstruction** from **unsupported/falling water**. They should not be solved as the same problem.
+
+---
+
+**Human:** “We already know we're going to figure out something visibly pleasing which allows us to pile materials on that will float or sink in satisfying ways.”
+
+**Model:** That changed the optimization target. The 64×64 shallow-water grid did not need to become beautiful geometry. It needed to remain a cheap, trustworthy material interface.
+
+The water state could answer local questions such as depth, free-surface Y, and horizontal velocity. Bearings or other materials could later consume those answers for buoyancy, sinking, drift, and current coupling without knowing anything about the visible water mesh.
+
+Likewise, the renderer could consume the same state and make a better surface without becoming physical authority.
+
+The useful split became:
+
+    shallow-water state
+       ↙          ↘
+    material      visible
+    coupling      surface
+
+---
+
+**Human:** “We said we'd try to make a science shaped tool if we could. We have material world with deformable terrain and a surface that could take real data sets.”
+
+**Model:** The important opportunity was not merely to color the surface with data. The existing representations could let measured data supply or alter material state.
+
+Terrain is a mutable 3D material field. Water is a conserved dynamical field over supported terrain. Bearings are discrete bodies. Meteors are controlled interventions. A measured 2D field can therefore become an initial condition or forcing field while remaining distinct from both physical law and presentation.
+
+---
+
+**Human:** “If we want to do ‘material’ water cycles we can use real precipitation data and the water can rise accordingly. We have known volumes.”
+
+**Model:** Exactly. For a water cell of area \(A\) and depth \(h\),
+
+    V = A h
+
+and accumulated precipitation depth \(p\) supplies
+
+    delta V = p A
+
+after establishing physical-unit mapping.
+
+That gives an accounting path rather than an effect:
+
+    measured precipitation
+        → known incoming volume
+        → routing
+        → pooling / rising free surface
+        → overflow / escape
+        → material interaction
+
+This was captured separately above as the material-data principle:
+
+> **A dataset does not have to color the world. It can supply material to it.**
+
+---
+
+**Human:** “Let's capture this train of thought.”
+
+**Model:** The material-water and data-forcing direction was recorded in this expedition before surface implementation continued.
+
+---
+
+**Human:** “Oh, it's not a plane. It's y per cell. How many ball bearings fit on the surface of a cell?”
+
+**Model:** Correct: it is not one plane. The shallow-water grid is 64×64 over an 18×18 world region, so one cell is
+
+    18 / 64 = 0.28125
+
+world units wide.
+
+A bearing has radius 0.055 and diameter 0.11, so one water cell spans about 2.56 bearing diameters. Comparing cell area with bearing circular footprint gives a rough dense-monolayer capacity on the order of seven bearings per cell, or roughly thirty thousand bearings over a fully wet grid.
+
+The exact packing count was less important than the architectural implication: **one cheap water sample can inform several discrete material bodies.** Water does not need a one-cell-per-bearing representation.
+
+---
+
+**Human:** “We need a continuous surface to render informed by local y and xz of whatever walls or plinth edge.”
+
+**Model:** That was the decisive reframing.
+
+The 64×64 cells are **measurements informing a continuous surface**, not render polygons.
+
+Inside the wet domain, surrounding solver samples provide desired free-surface Y. At the boundary, the actual material world determines where that surface may exist. A sloping shore should intersect terrain. A wall should constrain the sheet at local Y. A plinth or cliff edge should terminate supported water geometry where the material support ends.
+
+The renderer therefore needs to ask two separate questions:
+
+    What should surface Y be here?
+    Is this XZ location still inside the supported water domain?
+
+The conceptual pipeline became:
+
+    64×64 water state
+        → local continuous surfaceY(x,z)
+        → material/plinth boundary constraint
+        → independently tessellated visible sheet
+
+while material interaction can independently use:
+
+    64×64 water state
+        → local depth / surfaceY / velocity
+        → buoyancy / sinking / transport
+
+The grid becomes **measurement, not geometry**.
+
+---
+
+**Human:** “We need a way for that surface to know it hit air and stop reaching outwards.”
+
+**Model:** This supplied the missing boundary condition.
+
+The reconstructed sheet should not infer its extent only from square wet cells. It should also query the continuous material/support representation while moving toward a boundary. Where supported water gives way to unsupported air, the visible supported sheet should stop.
+
+Two termination modes remained distinct:
+
+**Shore:** represented depth approaches zero and the free surface meets material.
+
+**Drop/support loss:** the material support required by the shallow-water representation disappears. The supported sheet ends there. A later representation may inherit outgoing water as falling parcels, droplets, a waterfall, or something else, but the shallow-water renderer must not invent that ontology.
+
+A caution was also earned here: “air immediately below the surface” is not itself support loss—ordinary water contains water, not solid, immediately below its free surface. The relevant question is whether the represented water column still has valid supporting/containing material and whether lateral material geometry constrains the surface.
+
+---
+
+**Human:** “Fuckin right. So now you have enough to make us a surface?”
+
+**Model:** Yes. At that point the two authorities were sufficient:
+
+1. solved shallow-water state supplies local free-surface elevation;
+2. terrain/plinth geometry supplies the material boundary.
+
+The implementation deliberately changed **only presentation reconstruction**, not the shallow-water solver.
+
+The old renderer:
+
+    solver cell corners
+        → require all four wet/valid
+        → draw one square quad
+
+was replaced by:
+
+    solver samples
+        → interpolate depth and free-surface Y
+        → tessellate more finely than solver resolution
+        → interpolate wet/dry crossings
+        → independently clip against continuous terrain/plinth support
+        → draw visible water
+
+The first implementation uses a presentation grid at twice the solver's linear resolution. It triangulates each presentation cell, avoiding square saddle ambiguity. Wet/dry crossings are interpolated rather than snapped to solver-cell edges. Material-support crossings are independently bisected against the terrain's continuous support query so the sheet can terminate near the actual plinth/material edge rather than at a 0.28125-unit solver boundary.
+
+The authoritative shallow-water arrays, flux calculation, timestep, source injection, momentum, and conservation behavior were left untouched.
+
+Commit:
+
+    27c63efcd7937c243e60b0703e48681a62e53dc5
+    Reconstruct continuous shallow-water surface from state and support
+
+The candidate build succeeded and the Pages candidate published successfully.
+
+---
+
+**Human, after experiencing the build:** “We have beautiful water.”
+
+That is the first human acceptance of the reconstructed surface.
+
+### What this crossing earned
+
+The successful result did not come from making the water simulation more expensive. The solver remained 64×64: 4,096 authoritative cells.
+
+The improvement came from refusing to equate **computational resolution** with **visible geometry**.
+
+The resulting pattern is:
+
+    cheap authoritative state
+        → continuous local queries
+        → independently reconstructed geometry
+        → material-world clipping
+
+The terrain crossing had already taught:
+
+> **The representation easiest to author does not need to be the representation the simulation executes.**
+
+The water crossing adds a sibling rule:
+
+> **The representation cheapest to simulate does not need to be the representation the human sees.**
+
+And the practical surface rule is now:
+
+> **Cells are measurements. The surface is a reconstruction.**
+
+This is not yet a claim that arbitrary water geometry has been solved. The accepted surface still belongs to the supported shallow-water regime. Waterfalls, detached bodies, breaking surfaces, undercuts, and other multiply-valued water geometry remain outside what this representation has earned.
+
+What *has* been earned is narrower and extremely useful: a computationally cheap material water state can drive a visibly continuous surface without exposing its lattice, while leaving enough budget and semantic separation for bearings, measured forcing, terrain mutation, and later representation crossings.
