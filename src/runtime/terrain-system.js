@@ -97,7 +97,10 @@ export function createTerrainSystem({THREE,scene}){
   }
   function groundHeightExact(x,z){const h=terrainHeight(x,z);return insideApparatus(x,z)?Math.max(h,APPARATUS_TOP):h;}
   function bearingTerrainHeight(x,z){if(x<MIN.x||x>MAX.x||z<MIN.z||z>MAX.z)return-Infinity;const fx=THREE.MathUtils.clamp((x-MIN.x)/(MAX.x-MIN.x)*(SUPPORT_G-1),0,SUPPORT_G-1.001),fz=THREE.MathUtils.clamp((z-MIN.z)/(MAX.z-MIN.z)*(SUPPORT_G-1),0,SUPPORT_G-1.001),ix=Math.floor(fx),iz=Math.floor(fz),tx=fx-ix,tz=fz-iz,A=support[ix+SUPPORT_G*iz],B=support[ix+1+SUPPORT_G*iz],C=support[ix+SUPPORT_G*(iz+1)],D=support[ix+1+SUPPORT_G*(iz+1)];if(![A,B,C,D].every(Number.isFinite))return Math.max(A,B,C,D);return THREE.MathUtils.lerp(THREE.MathUtils.lerp(A,B,tx),THREE.MathUtils.lerp(C,D,tx),tz);}
-  function groundHeight(x,z){const terrainY=bearingTerrainHeight(x,z);return insideApparatus(x,z)?Math.max(terrainY,APPARATUS_TOP):terrainY;}\n  // Fluid/world columns need bathymetry, not the bearing-support plinth top. Inside the\n  // finite apparatus a missing terrain column terminates at the physical world bottom.\n  function worldBedHeight(x,z){if(!insideApparatus(x,z))return-Infinity;const terrainY=terrainHeight(x,z);return Number.isFinite(terrainY)?terrainY:APPARATUS_BOTTOM;}
+  function groundHeight(x,z){const terrainY=bearingTerrainHeight(x,z);return insideApparatus(x,z)?Math.max(terrainY,APPARATUS_TOP):terrainY;}
+  // Fluid/world columns need bathymetry, not the bearing-support plinth top. Inside the
+  // finite apparatus a missing terrain column terminates at the physical world bottom.
+  function worldBedHeight(x,z){if(!insideApparatus(x,z))return-Infinity;const terrainY=terrainHeight(x,z);return Number.isFinite(terrainY)?terrainY:APPARATUS_BOTTOM;}
 
 
   function raise(center,{radius=3.2,height=2.2}={}){
