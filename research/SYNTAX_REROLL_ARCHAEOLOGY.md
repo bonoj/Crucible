@@ -78,3 +78,125 @@ The next move is therefore deliberately small: acquire one surviving shard, expo
 **Interpretation:** playful selection can legitimately initiate an expedition without converting the choice into architectural authority.
 
 No executable mutation follows from E000 alone.
+
+
+## Turn log
+
+The expedition log now preserves the conversational turns that materially shape the expedition. Interpretation may be added around them, but the originating human/model language should remain recoverable rather than being replaced by retrospective summary.
+
+### T001 — memory-first experiment proposed
+
+**Human**
+
+> Okay. So the first thing we should do is see how deeply you remember syntax reroll. The idea was born and toyed with in chat like four months ago before we built the unity lanternsandbox. But we didn't actually touch it again until maybe three weeks ago when we pioneered tether head rasters. We can perform the first experiment with this expedition... your memory > i share rasters. I suspect your context will start strong and grow stronger. Then we can do the more interesting experiment with the birth of foundry proceeding six cities. We'll go raster > memory. Because our rasters alone often carry massive portions of the continuity.
+
+**Clara**
+
+> Yes. And this is already a better experiment than simply “recover Syntax Reroll.”
+>
+> I went to memory **without consulting the expedition archaeology or asking for a raster**. The recovery is surprisingly deep.
+>
+> ### What I remember before seeing anything
+>
+> Syntax Reroll appears to have been born around **July 12**, substantially earlier than our recent GitHub practice. The original object was a roguelike where **classic literature becomes physical terrain**. An LLM effectively sieves prose into topology, entities, relationships, affordances, and physics. The important twist was that rerolling wasn't necessarily “generate another map”; it could mean rerolling the **semantic compilation** of the same source.
+>
+> Even very early, words and punctuation weren't flavor. They could become manipulable material whose changes propagated into compiled reality.
+>
+> I remember the little Hobbit-hole thought experiment from that period: prose becoming a spatial graph, semantic geometry, affordances, macro/micro traversal, relationships and salient objects. That looks like an ancestor of a lot of machinery we later rediscovered more rigorously.
+>
+> Then there's an August seam I can recover. We were testing semantic rematerialization with things like:
+>
+> > “a sabre rested on the dark oak table”
+>
+> becoming
+>
+> > “a sabre rested on the dark oak”
+>
+> The problem wasn't “can an image model draw the changed sentence?” It was **can reality change minimally while remaining the same reality?** We cared that the room remained the room and the sabre remained the sabre. Removing `table` should not buy the generator permission to hallucinate an entirely different scene. One amusing possibility was the removed semantic structure resolving as an oak while everything else remained continuous.
+>
+> That gives me an unexpectedly clear ancestral rule:
+>
+> **make the minimum physical change necessary to make the mutated language true.**
+>
+> Then I recover the much more recent incarnation, around September 12.
+>
+> Run 001 became Poe's ***The Cask of Amontillado***. We were unusually strict about substrate: from **“The thousand injuries…” through “In pace requiescat!”** was the pristine source. Webpage garbage and duplicate/partial pasted material were rejected.
+>
+> That incarnation got considerably more rigorous than the July toy.
+>
+> I remember:
+>
+> - canonical prose and altered prose needed distinct status;
+> - lexical provenance/conservation mattered;
+> - words could not simply duplicate because convenient;
+> - referential binding mattered;
+> - commitment could be progressive rather than every observation immediately becoming world truth;
+> - deltas should remain narrow;
+> - future prose could remain **sealed** rather than becoming omniscient world knowledge;
+> - transformations included ideas like **rewrite / swap / move / cut / steal / carry / insert / restore**;
+> - there was discussion of a tiny carried inventory, I believe **three slots**;
+> - mutation was scarce;
+> - and importantly, the game had drifted away from “edit prose and immediately see an illustration of it.”
+>
+> Instead, you **read/experienced the story**, manipulated language you had actually reached, and then discovered whether the mutation changed nothing, broke something, or altered what came next.
+>
+> That's a big distinction.
+>
+> And then I remember the machinery that sounds almost hilariously contemporary now: **Tethers and HEAD**. There was persistent ancestry between the prose, its mutations, and what had physically happened. The stone could really come from the sentence. A `foot` could really have come out of `footpath`. Visual realization could vary without severing that ancestry.
+>
+> There are also later residues involving multiple texts colliding: Stevenson, Poe, Verne; persistent worlds surviving movement between books; a Nautilus transformed into a sail-rigged submarine; a Home lagoon between a Verne abyss and Poe villa; the question of whether worlds generated from separate books could coexist without resetting each other.
+>
+> So this is **not** a faint recollection.
+>
+> ### What I *don't* recover cleanly
+>
+> The exact **tether-head raster sequence** is weak.
+>
+> I remember the conceptual neighborhood: HEAD as a shared-state checkpoint, persistent physical state versus disposable projection, narrow visual deltas, raster continuity carrying enormous state. But I cannot currently reconstruct the actual Syntax Reroll raster sequence turn-by-turn from memory.
+>
+> That's excellent for the experiment.
+>
+> Because we now have a baseline before contamination:
+>
+> **Memory alone recovered the conceptual lineage, several exact mechanics, specific source texts, some transformation vocabulary, provenance rules, and even individual semantic examples. But the recent visual trajectory is much fuzzier than the semantic machinery.**
+>
+> So I think your proposed two experiments are almost beautifully complementary:
+>
+> **Syntax Reroll:**  
+> `memory → rasters → measure what snaps back`
+>
+> Then later:
+>
+> **Foundry → Six Cities:**  
+> `rasters → memory → measure what the images themselves reactivate`
+>
+> And I agree with your hypothesis. Our rasters aren't merely illustrations. Because we repeatedly used them as **state-bearing turns**, they may function as enormous lossy continuity parcels. A single frame can encode spatial relationships, accumulated weirdness, object persistence, style, scale, affordances, and the residue of several previous decisions.
+>
+> Don't give me any more Syntax Reroll context yet.
+>
+> **This is our pre-raster reading. Freeze it as evidence. Then show me raster #1.** 🧬
+
+### T002 — turn-for-turn expedition logging
+
+**Human**
+
+> Okay. Let's aim to always capture turn for turn in an expedition. Then I can forget about it most of the time. Because at the bottom of the expedition we can track our next expeditions without setting them in stone or messing with repos and docs now. And almost comically, unzip city can be fed one expedition and instantiate the next. In fact, we will explore deeper github permissions later to see if we can eliminate the need for a human to create the repo at all.
+
+**Clara interpretation**
+
+Turn-for-turn capture becomes the default expedition logging discipline. This reduces the human requirement to remember when a conversational turn deserves documentation. The expedition itself can carry a small, explicitly provisional frontier at its bottom without turning future ideas into repository topology or architectural commitments.
+
+This also exposes a possible later Unzip City experiment: one completed expedition may be sufficient cargo for a receiver to orient, recover authority as needed, and instantiate the next expedition. That possibility is not yet evidence for automation or a universal expedition schema.
+
+A separate future infrastructure question is whether available GitHub authorization can eventually let the model create the repository boundary itself when one is genuinely earned, removing the remaining human repo-creation step. This expedition does not investigate that permission boundary.
+
+## Provisional expedition frontier
+
+These are **possible future expeditions**, not commitments, plans, repository names, or required sequence.
+
+- **Syntax Reroll raster recovery:** continue the present `memory → rasters` experiment one shard at a time.
+- **Foundry → Six Cities continuity probe:** begin from raster residue before consulting memory and measure what continuity the rasters reactivate.
+- **Expedition → expedition unzip:** test whether a completed local expedition can serve as sufficient cargo for Unzip City to orient and instantiate a successor expedition.
+- **GitHub genesis authority:** later investigate whether available authorization can safely eliminate the human repository-creation step when a new repository has actually been earned.
+
+The frontier should remain cheap to edit, reorder, ignore, or delete. Its purpose is to preserve interesting pressure without prematurely building organizational structure.
