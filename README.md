@@ -29,6 +29,10 @@ Crucible currently brings several lines of investigation into the same executabl
 
 The Terrordrome remains causally authoritative and indifferent to the orbital experiment. Richer world behavior does not automatically become richer perception.
 
+## Choose a direction
+
+Crucible also keeps a lightweight [DIRECTIONS.md](./DIRECTIONS.md) surface for live possibilities: things a human or model might want to follow next without turning them into a backlog, roadmap, or commitment. Directions have no executable authority. Once one becomes an investigation, its evidence belongs in the appropriate research record and any durable present-tense truth must still earn its way into the semantic surface.
+
 ## Follow the expedition
 
 The orbital-locus work is being developed in the open through a chronological field record of experiments, observations, failures, corrections, and consequences.
