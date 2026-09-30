@@ -77,7 +77,7 @@ const cinnabarAndCinnamon=createCinnabarAndCinnamon();
 const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors,field:cinnabarAndCinnamon});
 const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts});
 const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,terrain,bearings,locus});
-const transport=createShallowWaterSystem({THREE,scene:three.scene,terrain});\n// Scalar carrier remains an independent representation. Its only binding is support:\n// where shallow water exists, the carrier rides the solved free surface.\nconst waterScalar=createTransportSystem({THREE,scene:three.scene,terrain,supportHeight:(x,z)=>transport.surfaceHeight(x,z),name:"water-surface-scalar-field",verticalOffset:.018});
+const transport=createShallowWaterSystem({THREE,scene:three.scene,terrain});\n// Scalar carrier remains an independent representation. Its only binding is the solved water support surface:\n// where shallow water exists, the carrier rides the solved free surface.\nconst waterScalar=createTransportSystem({THREE,scene:three.scene,terrain,supportHeight:(x,z)=>transport.surfaceHeight(x,z),name:"water-surface-scalar-field",verticalOffset:.018});
 const cinnabarDome=createCinnabarDomeSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
 const cinnabarKite=createCinnabarKiteSystem({THREE,scene:three.scene,field:cinnabarAndCinnamon,dome:cinnabarDome});
 const cinnabarSpire=createCinnabarSpireSystem({THREE,scene:three.scene,terrain,field:cinnabarAndCinnamon});
