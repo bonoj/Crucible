@@ -60,6 +60,9 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     for(let iz=minZ;iz<=maxZ;iz++)for(let ix=minX;ix<=maxX;ix++){const cx=PROJECTION_MIN+(ix+.5)*cell,cz=PROJECTION_MIN+(iz+.5)*cell;if(r&&((cx-x)*(cx-x)+(cz-z)*(cz-z)>r*r))continue;grains+=projection[ix+PROJECTION_GRID*iz];cells++;}
     return{grains,cells,cellSize:cell};
   }
+  function snapshot(){return{count,bx:bx.slice(0,count),by:by.slice(0,count),bz:bz.slice(0,count),bvx:bvx.slice(0,count),bvy:bvy.slice(0,count),bvz:bvz.slice(0,count)}}
+  function clear(){count=0;pile.fill(0);projection.fill(0);mesh.count=0;mesh.instanceMatrix.needsUpdate=true}
+  function restore(state){clear();if(!state)return 0;count=Math.min(state.count??0,maxBearings);bx.set(state.bx.subarray(0,count));by.set(state.by.subarray(0,count));bz.set(state.bz.subarray(0,count));bvx.set(state.bvx.subarray(0,count));bvy.set(state.bvy.subarray(0,count));bvz.set(state.bvz.subarray(0,count));return count}
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
 }
