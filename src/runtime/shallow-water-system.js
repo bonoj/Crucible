@@ -12,7 +12,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:true,opacity:.72,roughness:.18,metalness:0,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
 
-  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)bed[idx(x,z)]=terrain.groundHeight(wx(x),wz(z))}
+  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);bed[k]=terrain.materialBoundary(wx(x),wz(z)).inside?terrain.groundHeight(wx(x),wz(z)):-Infinity}}
   const valid=k=>Number.isFinite(bed[k]);
   function cell(x,z){return{x:THREE.MathUtils.clamp(Math.floor((x-MIN)/DX),0,N-1),z:THREE.MathUtils.clamp(Math.floor((z-MIN)/DX),0,N-1)}}
   function addWater(q,x,z){if(!(q>0))return 0;const c=cell(x,z),k=idx(c.x,c.z);if(!valid(k))return 0;h[k]+=q/(DX*DX);totalInjected+=q;return q}
@@ -73,6 +73,12 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
       h[k]=Math.max(0,nh[k]);
       if(h[k]<=DRY){h[k]=hu[k]=hv[k]=0}else{const damp=Math.exp(-.22*dt);hu[k]=nhu[k]*damp;hv[k]=nhv[k]*damp;const sp=Math.hypot(hu[k]/h[k],hv[k]/h[k]),max=12;if(sp>max){hu[k]*=max/sp;hv[k]*=max/sp}}
     }
+    // The material octagon is a geometric slip wall. State remains Cartesian, but
+    // boundary-cell momentum obeys the actual nearest octagonal plane normal.
+    for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(!valid(k)||h[k]<=DRY)continue;
+      const b=terrain.materialBoundary(wx(x),wz(z));if(b.distance>DX*1.5)continue;
+      const un=(hu[k]*b.nx+hv[k]*b.nz)/h[k];if(un>0){hu[k]-=h[k]*un*b.nx;hv[k]-=h[k]*un*b.nz;}
+    }
     steps++;
   }
   // Presentation reconstruction is deliberately finer than the solver grid.
@@ -86,7 +92,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
     return{depth,surface:w>1e-8?eta/w:NaN};
   }
-  function supported(x,z){return Number.isFinite(terrain.groundHeight(x,z))}
+  function supported(x,z){return terrain.materialBoundary(x,z).inside}
   function supportBoundary(a,b){
     let lo={...a},hi={...b},loIn=supported(lo.x,lo.z);
     if(loIn===supported(hi.x,hi.z))return loIn?hi:lo;
