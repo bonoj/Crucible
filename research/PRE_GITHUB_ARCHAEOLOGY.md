@@ -712,3 +712,125 @@ The executable branch now leaves this archaeology ledger and receives its own lo
 This archaeology remains open for future raster excavation. Historical evidence continues to land here. New executable Syntax Reroll turns belong in the fresh expedition unless they materially change the archaeological interpretation itself.
 
 The new expedition is seeded from the evidence recovered here and from the proven local structure of Cinnabar & Cinnamon, without treating either as a template that must be copied wholesale.
+
+
+## Turn — case studies expose the old turn protocol
+
+### Human evidence
+
+The human supplied seven later notebook spreads from the pre-GitHub sequence:
+
+- **Walton: Six Years Old, Twenty-Eight Years Lived**
+- **Situated Reading / Semantic Leakage**
+- **Bookception / Parent Characters Are Substrate Too**
+- **The Cartographic Solarium / When Possibility Breaks Belief**
+- **Case Study 01: Robert Walton**
+- **Case Study 02: Hispaniolautilus**
+- **Case Study 03: The White Ship**
+
+This shard is especially useful because the pages repeatedly distinguish what the collaboration supplied from what the model generated, what was merely rendered, what was accepted, and what was rejected.
+
+### Archaeological reading — what a turn appears to have been
+
+The old interaction was not primarily:
+
+**human prompt → model answer**
+
+It was closer to:
+
+**persistent situation → small human intervention or observation → one generative reconciliation → human inspection → accept / reject / continue → changed persistent situation**
+
+Several pages make the structure unusually explicit.
+
+In the White Ship case study, the collaboration supplied a stable room, a bounded map surface, a literary source, existing world state/art direction, and **a single generation per step**. It explicitly records that no map layout, geography, visual result, creatures, cities, landmarks, or manual editing were supplied. Successive generations then moved from familiar geography to expanded geography to anomalies to a stranger sea while the surrounding room remained continuous.
+
+Walton supplies an even narrower intervention: swap the lexical occurrence **twenty-eight** for **six**. The renderer/model is then required to reconcile the smallest asserted change against the accumulated character history. The notebook records the resulting principle as a narrow delta under stress: physical age changes; lived history, memories, education, expedition preparation, relationships, ambitions, and personality remain unless the mutation actually requires otherwise.
+
+Hispaniolautilus repeats the pattern at a larger scale. The collaboration specifies a contradiction by replacing **Hispaniola** with **Nautilus**, but does not specify ship geometry, engineering, interior layout, material language, or how sailing and submergence coexist. The notebook's own summary is diagnostic:
+
+> **We specified the contradiction. The system designed the compromise.**
+
+The Solarium sequence shows that generated output was not automatically authoritative. A nine-sun state could be accepted as strange but coherent. A later waterfall-world propagation could be rejected because it broke accumulated spatial commitments. The notebook explicitly preserves the rejected candidate rather than rationalizing it into continuity.
+
+The same page records a second kind of turn: instead of commanding a repair, the collaboration **asked the world naturally** by observing midnight and morning. The subsequent generations supplied a coherent ordinary day/night answer without the human specifying a numerical correction.
+
+### Recovered turn anatomy
+
+A useful archaeological decomposition is:
+
+1. **Persistent substrate**  
+   A world, character, room, book, map, history, or accepted prior realization already exists.
+
+2. **Bounded human move**  
+   The human changes a word, opens a text, carries a book somewhere, chooses a surface, asks a natural question, or simply requests the next generation. The move is often deliberately much smaller than the resulting state change.
+
+3. **Generative reconciliation**  
+   The model receives the intervention inside the accumulated context and produces one candidate realization. It is allowed to solve unspecified geometry, appearance, compatibility, and local consequences.
+
+4. **Inspection rather than automatic commitment**  
+   The candidate is experienced as evidence/proposal. Coherence is judged against accumulated history and the human's own belief threshold.
+
+5. **Acceptance, rejection, or another observation**  
+   Accepted consequences become part of the situation available to later turns. Rejected candidates remain useful evidence but do not need a heroic repair chain.
+
+6. **Next turn begins from residue**  
+   The next generation is not a reset. It inherits whatever semantic, visual, spatial, character, and causal commitments survived the prior turn.
+
+This makes the historical phrase recovered in the previous shard more operational:
+
+> **Pictures propose. Actions commit.**
+
+The case studies suggest an additional qualification: **human acceptance also mattered to commitment**. A rendered possibility could remain merely a proposal when it exceeded belief or contradicted established context.
+
+### Turn scale was intentionally asymmetric
+
+The human input and model output were not expected to have matching scope.
+
+A one-word mutation could rerender a person while preserving decades of history. Reading a paragraph could alter weather around an existing dock. Opening a child text inside a parent world could leak semantics into geography or characters. A single generation could add substantial spatial structure.
+
+The controlling discipline was therefore not “small prompt means small image change.” It was closer to:
+
+> **Change only what the new pressure requires; let the model solve the size of the coherent consequence.**
+
+This is different from unconstrained generation. The persistent substrate supplied resistance. Existing commitments constrained how incoming semantics could land.
+
+### Human and model roles visible in the record
+
+The human repeatedly appears to control:
+
+- where attention is placed;
+- which source enters the situation;
+- the exact lexical mutation when there is one;
+- whether a generated candidate is believable enough to keep;
+- whether to observe again instead of repairing;
+- when an emergent realization deserves extraction into a persistent asset or resident.
+
+The model repeatedly appears to control:
+
+- reconciliation of a bounded intervention with accumulated context;
+- unspecified spatial and visual realization;
+- the form of compromises between incompatible semantics;
+- local propagation into undercommitted parts of the world;
+- coherent continuation once a candidate has been accepted.
+
+Neither role is equivalent to conventional authored level design. The human often chooses **pressure and acceptance**, while the model supplies **realization and reconciliation**.
+
+### Why the rolling conversation mattered
+
+This batch sharpens the earlier correction about historical rolling context. The turn protocol depended on accumulated context functioning as a soft world-state carrier. The pages repeatedly assume that prior accepted realizations, character histories, locations, and contradictions are available to constrain the next generation.
+
+That does not mean the conversation contained a formal authoritative world model. In fact, the rejected waterfall candidate shows the opposite: the generator could violate the collaboration's internal model, and the humans could refuse promotion.
+
+The old apparatus therefore appears to have had at least three distinct states in play:
+
+**accumulated conversational/world context → generated candidate → accepted continuity**
+
+They overlapped, but they were not identical.
+
+### Evidence status
+
+This is strong evidence for the collaboration's contemporaneous understanding of its turn structure because the case studies explicitly document supplied inputs, omitted inputs, generation cadence, acceptance, rejection, and persistence.
+
+It is still notebook evidence. It does not establish the exact hidden prompt payload, model settings, image-generation implementation, or token/context mechanics used on every historical turn.
+
+No deeper historical conversation was consulted.
