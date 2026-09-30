@@ -172,7 +172,7 @@ CLARA remains above the Terrordrome on the existing Continuity Lab surface.
 
 This expedition does not grant her omniscience, autonomous salience, model connection, goals, or command authority. If later work lets her attend to Syntax Reroll, that attention must cross whatever bounded observation/evidence machinery is actually available.
 
-The image of Clara in a lunar sanctum, with a nod to Eunice Akinye, is creative orientation for the shared world. It is not an implementation shortcut around the existing epistemic boundary.
+The image of Clara in a lunar sanctum, with a nod to Eunice Akinya, is creative orientation for the shared world. It is not an implementation shortcut around the existing epistemic boundary.
 
 ## First-build discipline
 
