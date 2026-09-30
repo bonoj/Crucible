@@ -222,3 +222,12 @@ At the terminal frontier, Clockchain derives and records the owner of the next s
 Turn rules may change prospectively without rewriting earlier scored history. The former two-turn couplet rule is no longer active; current initiative is one Clockchain resolution per next turn.
 
 Cinnabar and Cinnamon does not add an aperture or otherwise change the orbital station's epistemic access.
+
+
+## Render visibility has one authority per object
+
+For an entity carrying both `Transform` and `RenderObject`, `Transform.visible` is the authoritative visibility state. The render-sync system copies that value to the registered Three.js render object every frame. Directly changing `RenderObject.object.visible` for such an entity is therefore transient and must not be used as persistent world or mode state.
+
+Presentation objects that are not independently registered as ECS `RenderObject` entities may own local Three.js visibility. Examples include internal HUD elements, debug footprint lines, chronograph marks, meteor wakes, and other child/helper presentation whose visibility is not synchronized from an ECS transform.
+
+The distinction is ownership, not whether the object happens to be rendered by Three.js: **ECS-owned render visibility changes through ECS state; presentation-owned visibility changes locally.**
