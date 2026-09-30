@@ -545,3 +545,14 @@ This is a hypothesis about reusable machinery, not yet Crucible architecture.
 A turn is an acceptance crossing, not an individual build. All scalar-field, visibility, hill/source, meteor-coupling, directional-flux, watershed, open-boundary, and presentation-density work above remains iteration inside **Turn 1**. Turn 1 crosses only when the strengthened acceptance criterion is met or is explicitly revised from evidence.
 
 The immediate next implementation is therefore one controlled intervention: **continuous free-surface embodiment, unchanged authoritative transport dynamics.**
+
+
+### Turn 1 free-surface specimen — dam break
+
+The human identified a stronger embodiment test: do not ask a slow spring-fed field to prove liquidness. Begin with a dammed river/reservoir and break the dam at startup, with several downstream channels available to receive the release.
+
+This specimen is intentionally finite rather than continuously injected. Terrain constructs an upland impoundment, retaining ridge, shared downstream throat, and multiple competing excavated channels. Transport mass is preloaded into the reservoir as authoritative state. At experiment start the retaining ridge is physically lowered through terrain authority; Transport receives no dam, breach, river, or channel-specific routing instruction.
+
+The point presentation is replaced by a contiguous free-surface mesh derived from wet authoritative cells. Surface elevation is terrain elevation plus a bounded mass-derived depth term. A small procedural vertical perturbation is informed by simulation step and local flux speed; it is presentation only and cannot create wetness, route mass, or change transport state. The existing 🌊 1–25 control now changes rendered surface sampling/tessellation density rather than point count; authoritative dynamics remain unchanged.
+
+**Prediction:** If the existing directional field is adequate for this regime, the finite release should present an advancing body that exits the breach, chooses/splits among downstream channels, pools where terrain demands, and drains at open boundaries. If the mesh instead reveals a spreading/sliding sheet without a credible advancing front or channel behavior, the representation experiment has done its job and a shallow-water/depth-momentum solver is earned. Do not tune the transport law to rescue that outcome before recording it.
