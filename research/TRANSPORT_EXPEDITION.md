@@ -99,6 +99,16 @@ This is intentionally not a CFD solver, shallow-water solver, or particle liquid
 
 **Evidence boundary:** Human target-device observation is now required before adapting the representation.
 
+**Human observation 1:** No blue transport field was perceptible on S0. Human specifically questioned whether the presentation Y coordinate was below the terrain surface.
+
+**Diagnosis:** Y sampling was checked first. S0 terrain is at approximately +0.15 while transport presentation was placed above sampled terrain (~+0.185 or higher); the plinth top at −1.1 was not occluding it. The failure was instead observational: all 2,304 grid cells were rendered at the same point opacity, including dry cells, while wetness produced only a modest color change. The authoritative field could evolve without producing a legible wet/dry distinction.
+
+**Correction:** No physical rule changed. Dry cells are now moved out of presentation; only cells with authoritative mass above the display threshold are visible, positioned with a larger offset above sampled terrain and a stronger blue signal. Candidate correction: `47af650b`.
+
+**Interpretation:** This is the expedition's first observational friction. It does not yet earn a new scientific instrument; it establishes that visualization must expose state contrast before it can serve as evidence.
+
+
+
 ## Why this expedition exists
 
 Crucible is beginning a Scientific Workbench direction: use bite-size applied physical science as real load for a configurable, model-forward laboratory.
