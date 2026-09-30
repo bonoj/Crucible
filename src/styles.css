@@ -4,3 +4,6 @@
 
 /* Uniform DevUI geometry. Every current and future control inherits this. */
 #debug-tools{align-items:center}#debug-tools .dev-group,#debug-tools .dev-controls{align-items:stretch}#debug-tools .dev-control{display:inline-flex;align-items:center;justify-content:center;height:2.1rem;min-width:2.1rem}#debug-tools .dev-readout{display:inline-flex;align-items:center;height:2.1rem}
+
+/* DevUI layout is deterministic: semantic groups do not participate in geometry. */
+#debug-tools{display:grid;grid-template-columns:repeat(7,2.65rem);grid-auto-rows:2.65rem;gap:.28rem;align-items:stretch;justify-items:stretch;max-width:none}#debug-tools .dev-group,#debug-tools .dev-controls{display:contents}#debug-tools .dev-control{box-sizing:border-box;width:100%;height:100%;min-width:0;padding:0;line-height:1}#debug-tools .dev-readout{box-sizing:border-box;width:100%;height:100%;min-width:0;padding:.35rem .45rem;justify-content:center;white-space:nowrap}#debug-tools .dev-readout:first-child{grid-column:span 2}#debug-tools .dev-readout:nth-child(2){grid-column:span 3}@media(max-width:28rem){#debug-tools{grid-template-columns:repeat(7,minmax(0,1fr));width:min(calc(100vw - 1.2rem),25rem);max-width:min(calc(100vw - 1.2rem),25rem)}}
