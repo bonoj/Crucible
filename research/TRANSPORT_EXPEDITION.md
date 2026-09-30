@@ -53,6 +53,22 @@ This is adaptive experimental design in spirit: accumulated evidence determines 
 
 The collaboration should therefore feel inverted from ordinary assistant use: **Clara asks the next experimental question; john returns evidence from the world.**
 
+## Expedition log
+
+### Turn 0 — Science S0 boundary check
+
+**Question:** Does the new Science boundary actually preserve the pre-experiment world while presenting a quiet bench?
+
+**Prediction:** Entering 🔬 hides/suspends the extruder along with the other noisy systems; leaving 🔬 restores the extruder to its pre-entry enabled state.
+
+**Human evidence:** The extruder disappeared on Science entry but did not return on Science exit.
+
+**Result:** FAIL. This was a control-boundary regression, not transport evidence. A prior implementation change had incorrectly removed the extruder's enabled state from the Science snapshot/restore path after interpreting “go away bucket” as permanent removal.
+
+**Correction:** Restored the extruder enabled-state snapshot and exit restoration. The intended invariant is now explicit: the extruder is hidden and suspended while Science is active, and restored when Science exits.
+
+**Next boundary:** Human re-check of the corrected reversible toggle before Transport chooses a physical representation.
+
 ## Why this expedition exists
 
 Crucible is beginning a Scientific Workbench direction: use bite-size applied physical science as real load for a configurable, model-forward laboratory.
