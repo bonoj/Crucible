@@ -36,7 +36,7 @@ export function createExtruderSystem({world,components,THREE,scene,terrain,beari
       if(progress>=1&&e.emitted>=e.total)emissions.splice(i,1);
     }
   }
-  function setEnabled(next){enabled=!!next;root.visible=enabled;if(!enabled){const t=Transform.get(id);if(t)t.velocity.set(0,0,0)}lastNow=null;return enabled}
+  function setEnabled(next){enabled=!!next;const t=Transform.get(id);if(t){t.visible=enabled;if(!enabled)t.velocity.set(0,0,0)}lastNow=null;return enabled}
   function update(now){if(!enabled)return;const t=Transform.get(id);if(!t)return;const dt=lastNow==null?0:Math.min(.1,Math.max(0,(now-lastNow)/1000));lastNow=now;
     const speed=.72,probe=1.05,cruiseTurn=.11,edgeTurn=1.45;
     targetHeading+=cruiseTurn*dt;
