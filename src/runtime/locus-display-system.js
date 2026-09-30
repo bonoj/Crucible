@@ -36,7 +36,12 @@ export function createLocusDisplaySystem({THREE,station}){
   const buttonRim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(buttonW,buttonH)),new THREE.LineBasicMaterial({color:0xdff9ff,transparent:true,opacity:.48,depthWrite:false}));buttonRim.position.z=.002;stowButton.add(buttonRim);
   const arrowShape=new THREE.Shape();arrowShape.moveTo(-.065,.042);arrowShape.lineTo(.065,.042);arrowShape.lineTo(0,-.062);arrowShape.closePath();
   const arrow=new THREE.Mesh(new THREE.ShapeGeometry(arrowShape),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.98,depthWrite:false,side:THREE.DoubleSide}));arrow.position.z=.004;stowButton.add(arrow);
-  let cinnabarPacked=false,cinnabarPacking=false;
+  const logButton=new THREE.Mesh(new THREE.PlaneGeometry(buttonW,buttonH),controlMat.clone());logButton.name="locus-log-export";logButton.position.set(0,innerH*.5-pad-buttonH*1.5-.045,.004);bay.add(logButton);
+  const logRim=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(buttonW,buttonH)),new THREE.LineBasicMaterial({color:0xdff9ff,transparent:true,opacity:.48,depthWrite:false}));logRim.position.z=.002;logButton.add(logRim);
+  const logCanvas=document.createElement("canvas");logCanvas.width=192;logCanvas.height=96;const lctx=logCanvas.getContext("2d");lctx.clearRect(0,0,192,96);lctx.fillStyle="rgba(255,255,255,.98)";lctx.font="bold 34px monospace";lctx.textAlign="center";lctx.textBaseline="middle";lctx.fillText("LOG",96,48);
+  const logTexture=new THREE.CanvasTexture(logCanvas);logTexture.colorSpace=THREE.SRGBColorSpace;
+  const logLabel=new THREE.Mesh(new THREE.PlaneGeometry(buttonW*.72,buttonH*.72),new THREE.MeshBasicMaterial({map:logTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide}));logLabel.position.z=.004;logButton.add(logLabel);
+    let cinnabarPacked=false,cinnabarPacking=false;
   function setCinnabarPacked(packed,packing=false){cinnabarPacked=!!packed;cinnabarPacking=!!packing;arrow.rotation.z=cinnabarPacked?Math.PI:0;controlMat.opacity=cinnabarPacking?.52:.88;return cinnabarPacked}
 
   const tailMat=new THREE.MeshBasicMaterial({color:0x6bcfff,transparent:true,opacity:.06,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
@@ -66,5 +71,5 @@ export function createLocusDisplaySystem({THREE,station}){
     for(const s of samples){const dx=(s.x-fp.center[0])/r,dz=(s.z-fp.center[2])/r,v=(s.height-min)/span,alpha=.28+v*.67,rad=4+v*2.5;ctx.fillStyle=`rgba(205,245,255,${alpha.toFixed(3)})`;ctx.beginPath();ctx.arc(cx+dx*rr,cy+dz*rr,rad,0,Math.PI*2);ctx.fill()}
     ctx.fillStyle="rgba(235,252,255,.96)";ctx.beginPath();ctx.arc(cx,cy,3.5,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(185,232,244,.88)";ctx.font="14px monospace";ctx.fillText(`RELIEF ${(max-min).toFixed(3)}`,22,298);ctx.textAlign="right";ctx.fillText(`FOOTPRINT R ${r.toFixed(2)}`,490,298);ctx.textAlign="left";texture.needsUpdate=true
   }
-  draw(null);return{update:draw,toggle,setOpen,setCinnabarPacked,stowButton,updatePresentation,containsObject(object){for(let o=object;o;o=o.parent)if(o===root)return true;return false},inspect(){return{kind:"locus-evidence-display",presentation:"station-anchored CLARA continuity surface",open,cinnabarPacked,cinnabarPacking,source:"latest recorded aperture observation",privilegedWorldAccess:false}}}
+  draw(null);return{update:draw,toggle,setOpen,setCinnabarPacked,stowButton,logButton,updatePresentation,containsObject(object){for(let o=object;o;o=o.parent)if(o===root)return true;return false},inspect(){return{kind:"locus-evidence-display",presentation:"station-anchored CLARA continuity surface",open,cinnabarPacked,cinnabarPacking,source:"latest recorded aperture observation",privilegedWorldAccess:false}}}
 }
