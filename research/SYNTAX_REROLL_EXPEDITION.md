@@ -758,3 +758,14 @@ This is an executable visual-search instrument, not a request for concept art. P
 ### Consequence
 
 The A–Z greeble deck is not yet executable evidence: candidate `129cc62` failed the repository build and Pages correctly skipped publication. Diagnose the actual source/build failure, repair it without changing the accepted vessel body, teeth, cameras, lighting, portal, or A–Z experiment intent, run the repository-defined verification path, and only then hand the human a preview that is known to exist.
+
+
+## Turn 17 — H wins
+
+### Human
+
+> 🍾. H wins. Nuke the others and the button.
+
+### Consequence
+
+The A–Z visual-search instrument has completed its job. Variant H is accepted as the Lighthugger exterior greeble treatment. Collapse the temporary search machinery into H as ordinary fixed vessel geometry: remove the other 25 variants, deterministic variant generator/state, and the bottom dev-bar variant button/wiring. Preserve the accepted vessel body, teeth, world state, portal, cameras, lighting, and H's exact visible greeble arrangement. The residue should be the chosen ship, not the experiment used to choose it.
