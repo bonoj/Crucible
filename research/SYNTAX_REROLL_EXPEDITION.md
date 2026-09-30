@@ -544,3 +544,28 @@ Implementation shape:
 - ordinary Terrordrome simulation continues while the human is inside rather than becoming a separate saved universe.
 
 The candidate build for source head `6069da17c0492a57e66b6bebcfc72ecf097cf0b7` passed the repository build/test workflow. Stable promotion has **not** occurred. Human perceptual judgment is now the next boundary.
+
+
+## Turn 5 — move the portal off the plinth; the Lighthugger arrives
+
+### Human
+
+> I think the plinth volume eats entire scene? Let's instead put a long lighthugger horizontally above the orbital station, basically an octagonal oneill cylinder. It can just hang there as if it just dropped out of hyperspace. In my head I'm seeing an octagonal version of the dune spacing guild heighliner. So maybe a cored out octagon informed by the plint and orbital station simultaneously? Greeble the shit out of it with tiny bits and bobs in comprehensible areays. Windows can just be tiny warm barely outside cubes. Tapping that takes us inside. Solves the plinth tap swallowing.
+
+### Consequence
+
+The plinth is the wrong entry target because its large raycast volume competes with ordinary world interaction. Revert that semantic choice rather than trying to tune around it.
+
+The Lighthugger earns an exterior body in the Terrordrome:
+
+- a long horizontal octagonal vessel suspended above the orbital/continuity station;
+- visually related to both the Crucible plinth and the orbital station without being either;
+- a cored/hollow octagonal section rather than a solid tube;
+- monumental heighliner-like massing, treated as inspiration rather than replica;
+- dense but comprehensible greeble arrays: repeated service blocks, rails, spars, antennae, docking/utility clusters, and panel bands rather than random visual noise;
+- tiny warm window cubes barely proud of the hull to establish scale;
+- it may simply hang there as an unexplained arrival, as though it has just dropped out of hyperspace;
+- tapping the vessel, not the plinth, enters the existing interior scene;
+- plinth taps return to their prior Crucible behavior and no longer act as a scene-wide portal.
+
+The exterior is an entrance handle and world participant, not a requirement to explain propulsion, hyperspace, crew, scale physics, or interior/exterior metric consistency yet.
