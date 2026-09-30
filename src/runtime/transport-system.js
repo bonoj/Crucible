@@ -7,12 +7,12 @@ export function createTransportSystem({THREE,scene,terrain}){
   sampleGround();
   const geometry=new THREE.BufferGeometry(),positions=new Float32Array(COUNT*3),colors=new Float32Array(COUNT*3),sizes=new Float32Array(COUNT);
   geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));geometry.setAttribute("color",new THREE.BufferAttribute(colors,3));
-  const material=new THREE.PointsMaterial({size:.18,vertexColors:true,transparent:true,opacity:.82,depthWrite:false,sizeAttenuation:true});
+  const material=new THREE.PointsMaterial({size:.28,vertexColors:true,transparent:true,opacity:.9,depthWrite:false,sizeAttenuation:true});
   const points=new THREE.Points(geometry,material);points.name="transport-surface-field";points.frustumCulled=false;scene.add(points);
   function refreshPresentation(){
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=index(x,z),h=ground[k],m=mass[k],o=k*3;
       const wet=m>1e-5;positions[o]=worldX(x);positions[o+1]=wet&&Number.isFinite(h)?h+.08+Math.min(.24,m*.08):-100;positions[o+2]=worldZ(z);
-      const q=Math.min(1,m*.7);colors[o]=.12+.08*q;colors[o+1]=.52+.36*q;colors[o+2]=.82+.18*q;
+      const q=Math.min(1,Math.sqrt(m*.9));colors[o]=.08+.3*q;colors[o+1]=.38+.58*q;colors[o+2]=.7+.3*q;
     }
     geometry.attributes.position.needsUpdate=true;geometry.attributes.color.needsUpdate=true;points.visible=enabled;
   }
