@@ -20,6 +20,7 @@ export function createDevUI({mount,statusMount,build,actions}){
       {id:"science",text:"🔬",label:"Toggle Science mode",on:actions.science},
       {id:"log",text:"LOG",label:"Export locus observation log",on:actions.exportLog},
       {id:"time",text:"1×",label:"Simulation speed 1 times",on:actions.timeScale},
+      {id:"save",text:"SAVE",label:"Save terrain state",on:actions.terrainEvidence},
       {id:"refresh",text:"↻",label:"Refresh",on:actions.refresh}
     ]}
   ];
