@@ -18,6 +18,7 @@ export function createDevUI({mount,statusMount,build,actions}){
     ]},
     {kind:"controls",items:[
       {id:"science",text:"🔬",label:"Toggle Science mode",on:actions.science},
+      {id:"terrain-next",text:"NEXT",label:"Next deterministic terrain",on:actions.terrainNext},
       {id:"log",text:"LOG",label:"Export locus observation log",on:actions.exportLog},
       {id:"time",text:"1×",label:"Simulation speed 1 times",on:actions.timeScale},
       {id:"save",text:"SAVE",label:"Save terrain state",on:actions.terrainEvidence},
