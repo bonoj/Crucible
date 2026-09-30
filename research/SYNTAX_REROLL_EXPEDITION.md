@@ -784,3 +784,16 @@ The A–Z visual-search instrument has completed its job. Variant H is accepted 
 ### Consequence
 
 Treat CI success as insufficient: the published H candidate has a runtime regression before Three can create its WebGL renderer. Diagnose the candidate against the last known-good executable rather than modifying H blindly. Preserve H only if it is not the cause; restore executable runtime first. Do not promote.
+
+
+## Turn 19 — tooth seam and the handoff loop
+
+### Human
+
+> It's good now. H has been properly applied. These teeth are seriously stubborn fuckers, though. I deliberately left this for last. They don't marry the hull yet and they are now rotated too far forward. They were forward slashes. Then they became back slashes. That was perfect. At that point the proper fix was to lower their mid point down until base meets hull. This is actually quite difficult, but we're mostly interested in exploring the seem not building semantic blender. Digital artists can receive crude mockups from whatever a company's hierarchy looks like and then they rich basic geometry to work from. And this can all happen lightning fast because it's basically just talk to model, wait 2 min, inspect, then slack the person who cares. They can refresh their browser and dive in in whatever their toolchain looks like.
+
+### Consequence
+
+H is accepted. The tooth correction is now precisely constrained by the previously accepted backslash state: do not alter tooth rake, endpoints relative to one another, dimensions, or vocabulary. Recover the accepted backslash geometry and translate each tooth as a rigid piece toward the hull until its base seats. The earlier attempt changed an endpoint and therefore changed rotation; that was the wrong degree of freedom.
+
+The larger evidence is the seam, not a bid to build semantic Blender. A model can rapidly turn conversational intent into crude inspectable geometry; a specialist can then receive that executable mockup through the organization's normal handoff path and enrich it in their native toolchain. The interesting loop is intent → model reform → browser inspection → ordinary team handoff → specialist refinement, with minutes between iterations and no requirement that the conversational surface become a full DCC editor.
