@@ -69,7 +69,6 @@ export function createTerrainGenesis({terrain}){
     terrain.rebuildAll();
     return{kind:"heightmap-genesis",source,seed:worldSeed,index:recipes.indexOf(recipe),recipe:{id:recipe.id,label:recipe.label,family:recipe.family??null,ops:recipe.ops.map(o=>({...o}))},heightmap:{grid:[nx,nz],min:Math.min(...height),max:Math.max(...height),values:[...height]},passes};
   }
-  }
   function run(index=0,worldSeed=741){const recipe=recipes[((index%recipes.length)+recipes.length)%recipes.length];return execute(recipe,worldSeed,"authored");}
   function runSeed(seed=741){const recipe=procedural.generate(seed|0);return execute(recipe,seed|0,"seed");}
   return{run,runSeed,generateRecipe:seed=>procedural.generate(seed|0),families:procedural.families,recipes:()=>recipes.map(r=>({id:r.id,label:r.label,ops:r.ops.map(o=>({...o}))}))};
