@@ -7,7 +7,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const nh=new Float32Array(K),nhu=new Float32Array(K),nhv=new Float32Array(K);
   const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
   function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
-  let enabled=false,lastNow=null,acc=0,steps=0,totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25;
+  let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25;
   let sources=[{x:0,z:0,rate:.9}];
 
   const geometry=new THREE.BufferGeometry();
@@ -130,7 +130,10 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
     acc+=Math.min(.05,Math.max(0,(now-lastNow)/1000));lastNow=now;
     sampleBed();
-    let guard=0;while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
+    let guard=0,minDt=Infinity,maxDt=0;
+    const probeStart=performance.now();
+    while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
+    probeFrame={substeps:guard,minDt:Number.isFinite(minDt)?minDt:0,maxDt,remainingAcc:acc,solveMs:performance.now()-probeStart};
     // Diagnostic: presentation reconstruction intentionally frozen while the solver runs.
     // If FPS returns, refresh() is the dominant cost and will be replaced with persistent geometry.
   }
@@ -151,7 +154,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     return w>1e-6?{depth:depth/w,surface:eta/w,u:u/w,v:v/w}:null;
   }
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
-  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps}}
+  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
   cacheBoundary();sampleBed();refresh();
   return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface};
 }
