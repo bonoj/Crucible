@@ -67,7 +67,15 @@ The collaboration should therefore feel inverted from ordinary assistant use: **
 
 **Correction:** Restored the extruder enabled-state snapshot and exit restoration. The intended invariant is now explicit: the extruder is hidden and suspended while Science is active, and restored when Science exits.
 
-**Next boundary:** Human re-check of the corrected reversible toggle before Transport chooses a physical representation.
+**Follow-up evidence:** The extruder no longer broke across the toggle, but it remained visible throughout Science mode.
+
+**Diagnosis:** The suspension state was correct; visibility was being written at the wrong authority layer. The extruder changed its Three.js root directly, but Crucible's render-sync system authoritatively derives render visibility from the entity's `Transform.visible` every frame. Render sync therefore restored the root to visible immediately.
+
+**Correction 2:** Extruder suspension now changes `Transform.visible`. Rendering follows authoritative ECS state instead of competing with it.
+
+**Earned workbench lesson:** For ECS-rendered entities, experimental isolation must operate on authoritative entity state. Direct presentation mutation is transient when render synchronization owns the corresponding property.
+
+**Next boundary:** Human re-check: extruder must disappear while 🔬 is active and return when 🔬 exits. Transport representation selection remains blocked until S0 itself is trustworthy.
 
 ## Why this expedition exists
 
