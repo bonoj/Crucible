@@ -110,6 +110,8 @@ export function createTerrainSystem({THREE,scene}){
     const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);
     return{magnitude:e,radius,depth,rim,centralUplift:peakStrength};
   }
+  function snapshot(){return{seed,field:field.slice()}}
+  function restore(state){if(!state?.field||state.field.length!==field.length)throw new Error("Invalid terrain snapshot");seed=state.seed|0;field.set(state.field);rebuild();rebuildSupport();return seed}
   function reset(){field.set(initial);rebuild();rebuildSupport();}
   function randomize(nextSeed=seed+1){synthesize(nextSeed);rebuild();rebuildSupport();return seed;}
   function collideSphere(position,velocity,radius,restitution=.28,drag=.86){if(position.y-radius>=APPARATUS_TOP||position.y+radius<=APPARATUS_BOTTOM)return false;const b=boundary(position.x,position.z),minQ=APPARATUS_APOTHEM+radius;if(b.q>=minQ||b.q<=APPARATUS_APOTHEM)return false;const push=minQ-b.q;position.x+=b.nx*push;position.z+=b.nz*push;const vn=velocity.x*b.nx+velocity.z*b.nz;if(vn<0){velocity.x-=(1+restitution)*vn*b.nx;velocity.z-=(1+restitution)*vn*b.nz}velocity.x*=drag;velocity.z*=drag;return true;}
@@ -121,5 +123,5 @@ export function createTerrainSystem({THREE,scene}){
   }
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();rebuildSupport();
-  return{mesh,apparatus,field,rebuild,impact,excavate,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,excavate,snapshot,restore,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
