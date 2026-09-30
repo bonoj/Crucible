@@ -1,4 +1,4 @@
-export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,maxBearings=1000000}){
+export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,water=null,maxBearings=1000000}){
   const BALL_R=.055,PG=96,MAX_RENDERED=180000,PROJECTION_GRID=64,PROJECTION_MIN=-10,PROJECTION_SPAN=20;
   const projection=new Uint32Array(PROJECTION_GRID*PROJECTION_GRID);
   const bx=new Float32Array(maxBearings),by=new Float32Array(maxBearings),bz=new Float32Array(maxBearings);
@@ -27,6 +27,27 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       bvy[i]+=g*dt;bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
+      // Bearings consume water as a local material interface; water knows nothing about bearings.
+      // A bearing is fully supported by buoyancy when its centre is one radius below the free
+      // surface. Partial submergence blends continuously into that support.
+      const ws=water?.sampleState?.(bx[i],bz[i]);
+      if(ws&&ws.depth>0){
+        const bottom=by[i]-BALL_R,sub=THREE.MathUtils.clamp((ws.surface-bottom)/(BALL_R*2),0,1);
+        if(sub>0){
+          // Neutral-ish bearing: full submergence cancels gravity. A little damping gives the
+          // free surface something that can actually settle instead of perpetual pogo motion.
+          bvy[i]+=(-g)*sub*dt;
+          const verticalDamp=Math.exp(-3.2*sub*dt),horizontalDamp=Math.exp(-1.15*sub*dt);
+          bvy[i]*=verticalDamp;bvx[i]*=horizontalDamp;bvz[i]*=horizontalDamp;
+          // Water momentum is authoritative horizontal transport; drag approaches it smoothly.
+          const follow=1-Math.exp(-2.4*sub*dt);
+          bvx[i]+=((ws.u??0)-bvx[i])*follow;bvz[i]+=((ws.v??0)-bvz[i])*follow;
+          // Surface restoring force makes a bearing care about the reconstructed free-surface Y
+          // without making the visible mesh physical authority.
+          const floatY=ws.surface-BALL_R*.18,dy=floatY-by[i];
+          bvy[i]+=dy*7.5*sub*dt;
+        }
+      }
       contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
       const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
       const qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;
@@ -64,5 +85,5 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   function clear(){count=0;pile.fill(0);projection.fill(0);mesh.count=0;mesh.instanceMatrix.needsUpdate=true}
   function restore(state){clear();if(!state)return 0;count=Math.min(state.count??0,maxBearings);bx.set(state.bx.subarray(0,count));by.set(state.by.subarray(0,count));bz.set(state.bz.subarray(0,count));bvx.set(state.bvx.subarray(0,count));bvy.set(state.bvy.subarray(0,count));bvz.set(state.bvz.subarray(0,count));return count}
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count,waterCoupling:!!water})};
 }
