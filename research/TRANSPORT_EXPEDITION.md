@@ -117,6 +117,12 @@ This is intentionally not a CFD solver, shallow-water solver, or particle liquid
 
 This changes the specimen's initial geometry, not the transport law. The hill is constructed through a new terrain-owned `raise` mutation so its consequence is available to every system through the same authoritative terrain seams.
 
+**Human observation 3:** PASS. With the continuous source on raised terrain, the displayed field has a definite flow character across multiple viewing angles. Source, descent, and spreading are perceptible as an ongoing process rather than merely a wet domain.
+
+**Interpretation:** Persistent elevation head repaired the specimen without changing the transport law. The representation now supports a continuous perturbation test: deform downstream terrain while fresh material continues to arrive from the source.
+
+**Prediction before next observation:** A meteor crater placed downstream on the slope or just beyond its foot should continuously reorganize incoming mass around and/or into the depression. If the visible field does not develop a persistent concentration/path response, stronger density presentation is insufficient and a dedicated measurement instrument is earned.
+
 
 
 ## Why this expedition exists
