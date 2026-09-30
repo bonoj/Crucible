@@ -725,3 +725,20 @@ The representations are comparative probes, not six accepted fluid solvers. Shar
 The legacy sea also remains semantically reachable (`show/hide/toggle/inspect`) without a UI affordance until an accepted fluid representation earns its removal.
 
 **Human evidence boundary:** use the same recognizable terrain intervention across A–F where practical. Place 💧 or 🩸, observe whether the representation responds to bowls, slopes, barriers, and carved escape paths, and report perceptual/causal differences without needing to diagnose implementation. This comparison decides which candidates deserve deeper falsification, recombination, or deletion.
+
+
+### Human crossing — A–F failed to produce six representations
+
+Target-device review falsified the first comparative bucket as an n-representation experiment. The visible/causal families did not separate as intended:
+
+- A reads as the scalar field already known.
+- B does not read as a distinct representation; it still reads as scalar field.
+- C presents a line of discrete balls/parcels whose motion can swirl convincingly, but this does not establish fluid behavior.
+- D/F did not establish perceptually distinct useful behavior in review; the overall family continued to read as scalar field rather than different material hypotheses.
+- E reads as scalar field plus a line of balls behaving similarly to C.
+
+Code inspection explains the collapse. A, B, C, and E share the same 48×48 mass state and surface presentation; B and E reuse the same advective transport path as A, and C projects velocity before returning material to that same path. F changes local transfer law but remains represented through the same scalar mass sheet. The experiment therefore varied update laws inside a shared representation more than it varied representation itself.
+
+**Result:** the A–F labels overstate executable diversity. Do not tune or cosmetically differentiate these six. Preserve A as the scalar-carrier bucket candidate. Preserve C's swirling motion only as evidence that a velocity/parcel presentation can expose coherent circulation; it is not accepted as liquid. E currently adds no earned representation beyond field + C-like tracers.
+
+**Method correction:** future n-representation boards must differ at the ontology/state/presentation level strongly enough that a human can identify the causal hypothesis without reading its label. Parameter changes or alternate update laws behind the same state and renderer do not count as separate representations.
