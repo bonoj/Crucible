@@ -614,3 +614,52 @@ The first target remains hydraulically useful but is evaluated dry. Construct a 
 10. Compare candidates against the same validated substrate where scientifically appropriate.
 
 This creates a reusable experimental asset: **geology first, bucket of liquids second.** The terrain becomes controlled load; liquid candidates become replaceable hypotheses.
+
+
+## Candidate A annotation — scalar carrier field
+
+The first Transport representation remains in the material/transport bucket rather than being discarded or continuously modified until it passes a liquid test.
+
+**Executable evidence already earned:** Candidate A stores a conserved scalar quantity over space, couples its evolution to sampled terrain, carries persistent directional flux, supports sources and finite initialization, accounts for material leaving open boundaries, and can expose the authoritative state independently from presentation. Human observation established that it can produce recognizable directional flowing behavior and that terrain mutation can alter that behavior. It has not earned the claim that it is a liquid solver.
+
+A useful conceptual correction is to treat its scalar quantity as a **generic carried quantity** rather than intrinsically as water. Plausible future loads include concentration, fog/smoke or atmospheric density, dye, pollutant, suspended material, temperature-like transported quantities where the governing law is appropriate, and multiple overlapping species fields. These are hypotheses for later experiments, not capabilities established by the present implementation.
+
+The representation may also generalize from a surface field to overlapping volumetric scalar fields. Multiple scalar quantities can coexist at one spatial location while a vector field supplies directional transport. Rich authoritative field state need not be rendered as particles or voxels; slices, volumes, iso-surfaces, sparse tracers, or physical objects responding to the field can provide evidence.
+
+### Discrete matter crossing — bearings as probes and cargo
+
+Crucible's CPU-authoritative ball bearings suggest a particularly strong future crossing between continuous fields and discrete rigid matter. A bearing can sample local continuous state while retaining its own mass, inertia, gravity, collision, and trajectory. A carrier field should exert forces rather than simply overwrite bearing velocity. This creates experimentally useful distinctions between a passive tracer and a massive transported object.
+
+Potential phenomena include buoyancy-like response, drag, drift, settling, collection, stranding, escape, and transport of particulate cargo. The bearings can simultaneously serve as physical participants and unusually legible probes of an otherwise invisible field. None of those couplings are implemented or accepted yet; their value is that they give Candidate A concrete future falsification targets.
+
+This also suggests a reusable workbench boundary:
+
+**continuous field state ↔ force/momentum exchange ↔ discrete rigid matter**
+
+### Where scalar fields stop being enough
+
+The thought experiment “fire a ball bearing at jello” exposes a useful boundary. A scalar occupancy/density field can say how much material exists locally, but jello must retain deformation history/reference structure and support shear/restoring stress. A credible impact requires momentum exchange, local compression/shear, propagation through the medium, rebound/oscillation, and potentially damage or fracture. That requires constitutive/deformation state beyond a scalar carrier field.
+
+Candidate future material families may therefore include elastic or viscoelastic continua, lattice/soft-body methods, XPBD-like interactive formulations, MPM-like grid/material-point methods, granular representations, and specialized fluid/ice/lava laws. Do not collapse these into one universal solver merely because they can share spatial-field, instrumentation, provenance, or semantic-control machinery.
+
+A useful future apparatus is consequently **same bearing, same launcher, same specimen geometry, different material law**. Fog, water, viscous liquid, gel, granular material, and ice should distinguish themselves through executable consequence rather than labels. This is a direction, not the current Transport task.
+
+### Active edge returns to dry geology
+
+Candidate A is now parked. Do not tune its liquid appearance or dynamics while the geologic substrate remains inadequate.
+
+The immediate work returns to the dry terrain prerequisite established above. The next executable specimen should earn a small hydraulic-geology vocabulary from sampled height relationships before any transport candidate is introduced. Start with one coherent watershed rather than geological diversity for its own sake.
+
+Minimum target relationships:
+
+- an upland divide separates drainage directions;
+- an upstream catchment descends into a recognizable valley;
+- a thalweg is lower than its adjacent banks along sampled cross-sections;
+- tributary branches descend toward a confluence;
+- the main channel continues downhill from confluence to an open plinth outlet;
+- a basin, if present, has a measurable controlling saddle/outlet elevation;
+- later, a dam can be placed transversely across the validated valley and its breach can become the controlling escape path.
+
+The next crossing is therefore not “does it look geological?” It is:
+
+**Can Crucible construct a dry terrain whose sampled elevations demonstrate a watershed capable of constraining later transport?**
