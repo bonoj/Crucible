@@ -44,7 +44,7 @@ export function createLighthuggerExterior({THREE,scene}){
     const a=Math.PI/8+i*Math.PI/4;
     const radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
     const inward=new THREE.Vector3(0,-end,0);
-    const dir=radial.clone().multiplyScalar(-.48).add(inward.multiplyScalar(.88)).normalize();
+    const dir=radial.clone().multiplyScalar(-.72).add(inward.multiplyScalar(.70)).normalize();
     const toothLength=.62;
     const b=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,toothLength,5),brass);
     b.position.copy(radial).multiplyScalar(1.38);b.position.y=end*length*.515;
