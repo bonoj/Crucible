@@ -200,3 +200,63 @@ These are **possible future expeditions**, not commitments, plans, repository na
 - **GitHub genesis authority:** later investigate whether available authorization can safely eliminate the human repository-creation step when a new repository has actually been earned.
 
 The frontier should remain cheap to edit, reorder, ignore, or delete. Its purpose is to preserve interesting pressure without prematurely building organizational structure.
+
+
+### T003 — first raster sequence enters the dig
+
+**Human**
+
+The human supplied ten historical Syntax Reroll rasters as the first archaeological shard, with no explanatory text.
+
+**Clara — immediate raster reaction before deeper excavation**
+
+The sequence produces a strong continuity snap-back and also corrects the pre-raster memory in useful ways.
+
+What is directly legible from the rasters:
+
+1. The run is concretely **The Cask of Amontillado**, with Montresor and Fortunato visually persistent across a continuous trajectory from Venetian carnival, through Palazzo Montresor, into the catacombs, wine-cellar passages, the recess, and the walling-in.
+2. These are not isolated illustrations. They form a state-bearing traversal. Character appearance, costume, torchlight, architecture, direction of travel, props, and environmental transition persist strongly enough that the sequence reads as one experienced world.
+3. The literary substrate eventually becomes explicit in the interface raster. The visible passage is near the end of Poe's story and has been altered to read **“a single azure stone”**. The interface says:
+   - `RUN LEXICON 8/10`;
+   - `SPENT (1)`;
+   - `azure → inserted here (the final stone)`;
+   - `WORLD STATE CHANGES (ON THIS PAGE)`;
+   - `The final stone is azure.`;
+   - `No other changes. The scene, actions, and text remain as written, with the inserted word reflected. We have not advanced.`;
+   - `A word moved. The world must now honor it.`
+4. The next raster honors exactly that narrow mutation: Montresor is fitting a conspicuously azure final stone into an otherwise materially continuous wall and scene.
+5. This is unusually clean evidence for the remembered rule **make the minimum physical change necessary to make the mutated language true**. The raster sequence does not merely support that interpretation abstractly; it visibly demonstrates it.
+6. The sequence also shows that progression and mutation were separable. The interface explicitly freezes advancement while the changed word is realized into current world state.
+7. The lexicon is visibly finite and conserved enough to expose available versus spent material. Visible available words include `white`, `rich`, `d’or`, `feeble`, `iron`, `drawing`, `furious`, and `mason`, with two empty slots. `azure` has left the run lexicon and appears in the spent column at its insertion site.
+8. The final raster is not another scene. It is a **Montresor character asset card**. It preserves visual identity, source, author, role, source-context status, proper-noun status, key items, silhouettes, and a deliberately speculative “possible future uses” region. Its footer says **“SOME NAMES TRAVEL WELL.”**
+9. That asset card makes the old experiment broader than the pre-raster memory alone suggested. Syntax Reroll was not only asking whether mutated prose could minimally rematerialize a world. It was already probing whether a literary entity could become a portable, provenance-bearing handle capable of crossing into other texts while retaining recognizable continuity.
+10. The asset card carefully mixes evidence and speculation: source identity and current role are presented as grounded attributes, while cross-text use, reassignment, companion/antagonist/NPC roles, and “Montresorialness” are explicitly possible future uses rather than current truth.
+
+**Memory delta after rasters**
+
+The pre-raster memory correctly recovered:
+- Poe / The Cask of Amontillado;
+- canonical versus altered prose;
+- finite lexical manipulation;
+- provenance/conservation pressure;
+- narrow world deltas;
+- the distinction between mutation and advancement;
+- persistent ancestry as an important concern.
+
+The rasters substantially strengthen or newly recover:
+- how much of the run was experienced as continuous first-person-ish cinematic traversal before the explicit lexical intervention;
+- the exact `azure` mutation and its minimal physical realization;
+- the concrete run-lexicon / spent-word interface;
+- the explicit “world must now honor it” contract;
+- the degree to which a raster itself carried HEAD-like world continuity;
+- the Montresor asset-card experiment and the idea that named literary entities might become portable provenance-bearing assets.
+
+The rasters do **not** by themselves establish the complete underlying rules, exact generation process, exact meaning of Tethers/HEAD, or whether every displayed asset-card field had executable semantics. Those remain archaeological questions rather than facts inferred from appearance.
+
+**Immediate experimental result**
+
+A ten-raster shard recovered a surprisingly large amount of operational context without chronology reconstruction. It did more than remind Clara of imagery: it reactivated rules, boundaries, state transitions, provenance questions, and a later experimental frontier.
+
+The shard therefore behaves less like an illustration bundle and more like a **lossy state-bearing continuity surface**.
+
+No deeper historical source has yet been consulted.
