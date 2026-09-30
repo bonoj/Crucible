@@ -803,7 +803,7 @@ The larger evidence is the seam, not a bid to build semantic Blender. A model ca
 
 ### Human
 
-> So now we can finally finish this. The last stone at the top of the pyramid. This image tells you what a thousand words cannot. This is why semantic blender can work if paired with a mutlimodal model.
+> So now we can finally finish this. The last stone at the top of the pyramid. This image tells you what a thousand words cannot. This is why semantic blender can work if paired with a multimodal model.
 
 ### Evidence
 
