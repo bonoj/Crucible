@@ -12,7 +12,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:true,opacity:.72,roughness:.18,metalness:0,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
 
-  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)bed[idx(x,z)]=terrain.worldBedHeight(wx(x),wz(z))}
+  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)bed[idx(x,z)]=terrain.groundHeight(wx(x),wz(z))}
   const valid=k=>Number.isFinite(bed[k]);
   function cell(x,z){return{x:THREE.MathUtils.clamp(Math.floor((x-MIN)/DX),0,N-1),z:THREE.MathUtils.clamp(Math.floor((z-MIN)/DX),0,N-1)}}
   function addWater(q,x,z){if(!(q>0))return 0;const c=cell(x,z),k=idx(c.x,c.z);if(!valid(k))return 0;h[k]+=q/(DX*DX);totalInjected+=q;return q}
@@ -83,7 +83,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
     return{depth,surface:w>1e-8?eta/w:NaN};
   }
-  function supported(x,z){return Number.isFinite(terrain.worldBedHeight(x,z))}
+  function supported(x,z){return Number.isFinite(terrain.groundHeight(x,z))}
   function supportBoundary(a,b){
     let lo={...a},hi={...b},loIn=supported(lo.x,lo.z);
     if(loIn===supported(hi.x,hi.z))return loIn?hi:lo;
