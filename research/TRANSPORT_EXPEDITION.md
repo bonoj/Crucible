@@ -75,7 +75,13 @@ The collaboration should therefore feel inverted from ordinary assistant use: **
 
 **Earned workbench lesson:** For ECS-rendered entities, experimental isolation must operate on authoritative entity state. Direct presentation mutation is transient when render synchronization owns the corresponding property.
 
-**Next boundary:** Human re-check: extruder must disappear while 🔬 is active and return when 🔬 exits. Transport representation selection remains blocked until S0 itself is trustworthy.
+**Human re-check:** PASS. The extruder disappears during 🔬 and returns on exit.
+
+**Turn 0 result:** S0 is accepted as a trustworthy reversible laboratory boundary for the purposes of beginning Transport.
+
+**Refinement:** Science suppresses autonomous meteor weather, not the meteor instrument itself. Deliberately called meteors remain available as controlled perturbations while 🔬 is active. This preserves the distinction between removing ambient noise and removing experimental capability.
+
+**Next:** Choose the first authoritative Transport representation.
 
 ## Why this expedition exists
 
