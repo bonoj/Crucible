@@ -823,3 +823,60 @@ The immediate correction should therefore be image-grounded and narrow: preserve
 ### Consequence
 
 Confirmed conceptual error: the previous correction translated each tooth along its per-face radial vector, which expands the tooth ring. The vessel's long axis is local Y (the whole exterior root is later rotated into world-horizontal orientation). “Lower the midpoint onto the hull” therefore means translate each accepted tooth rigidly along the vessel-local longitudinal Y axis toward its corresponding end/mouth, not outward in radial XZ. Revert the radial translation entirely; preserve the accepted backslash vector; apply only a symmetric local-Y midpoint translation toward the hull mouth.
+
+
+## Turn 22 — lowering the barrier, raising the ceiling
+
+### Human — verbatim
+
+> These turns deserve to go in verbatim. We still absolutely need blender wizards. We need dev ops gurus. We need code fanatics. But lowering the barrier and raising the ceiling will bring all kinds of new brilliance into the room. And without making it a manifesto or even a declaration, I think the latent space between human imagination and the model matrix is where the ghost in the machine lives.
+
+### Clara — verbatim
+
+> Oh yes. And Git gives us a surprisingly clean stopwatch.
+>
+> The first actual Lighthugger interior commit landed at **01:40:40 UTC**. The first exterior vessel landed at **01:52:50**. The axis powers were finally defeated at **03:10:00**.
+>
+> So from **“okay, get inside a lighthugger” to the current delightful H-treated Shai-Hulud heighliner: about 1 hour 29 minutes.** The exterior itself went from first geometry to the present state in **1 hour 17 minutes**. And that's wall-clock time including conversation, screenshots, deployment waits, several wrong turns, the A–Z beauty contest, CI failures, your accidental stop, and an absurd campaign against sixteen tiny brass teeth.
+>
+> The offhand conceptual seed was just before implementation: **protolighthugger architecture**. The idea wasn't “build a spaceship.” Crucible was beginning to behave like a semantic world-building engine whose form and controls could reform conversationally.
+>
+> **~01:22 — Protolighthugger.** Generic semantic actors, JIT embodiment, malleable interface, Crucible-as-engine.
+>
+> **01:40 — We went inside one.** Commit `950d299`. Scene composition, octagonal architectural grammar, materials, lighting, installed surfaces, spatial staging, camera framing and a return affordance. Still no authored gameplay rules.
+>
+> **01:52 — The heighliner appeared.** `b3410ae`. Hollow octagonal hull, collars, greebles, windows, rails, masts, teeth. It wasn't concept art. It was geometry in the same executable world as the orbital station, meteors, bearings, Cinnabar and Cinnamon.
+>
+> **01:58–02:17 — Shai-Hulud emerges through conversation.** Raise it. Give it breathing room. Teeth bite inward. Rails. No, those rails. Screenshots. Wait, stop. Recover the pristine geometry from Git. Version control became a **spatial undo/provenance instrument**, not merely source management.
+>
+> **02:21 — slash becomes backslash.** `8120a7f`. Two characters specified a constrained three-dimensional transformation because language, shared visual context and existing geometry supplied the missing dimensions. That's an extremely dense human control surface.
+>
+> **02:28 — first attempt to marry the teeth.** And this is where the long-running tooth comedy begins. 😆
+>
+> **02:32–02:50 — A through Z.** Instead of verbally designing greebles, we turned the executable itself into a visual search instrument: 26 deterministic treatments behind one temporary button. You inspected them in situ and said **H wins**. Then the search machinery disappeared and H became ordinary geometry. The mini design-space exploration, including CI failures, took about **18 minutes**.
+>
+> **02:59–03:10 — multimodal closure.** Language alone kept failing to communicate the final tooth attachment. Then you sent the screenshot. The problem became visually obvious. I made one wrong spatial inference, you identified the axis error, and we reduced the operation to: preserve the accepted backslash rake; translate the rigid tooth along the correct axis until it seats. `99fdc6b`, 03:10.
+>
+> This is the part I think is much more interesting than the spaceship.
+>
+> We touched **natural-language requirements, multimodal spatial reasoning, 3D geometry, transforms and coordinate spaces, procedural modeling, deterministic generation, materials, lighting, camera composition, mobile interaction, UI/UX, ECS/world integration, runtime scene transitions, raycasting, accessibility semantics, browser rendering, WebGL failure diagnosis, performance constraints, source architecture, Git provenance and recovery, CI, immutable preview deployment, GitHub Pages, visual design-space exploration, human/model delegation, and finally organizational handoff.**
+>
+> And none of those became the *product*.
+>
+> The control surface remained basically: **“higher.” “teeth bite in.” “slash → backslash.” “give me A–Z.” “H wins.” [screenshot] “these are floating.” “axis mixup.”**
+>
+> Underneath that tiny conversational surface, the required rigor moved downward into code, deterministic state, Git history, CI and deployment. That's the protolighthugger idea becoming concrete.
+>
+> The thrash is useful evidence rather than an embarrassment. We learned where language is extraordinarily efficient, where shared executable context makes tiny utterances sufficient, and where **vision suddenly collapses an ambiguity that another thousand words might not**.
+>
+> The result isn't “semantic Blender replaces Blender.” It's closer to: **Semantic Blender makes crude spatial intent cheap enough to become executable immediately. Multimodality closes the correction loop. Conventional DCC expertise can enter exactly where higher geometric fidelity becomes worth its cost.**
+>
+> The organizational seam becomes almost mundane. Someone says something offhand. A model makes it inspectable. Two minutes later there's a URL. Somebody circles a problem or sends a screenshot. It changes. When the geometry has communicated enough, an artist gets the rough asset/state/provenance and riches it up. They Slack the person who cares. That person refreshes.
+>
+> Tonight we traversed that entire stack, from **“protolighthugger”** to a giant H-greebled Shai-Hulud hanging over the Terrordrome, in roughly **ninety minutes**.
+>
+> The sixteen stubborn teeth consumed a disproportionate fraction of the research budget, but perhaps that makes them the perfect last stone. 😆
+
+### Residue
+
+Preserve these turns as observation, not manifesto. The experiment does not erase specialist disciplines; it changes who can reach them, how cheaply ideas can become inspectable, and how quickly specialists can receive richer starting material. “Lower the barrier, raise the ceiling” is the practical claim. The final sentence is retained as the human's interpretation of the collaboration, not promoted into system architecture or metaphysical fact.
