@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Crucible — a conversationally grown physical world."><title>Crucible</title>
-<style>*{box-sizing:border-box}html,body,#world{margin:0;width:100%;height:100%;overflow:hidden}body{height:100dvh;background:#342820;color:#ead9bb;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}#world{position:fixed;inset:0;touch-action:none;overscroll-behavior:none}#world canvas{display:block;width:100%;height:100%}#mark{position:fixed;left:max(.7rem,env(safe-area-inset-left));top:max(.7rem,env(safe-area-inset-top));padding:.45rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font-size:11px;letter-spacing:.06em;pointer-events:none}#debug-tools{position:fixed;z-index:10;right:max(.6rem,env(safe-area-inset-right));bottom:max(.6rem,env(safe-area-inset-bottom));display:flex;align-items:end;gap:.45rem;font:12px/1.2 ui-monospace,monospace}#fps-counter,#build-id{padding:.42rem .5rem;border:1px solid #d1a36b33;border-radius:.4rem;background:#2b211bdd;color:#ead9bb}#debug-refresh,#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#export-locus-log,#time-scale,#impact-buckets button{min-height:2.1rem;padding:.4rem .65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font:inherit}#impact-buckets{display:flex;gap:.18rem}#impact-buckets button{min-width:2rem;padding:.4rem}#impact-buckets button.active{outline:1px solid #ead9bb;background:#5a4030}#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#debug-refresh,#export-locus-log,#time-scale{font-size:1rem}#toggle-water.active{outline:1px solid #bfe9ee;background:#304c52}#diagnostics{position:fixed;z-index:20;left:.7rem;right:.7rem;bottom:.7rem;max-height:45vh;overflow:auto;margin:0;padding:.8rem;border:2px solid #9f3e2e;background:#2a1713;color:#ffd9bd;white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace}@media(max-width:28rem){#debug-tools{max-width:calc(100vw - 1.2rem);flex-wrap:wrap;justify-content:end}}</style></head>
+<style>*{box-sizing:border-box}html,body,#world{margin:0;width:100%;height:100%;overflow:hidden}body{height:100dvh;background:#342820;color:#ead9bb;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}#world{position:fixed;inset:0;touch-action:none;overscroll-behavior:none}#world canvas{display:block;width:100%;height:100%}#mark{position:fixed;left:max(.7rem,env(safe-area-inset-left));top:max(.7rem,env(safe-area-inset-top));padding:.45rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font-size:11px;letter-spacing:.06em;pointer-events:none}#debug-tools{position:fixed;z-index:10;right:max(.6rem,env(safe-area-inset-right));bottom:max(.6rem,env(safe-area-inset-bottom));display:flex;align-items:end;gap:.45rem;font:12px/1.2 ui-monospace,monospace}#fps-counter,#build-id{padding:.42rem .5rem;border:1px solid #d1a36b33;border-radius:.4rem;background:#2b211bdd;color:#ead9bb}#debug-refresh,#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#export-locus-log,#time-scale,#impact-buckets button{min-height:2.1rem;padding:.4rem .65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font:inherit}#impact-buckets{display:flex;gap:.18rem}#impact-buckets button{min-width:2rem;padding:.4rem}#impact-buckets button.active{outline:1px solid #ead9bb;background:#5a4030}#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#debug-refresh,#export-locus-log,#time-scale{font-size:1rem}#toggle-water.active{outline:1px solid #bfe9ee;background:#304c52}#diagnostics{position:fixed;z-index:20;left:.7rem;right:.7rem;bottom:.7rem;max-height:45vh;overflow:auto;margin:0;padding:.8rem;border:2px solid #9f3e2e;background:#2a1713;color:#ffd9bd;white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace}@media(max-width:28rem){#debug-tools{max-width:calc(100vw - 1.2rem);flex-wrap:wrap;justify-content:end}}#exit-lighthugger{position:fixed;z-index:15;left:50%;bottom:max(.8rem,env(safe-area-inset-bottom));transform:translateX(-50%);min-height:2.4rem;padding:.55rem .9rem;border:1px solid #d7ae72aa;border-radius:.45rem;background:#171715e8;color:#f0d7aa;font:12px/1.2 ui-monospace,monospace;letter-spacing:.08em}body.inside-lighthugger #debug-tools,body.inside-lighthugger #mark{display:none}</style></head>
 <body><main id="world" aria-label="Crucible world. Drag to orbit; pinch or use the mouse wheel to change distance."></main>
 <aside id="mark"><b>⚗️ CRUCIBLE</b></aside>
 <aside id="debug-tools" aria-label="Construction controls">
@@ -18,8 +18,9 @@
   <button id="time-scale" type="button" aria-label="Simulation speed 1 times">1×</button>
   <button id="debug-refresh" type="button" aria-label="Refresh">↻</button>
 </aside>
+<button id="exit-lighthugger" type="button" hidden aria-label="Return to the Terrordrome">↖ RETURN</button>
 <pre id="diagnostics" role="alert" hidden></pre>
-<script>globalThis.__CRUCIBLE_BUILD__="2cee089b2aa300209a17083abb912e89d38d2f0d";</script>
+<script>globalThis.__CRUCIBLE_BUILD__="99fdc6be04ff4fbf9d1ae5f7f9db61c36796cb97";</script>
 <script>(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -44028,6 +44029,209 @@ void main() {
     return api;
   }
 
+  // src/runtime/lighthugger-interior.js
+  function createLighthuggerInterior({ THREE: THREE2, scene, origin = new THREE2.Vector3(0, -32, 0) }) {
+    const root = new THREE2.Group();
+    root.name = "lighthugger-interior";
+    root.position.copy(origin);
+    scene.add(root);
+    const brass2 = new THREE2.MeshStandardMaterial({ color: 9133357, roughness: 0.42, metalness: 0.76 }), dark = new THREE2.MeshStandardMaterial({ color: 1513497, roughness: 0.7, metalness: 0.55, side: THREE2.BackSide }), floorMat = new THREE2.MeshStandardMaterial({ color: 2433823, roughness: 0.76, metalness: 0.34 }), warm = new THREE2.MeshBasicMaterial({ color: 16758367 }), glass = new THREE2.MeshStandardMaterial({ color: 1521737, emissive: 862004, emissiveIntensity: 0.45, transparent: true, opacity: 0.82, roughness: 0.25, metalness: 0.18, side: THREE2.DoubleSide });
+    const radius = 7.2, height = 5.4;
+    const wallThickness = 0.22;
+    for (let i = 0; i < 8; i++) {
+      const a = Math.PI / 8 + i * Math.PI / 4;
+      const chord = 2 * radius * Math.sin(Math.PI / 8);
+      const wall = new THREE2.Mesh(new THREE2.BoxGeometry(chord + 0.08, height, wallThickness), dark);
+      wall.position.set(Math.sin(a) * (radius - wallThickness * 0.5), height * 0.5, Math.cos(a) * (radius - wallThickness * 0.5));
+      wall.rotation.y = a;
+      wall.castShadow = true;
+      wall.receiveShadow = true;
+      root.add(wall);
+    }
+    const floor = new THREE2.Mesh(new THREE2.CylinderGeometry(radius, radius, 0.16, 8, 1, false, Math.PI / 8), floorMat);
+    floor.position.y = -0.08;
+    floor.receiveShadow = true;
+    root.add(floor);
+    const ceiling = new THREE2.Mesh(new THREE2.CylinderGeometry(radius, radius, 0.12, 8, 1, false, Math.PI / 8), floorMat);
+    ceiling.position.y = height + 0.06;
+    root.add(ceiling);
+    function beam(a, b, r = 0.055, mat = brass2) {
+      const d = b.clone().sub(a), m = new THREE2.Mesh(new THREE2.CylinderGeometry(r, r, d.length(), 7), mat);
+      m.position.copy(a).add(b).multiplyScalar(0.5);
+      m.quaternion.setFromUnitVectors(new THREE2.Vector3(0, 1, 0), d.clone().normalize());
+      m.castShadow = true;
+      root.add(m);
+      return m;
+    }
+    const corners = [];
+    for (let i = 0; i < 8; i++) {
+      const a = Math.PI / 8 + i * Math.PI / 4, c = new THREE2.Vector3(Math.sin(a) * radius * 0.985, 0, Math.cos(a) * radius * 0.985);
+      corners.push(c);
+      beam(c, c.clone().setY(height), 0.075);
+    }
+    for (let i = 0; i < 8; i++) {
+      const a = corners[i], b = corners[(i + 1) % 8];
+      beam(a.clone().setY(0.16), b.clone().setY(0.16), 0.05);
+      beam(a.clone().setY(height - 0.18), b.clone().setY(height - 0.18), 0.05);
+    }
+    const spine = new THREE2.Group();
+    spine.name = "unclaimed-service-spine";
+    root.add(spine);
+    for (const y of [0.55, 1.55, 2.55, 3.55, 4.55]) {
+      const ring = new THREE2.Mesh(new THREE2.TorusGeometry(0.48, 0.035, 7, 24), brass2);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = y;
+      spine.add(ring);
+    }
+    const core = new THREE2.Mesh(new THREE2.CylinderGeometry(0.09, 0.09, 4.7, 8), warm);
+    core.position.y = 2.55;
+    spine.add(core);
+    const panel = new THREE2.Group();
+    panel.name = "malleable-installed-surface";
+    panel.position.set(-4.7, 2.55, -2.15);
+    panel.rotation.y = -0.72;
+    root.add(panel);
+    const screen = new THREE2.Mesh(new THREE2.PlaneGeometry(3.25, 1.85), glass);
+    panel.add(screen);
+    const rim = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(3.25, 1.85)), new THREE2.LineBasicMaterial({ color: 14201463, transparent: true, opacity: 0.82 }));
+    rim.position.z = 0.012;
+    panel.add(rim);
+    const bar = new THREE2.Mesh(new THREE2.BoxGeometry(2.65, 0.035, 0.025), warm);
+    bar.position.set(0, 0.58, 0.035);
+    panel.add(bar);
+    const island = new THREE2.Mesh(new THREE2.CylinderGeometry(1.75, 1.9, 0.34, 8, 1, false, Math.PI / 8), floorMat);
+    island.position.set(1.65, 0.2, 1.1);
+    island.castShadow = true;
+    root.add(island);
+    const islandRim = new THREE2.Mesh(new THREE2.TorusGeometry(1.78, 0.045, 7, 32), brass2);
+    islandRim.rotation.x = Math.PI / 2;
+    islandRim.position.set(1.65, 0.39, 1.1);
+    root.add(islandRim);
+    for (const z of [-3.9, 3.9]) beam(new THREE2.Vector3(-4.5, 0.12, z), new THREE2.Vector3(4.5, 0.12, z), 0.035, brass2);
+    const amber = new THREE2.PointLight(16754253, 42, 16, 1.7);
+    amber.position.set(0, 4.7, 0);
+    root.add(amber);
+    const cool = new THREE2.PointLight(7715280, 18, 13, 1.7);
+    cool.position.set(-4, 2.7, -2);
+    root.add(cool);
+    let active = false;
+    function setActive(value) {
+      active = !!value;
+      root.visible = active;
+      return active;
+    }
+    setActive(false);
+    return { root, origin, setActive, enter: () => setActive(true), exit: () => setActive(false), inspect: () => ({ kind: "lighthugger-interior", active, origin: origin.toArray(), grammar: "unclaimed octagonal scene space", authoredRules: 0 }) };
+  }
+
+  // src/runtime/lighthugger-exterior.js
+  function createLighthuggerExterior({ THREE: THREE2, scene }) {
+    const root = new THREE2.Group();
+    root.name = "lighthugger-exterior";
+    root.position.set(-1.2, 13, -1.2);
+    root.rotation.z = Math.PI / 2;
+    scene.add(root);
+    const hull = new THREE2.MeshStandardMaterial({ color: 3881268, roughness: 0.58, metalness: 0.72 }), brass2 = new THREE2.MeshStandardMaterial({ color: 9397043, roughness: 0.43, metalness: 0.78 }), recess = new THREE2.MeshStandardMaterial({ color: 1119511, roughness: 0.78, metalness: 0.46 }), warm = new THREE2.MeshBasicMaterial({ color: 16757082 }), cool = new THREE2.MeshStandardMaterial({ color: 3361360, roughness: 0.48, metalness: 0.7 });
+    const length = 10.8, outer = 1.75, inner = 1.03;
+    const fixed = new THREE2.Group(), greebles = new THREE2.Group();
+    root.add(fixed, greebles);
+    const tag = (o) => o.traverse((x) => {
+      if (x.isMesh) x.userData.lighthuggerExterior = true;
+    });
+    for (let i = 0; i < 8; i++) {
+      const a = Math.PI / 8 + i * Math.PI / 4, m = new THREE2.Mesh(new THREE2.BoxGeometry(0.56, length, 1.18), hull);
+      m.position.set(Math.sin(a) * 1.38, 0, Math.cos(a) * 1.38);
+      m.rotation.y = a;
+      m.castShadow = true;
+      fixed.add(m);
+    }
+    const core = new THREE2.Mesh(new THREE2.CylinderGeometry(inner, inner, length + 0.04, 8, 1, true, Math.PI / 8), recess);
+    core.material.side = THREE2.BackSide;
+    fixed.add(core);
+    for (const y of [-length * 0.48, -length * 0.29, 0, length * 0.29, length * 0.48]) {
+      const r = new THREE2.Mesh(new THREE2.TorusGeometry(1.78, 0.075, 4, 8), brass2);
+      r.rotation.x = Math.PI / 2;
+      r.rotation.z = Math.PI / 8;
+      r.position.y = y;
+      fixed.add(r);
+    }
+    for (const end of [-1, 1]) for (let i = 0; i < 8; i++) {
+      const a = Math.PI / 8 + i * Math.PI / 4, radial = new THREE2.Vector3(Math.sin(a), 0, Math.cos(a)), p0 = radial.clone().multiplyScalar(1.38);
+      p0.y = end * length * 0.515;
+      const p1 = radial.clone().multiplyScalar(1.13);
+      p1.y = end * (length * 0.515 + 0.23);
+      const d = p1.clone().sub(p0), mid = p0.clone().add(p1).multiplyScalar(0.5);
+      mid.y -= end * 0.34;
+      const b = new THREE2.Mesh(new THREE2.BoxGeometry(0.08, d.length(), 0.08), brass2);
+      b.position.copy(mid);
+      b.quaternion.setFromUnitVectors(new THREE2.Vector3(0, 1, 0), d.clone().normalize());
+      fixed.add(b);
+    }
+    function rng(seed) {
+      return () => {
+        seed |= 0;
+        seed = seed + 1831565813 | 0;
+        let t = seed;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    const R = rng(20903 + 7 * 7919);
+    const addBox = (a, y, r, w, h, d, mat = brass2) => {
+      const m = new THREE2.Mesh(new THREE2.BoxGeometry(w, h, d), mat);
+      m.position.set(Math.sin(a) * r, y, Math.cos(a) * r);
+      m.rotation.y = a;
+      m.castShadow = true;
+      greebles.add(m);
+    };
+    const addRail = (a, r = 2.02, span = 8.4, mat = brass2) => {
+      const m = new THREE2.Mesh(new THREE2.CylinderGeometry(0.025, 0.025, span, 5), mat);
+      m.position.set(Math.sin(a) * r, 0, Math.cos(a) * r);
+      greebles.add(m);
+    };
+    const addMast = (a, y, r = 2.02, h = 0.42) => {
+      const m = new THREE2.Mesh(new THREE2.CylinderGeometry(0.018, 0.027, h, 5), brass2);
+      m.position.set(Math.sin(a) * r, y, Math.cos(a) * r);
+      m.quaternion.setFromUnitVectors(new THREE2.Vector3(0, 1, 0), new THREE2.Vector3(Math.sin(a), 0, Math.cos(a)));
+      greebles.add(m);
+    };
+    const addLight2 = (a, y, r = 2) => addBox(a, y, r, 0.11, 0.14, 0.055, warm);
+    for (let i = 0; i < 2; i++) {
+      const a = i * Math.PI + Math.PI / 24;
+      addRail(a, 1.94 + i % 2 * 0.09, 7 + R() * 2.2, i % 5 === 0 ? cool : brass2);
+    }
+    for (let f = 0; f < 8; f++) {
+      const a = Math.PI / 8 + f * Math.PI / 4;
+      for (let j = 0; j < 7; j++) {
+        const y = -4.35 + j * (8.7 / 6) + (R() - 0.5) * 0.18;
+        for (let row = 0; row < 4; row++) {
+          if (R() < 0.2) continue;
+          addBox(a + (row - 1.5) * 0.055, y, 1.8 + row * 0.07, 0.16 + R() * 0.22, 0.18 + R() * 0.42, 0.1 + R() * 0.12, R() < 0.22 ? brass2 : cool);
+        }
+      }
+    }
+    for (let f = 0; f < 8; f++) {
+      if (f % 2) continue;
+      const a = Math.PI / 8 + f * Math.PI / 4, n = 3 + (7 + f) % 7;
+      for (let j = 0; j < n; j++) addLight2(a, -3.8 + j * (7.6 / Math.max(1, n - 1)) + (R() - 0.5) * 0.12, 1.985);
+    }
+    for (let b = 0; b < 4; b++) {
+      const y = -3.7 + b * (7.4 / 3), count = 4 + (7 + b) % 5;
+      for (let k = 0; k < count; k++) addMast(k / count * Math.PI * 2, y, 1.98 + R() * 0.12, 0.22 + R() * 0.58);
+    }
+    for (const y of [-2.6, 2.6]) {
+      const r = new THREE2.Mesh(new THREE2.TorusGeometry(1.91, 0.035, 4, 8), cool);
+      r.rotation.x = Math.PI / 2;
+      r.rotation.z = Math.PI / 8;
+      r.position.y = y;
+      greebles.add(r);
+    }
+    tag(greebles);
+    tag(fixed);
+    return { object: root, inspect: () => ({ kind: "lighthugger-exterior", shape: "horizontal cored octagonal vessel", length, outerRadius: outer, innerRadius: inner, entryTarget: true, greebleTreatment: "H" }) };
+  }
+
   // src/main.js
   var mount = document.querySelector("#world");
   var diagnostics = installDiagnostics(document.querySelector("#diagnostics"));
@@ -44044,16 +44248,16 @@ void main() {
   var locus = world.entity();
   world.add(locus, Transform, { position: new THREE.Vector3(0, 1, 0), rotation: new THREE.Euler(), scale: new THREE.Vector3(1, 1, 1), visible: true });
   world.add(locus, Locus, { id: locus, kind: "locus" });
-  function addCamera({ name, position, orbit: orbit2, fov: fov2 = 38 }) {
+  function addCamera({ name, position, orbit: orbit2, fov: fov2 = 38, targetEntity = locus }) {
     const id = world.entity();
     world.add(id, Transform, { position: new THREE.Vector3(...position), rotation: new THREE.Euler(), scale: new THREE.Vector3(1, 1, 1), visible: true });
     world.add(id, Camera2, { name, projection: "perspective", fov: fov2, height: 5, near: 0.1, far: 150 });
-    world.add(id, CameraTarget, { entity: locus });
+    world.add(id, CameraTarget, { entity: targetEntity });
     world.add(id, Viewport, { slot: "primary" });
     world.add(id, OrbitBehavior, orbit2);
     return id;
   }
-  var limits = { minDistance: 9, maxDistance: 38, minPolar: 0.25, maxPolar: 1.48, minWorldY: 0.18 };
+  var limits = { minDistance: 9, maxDistance: 46, minPolar: 0.25, maxPolar: 1.48, minWorldY: 0.18 };
   var overviewCamera = addCamera({ name: "Overview", position: [12, 13, 18], orbit: { azimuth: 0.65, polar: 1.02, distance: 24, ...limits } });
   world.add(overviewCamera, ActiveCamera, true);
   var orbit = createOrbitSystem({ world, components, THREE });
@@ -44068,11 +44272,29 @@ void main() {
     world.add(id, Light2, { name, kind, color, groundColor, intensity, castShadow });
     return id;
   }
-  var skyLight = addLight({ name: "Sky", kind: "hemisphere", color: 16045994, groundColor: 4404781, intensity: 2, position: [0, 5, 0] });
+  var skyLight = addLight({ name: "Sky", kind: "hemisphere", color: 16045994, groundColor: 4404781, intensity: 2, position: [0, 16, 0] });
   var keyLight = addLight({ name: "Key", kind: "directional", color: 16762237, intensity: 3.4, position: [-12, 20, 10], castShadow: true });
   var fillLight = addLight({ name: "Fill", kind: "directional", color: 8168346, intensity: 0.7, position: [12, 8, -10] });
   lights.syncAll();
   var terrain = createTerrainSystem({ THREE, scene: three.scene });
+  var interiorTarget = world.entity();
+  world.add(interiorTarget, Transform, { position: new THREE.Vector3(0, -29.7, 0), rotation: new THREE.Euler(), scale: new THREE.Vector3(1, 1, 1), visible: true });
+  world.add(interiorTarget, Locus, { id: interiorTarget, kind: "lighthugger-interior" });
+  var interiorCamera = addCamera({ name: "Lighthugger Interior", position: [4.1, -27.4, 5.6], orbit: { azimuth: 0.58, polar: 1.12, distance: 6.2, minDistance: 3, maxDistance: 7, minPolar: 0.5, maxPolar: 1.46, minWorldY: -31.8 }, fov: 48, targetEntity: interiorTarget });
+  var lighthuggerInterior = createLighthuggerInterior({ THREE, scene: three.scene, origin: new THREE.Vector3(0, -32, 0) });
+  var lighthuggerExterior = createLighthuggerExterior({ THREE, scene: three.scene });
+  var exitLighthuggerButton = document.querySelector("#exit-lighthugger");
+  var insideLighthugger = false;
+  function setLighthuggerInterior(active) {
+    insideLighthugger = !!active;
+    lighthuggerInterior.setActive(insideLighthugger);
+    cameras.setActive(insideLighthugger ? interiorCamera : overviewCamera);
+    orbit.applyAll();
+    document.body.classList.toggle("inside-lighthugger", insideLighthugger);
+    if (exitLighthuggerButton) exitLighthuggerButton.hidden = !insideLighthugger;
+    return insideLighthugger;
+  }
+  exitLighthuggerButton?.addEventListener("click", () => setLighthuggerInterior(false));
   var waterBottom = -1.42;
   var waterLevel = -0.12;
   var waterDepth = waterLevel - waterBottom;
@@ -44264,10 +44486,10 @@ void main() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: terrain.inspect(), water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
-  var systems = { renderSync, cameras, orbit, lights, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
-  var entities = { locus, continuityStation: continuityStation.id, overviewCamera, skyLight, keyLight, fillLight };
-  globalThis.crucible = { cinnabarAndCinnamon: { replay: () => cinnabarAndCinnamon.replay(), inspect: () => cinnabarAndCinnamon.inspect(simNow), advance: () => coupletTrial.advance(), stow: () => setCinnabarPacked(true), deploy: () => setCinnabarPacked(false), togglePacked: toggleCinnabarPacked }, spawnMatter, spawnBearings: (count = 25e3) => bearings.spawnBatch(count), meteor: callImpact, groundHeight: terrain.groundHeight, runSpatialProbes: () => lastProbeResults = spatialProbes.run(), spatialProbeResults: () => lastProbeResults, locusLog: () => locusLedger.snapshot(), exportLocusLog: () => locusLedger.download(), inspect };
+  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, lighthuggerInterior: lighthuggerInterior.inspect(), lighthuggerExterior: lighthuggerExterior.inspect(), looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: terrain.inspect(), water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
+  var systems = { renderSync, cameras, orbit, lights, lighthuggerInterior, lighthuggerExterior, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
+  var entities = { locus, interiorTarget, continuityStation: continuityStation.id, overviewCamera, interiorCamera, skyLight, keyLight, fillLight };
+  globalThis.crucible = { lighthugger: { enter: () => setLighthuggerInterior(true), exit: () => setLighthuggerInterior(false), inspect: () => lighthuggerInterior.inspect() }, cinnabarAndCinnamon: { replay: () => cinnabarAndCinnamon.replay(), inspect: () => cinnabarAndCinnamon.inspect(simNow), advance: () => coupletTrial.advance(), stow: () => setCinnabarPacked(true), deploy: () => setCinnabarPacked(false), togglePacked: toggleCinnabarPacked }, spawnMatter, spawnBearings: (count = 25e3) => bearings.spawnBatch(count), meteor: callImpact, groundHeight: terrain.groundHeight, runSpatialProbes: () => lastProbeResults = spatialProbes.run(), spatialProbeResults: () => lastProbeResults, locusLog: () => locusLedger.snapshot(), exportLocusLog: () => locusLedger.download(), inspect };
   installDebugApi({ world, components, terrain, three, systems, entities, water, inspect });
   document.querySelectorAll("[data-impact-bucket]").forEach((button, i) => button.addEventListener("click", () => setImpactBucket(i)));
   setImpactBucket(1);
@@ -44313,6 +44535,12 @@ void main() {
     const cameraView = components.CameraView.get(cameras.activeId());
     if (!cameraView?.camera) return;
     raycaster.setFromCamera(pointer, cameraView.camera);
+    if (insideLighthugger) return;
+    const lighthuggerHit = raycaster.intersectObject(lighthuggerExterior.object, true)[0];
+    if (lighthuggerHit) {
+      setLighthuggerInterior(true);
+      return;
+    }
     const stowHit = locusDisplay.inspect().open ? raycaster.intersectObject(locusDisplay.stowButton, true)[0] : null;
     if (stowHit) {
       toggleCinnabarPacked();
