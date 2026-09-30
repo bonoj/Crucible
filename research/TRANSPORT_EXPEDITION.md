@@ -1661,85 +1661,67 @@ For now:
 
 ## Pre-GitHub archaeology — recovered visual evidence
 
-**Recovered 2026-09-30 from phone-local artifacts. Visible device timestamps are recorded as archaeological ordering evidence, not asserted as repository commit times.**
+**Recovered 2026-09-30 from phone-local artifacts and prior conversational memory. Visible device timestamps are archaeological ordering evidence, not repository commit times. The archived executables remain the authoritative evidence for later excavation.**
 
-A cluster of pre-repository executables shows that several ideas now becoming explicit in Crucible were already being probed independently, before they had durable names or repository boundaries.
+The screenshots initially invited an overly generic interpretation. Memory plus the human's identification recovers distinct lineages that should not be collapsed merely because they all use fields, terrain, or sampled worlds.
 
-### 10:28 — Accretion Field v1.0.0 — THREE
+### Pin Field → spherical pin field → Wizard Pin Planet → pre-Innsmouth map snowglobes
 
-Visible artifact text:
+The **Pin Field Instrument** began as a small mechanical board whose individually addressable pins embodied scalar fields. Dataset/parameter changes altered what the field meant and the pins physically settled into the resulting form.
 
-> `ACCRETION FIELD v1.0.0 — THREE`  
-> `GPU terrain · true depth-tested rivers · permanent spring-fed carving`  
-> `SEED 8127`
+That substrate was then wrapped onto a sphere. Early spherical pin-field experiments used dense radial samples to express bounded-world relief and disturbances. The point field was not merely decorative mesh: it was a persistent, addressable substrate.
 
-The artifact exposes ACCRETE and WATER controls plus NEW WORLD, TIDE, WEATHER, RELIEF, SETTLED, LINEAGE, and SPRINGS. Its rendered terrain carries narrow dark drainage traces, a broad surrounding water plane, and accumulated block-like settlement/material marks.
+The **Wizard Pin Planet / Wizard Pin Toy** developed that substrate into an interaction surface. Thousands of persistent pins were acted on by composable verbs such as meteor, frost, lightning, force, and growth. The important crossing was from “display a function” to **persistent shared matter/state that multiple interventions can address**.
 
-This is direct ancestry for a distinction now re-earned in Crucible: **surface hydrology is not identical to a simulated body of water.** Terrain can cheaply encode catchment, runoff, springs, and drainage hierarchy while a separate water representation owns accumulated bodies and transport.
+The later raster/region/map screenshots belong to the **pre-Innsmouth map/snowglobes concept**, not to a generic terrain-generation lineage. They explored maps and bounded worlds through alternate representations: categorical raster state, regions and adjacency, relief, and cartographic world presentation. A surviving map, **THE EMBER ISLES — A SMALL WORLD FOR BIG IDEAS**, explicitly distinguishes Water, Shallow Water, Sand/Beach, Grassland, Forest, Rock/Mountain, Road/Path, and Structure.
 
-### 18:33 / 18:47 — Accretion Field v0.7.6
+The archived executables survive. Therefore this record deliberately stops short of reconstructing their exact mechanics from screenshots. Future archaeology should execute and inspect the artifacts rather than infer implementation from appearance.
 
-Visible artifact text:
+What can safely be retained is the recurring representational idea:
 
-> `rigid mesh · broad cessation provinces · low basins · independent water`  
-> `SEED 174909`
+> **A cheap addressable substrate can carry world truth while another representation gives that truth visible or interactive consequence.**
 
-The artifact includes ACCRETE and WATER sliders, NEW WORLD, TIDE, and WEATHER. Its note states that WEATHER produces clouds + rain and that **accumulated runoff reveals drainage hierarchy**.
+### Accretion Field — separate hydrology lineage
 
-This is especially relevant to the current expedition. The old artifact had already separated precipitation/runoff evidence from the independent water body. Crucible should not force its shallow-water solver to become universal hydrology merely because both concern water.
+The **Accretion Field** artifacts are a different experimental branch and are directly relevant to the present water expedition.
 
-An emerging composition is therefore:
+A recovered v0.7.6 artifact visibly describes:
 
-> **weather / precipitation → cheap surface hydrology → concentrated runoff / drainage hierarchy → discharge into shallow-water bodies → buoyant material transport**
+> `rigid mesh · broad cessation provinces · low basins · independent water`
 
-This is archaeology, not a mandate to implement that stack now.
+and exposes ACCRETE/WATER controls plus TIDE and WEATHER. Its own note states that accumulated runoff reveals drainage hierarchy.
 
-### 17:29 — World Lab · N-Lab Host
+A later v1.0.0 THREE artifact visibly describes:
 
-A 2D extensible-world strip shows persistent finger-painted marks in world coordinates, a tiny embodied walker, DIG/TIMBER/LAMP/FIND ME controls, and an explicit `EXPORT EVIDENCE` action. The artifact labels paint as **evidence, not encoded semantics**.
+> `GPU terrain · true depth-tested rivers · permanent spring-fed carving`
 
-This predates the current repository discipline but already contains recognizable methodological ancestors: world-coordinate persistence, embodied intervention, and explicit export of executable evidence.
+and exposes TIDE, WEATHER, RELIEF, SETTLED, LINEAGE, and SPRINGS.
 
-### 17:37 — spherical Foundry field
+These artifacts are ancestry for a distinction now re-earned independently in Crucible:
 
-A spherical `foundry orb` displays roughly 6200 elements with four selectable fields A–D and a continuous parameter. Thousands of points describe a deformed spherical scalar/vector-like surface.
+> **Surface hydrology is not the same system as an accumulated body of water.**
 
-The important archaeological fact is not the exact mathematics, which the screenshot cannot recover. It is that **dense fields on bounded worlds** were already being explored as cheap, inspectable representations.
+Rainfall, catchment, runoff concentration, springs, drainage hierarchy, and erosion can eventually earn a cheap terrain-derived hydrology representation. Crucible's current shallow-water solver can remain responsible for bodies of water whose depth, momentum, buoyancy, and transported material matter.
 
-### 18:22–18:34 — raster → regions → relief experiments
+A plausible future composition is:
 
-A 64×64 raster artifact reports **1026 regions and 2320 adjacencies**, with modes RELIEF, RASTER, EDGES, REGIONS, and LOAD PNG. Screenshots show:
-- the source raster/map;
-- categorical region selection such as `soil region 609 (2px)`, `forest region 652 (1px)`, and `unknown region 6 (657px)`;
-- the same raster lifted into a dense relief/point representation;
-- a later zoomed view reporting **64×64 data → 192×192 relief**, 1113 regions, 2409 adjacencies, and 328 no-data cells.
+> **weather / precipitation → surface hydrology → concentrated runoff / drainage hierarchy → discharge into shallow-water bodies → buoyant material transport**
 
-A surviving map image, **THE EMBER ISLES — A SMALL WORLD FOR BIG IDEAS**, explicitly separates terrain classes: Water, Shallow Water, Sand/Beach, Grassland, Forest, Rock/Mountain, Road/Path, and Structure.
+That is an archaeological possibility, not a current implementation requirement.
 
-This is a striking ancestor of the present representation split. A cheap 2D categorical or scalar substrate can author and classify a world while another representation gives it geometric consequence. The current terrain-genesis principle—
+### Methodological residue
 
-> **The representation easiest to author does not need to be the representation the simulation executes.**
+Across both lineages, several ideas recur without requiring the systems to share an implementation:
 
-—has clear pre-GitHub experimental ancestry here.
-
-### 13:21–13:22 — spherical impact / field probes
-
-Two spherical artifacts use dense point samples over a bounded globe. One labels the interaction `DRAG SPHERE · TAP PIN → METEOR` and shows a localized orange impact/disturbance propagated through the field. A later-looking variant shows bright yellow ridges/paths across the spherical sample field with a compact five-tool interaction bar.
-
-Again, the screenshots do not establish the underlying equations. They do establish repeated interest in **bounded sampled worlds, local disturbances, and consequences expressed through a field rather than handcrafted mesh behavior**.
-
-### Archaeological synthesis
-
-These artifacts should not be retroactively forced into one architecture. They are useful precisely because they show recurring ideas before vocabulary stabilized:
-
-- cheap fields can carry world truth without being the final visible geometry;
-- raster/categorical state can become relief;
+- cheap fields can carry world truth without being final visible geometry;
 - bounded worlds can be densely sampled and locally disturbed;
-- precipitation/runoff/drainage can be a system distinct from accumulated water;
-- water can remain independent from terrain generation;
-- persistent world-coordinate marks can serve as evidence before they acquire semantics;
-- multiple representations can cooperate without one representation becoming universal.
+- one substrate can support multiple composable interventions;
+- raster/categorical state can acquire another geometric presentation;
+- precipitation/runoff/drainage can remain distinct from accumulated water;
+- multiple representations can cooperate without one becoming universal.
 
-The current shallow-water crossing therefore does **not** need to absorb surface hydrology. The recovered Accretion Field evidence suggests the opposite: preserve the successful water body as one system, and let a future hydrology system earn its own cheaper representation if and when precipitation, runoff, springs, erosion, or drainage hierarchy demand it.
+For the current expedition, the conclusion is narrow:
+
+> **Do not make shallow water absorb surface hydrology merely because both concern water. Preserve the successful water-body machinery. Let hydrology earn its own representation when the world demands it.**
 
 > **Pre-GitHub archaeology is evidence of recurring machinery, not authority over the present design.**
