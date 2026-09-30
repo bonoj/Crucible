@@ -144,7 +144,7 @@ document.querySelectorAll("[data-impact-bucket]").forEach((button,i)=>button.add
 document.querySelector("#call-meteor")?.addEventListener("click",()=>callImpact());
 document.querySelector("#spawn-bearings")?.addEventListener("click",()=>bearings.spawnBatch(25000));
 document.querySelector("#toggle-water")?.addEventListener("click",event=>{water.visible=!water.visible;event.currentTarget.classList.toggle("active",water.visible);});
-document.querySelector("#toggle-science")?.addEventListener("click",()=>toggleScienceMode());
+document.querySelector("#toggle-science")?.addEventListener("click",()=>toggleScienceMode());setScienceMode(true);
 document.querySelector("#randomize-terrain")?.addEventListener("click",()=>{terrain.randomize();lastImpactTarget=meteors.targetAt();});
 document.querySelector("#export-locus-log")?.addEventListener("click",()=>locusLedger.download());
 const timeScaleButton=document.querySelector("#time-scale");function syncTimeScale(){timeScale=timeScales[timeScaleIndex];if(timeScaleButton){timeScaleButton.textContent=`${timeScale}×`;timeScaleButton.setAttribute("aria-label",`Simulation speed ${timeScale} times`);timeScaleButton.classList.toggle("active",timeScale!==1)}}timeScaleButton?.addEventListener("click",()=>{timeScaleIndex=(timeScaleIndex+1)%timeScales.length;syncTimeScale()});syncTimeScale();
