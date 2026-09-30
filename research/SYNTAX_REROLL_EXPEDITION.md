@@ -734,3 +734,16 @@ The rail request is equally constrained: preserve the existing four longitudinal
 ### Screenshot-grounded interpretation
 
 The screenshot makes the remaining defect explicit: the backslash rake now reads correctly, but each rectangular tooth begins in free space near the mouth instead of emerging continuously from the hull/rim. Preserve the accepted rake, tip direction, rectangular vocabulary, rails, masts, and all surrounding geometry. Move only the tooth root/butt outward to the vessel's structural mouth radius so the tooth intersects the hull/collar enough to read as installed geometry rather than a floating spar. The inward tip remains where it is.
+
+
+## Turn 15 — A–Z Lighthugger greeble deck
+
+### Human
+
+> Now I should like very much to get a bunch of different greeble options. Love the colors you've chosen. I want to see a mix of 26 designs A - Z. Just one button in the bottom dev bar. Mix and match, some symmetrical, some not. Move rails, running lights, boxes. Add new shit, don't. Your call :). We have an Event Horizon meets Death Star spectrum.
+>
+> Not an image. In the build :).
+
+### Consequence
+
+This is an executable visual-search instrument, not a request for concept art. Preserve the accepted vessel body, mouth/teeth, palette, portal behavior, and world state. Add one bottom-dev-bar control that cycles deterministic greeble treatments A through Z on the live Lighthugger. Variants may redistribute rails, running lights, service boxes, masts, panels, pipes, ribs, antennae, and asymmetry while retaining a coherent installed-machinery vocabulary. The deck is deliberately broad: some sparse and architectural, some dense and industrial, some symmetric, some lopsided. The button is the sole new human control surface for this experiment.
