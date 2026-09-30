@@ -355,3 +355,62 @@ Those are game questions now. Let the first run make them concrete.
 The first source should not be chosen because it conveniently validates these rules. Prefer a public-domain text with concrete objects, places, actors, and actions that gives the game something to bite without requiring exhaustive literary parsing.
 
 The book is substrate, not specification.
+
+
+## Turn 2 — ingestion itself becomes experimental surface
+
+### Human
+
+> We can also explore preingestion with runtime asset generation and JIT instantiation via gutenberg link inside the deterministic engine with webscraping.
+>
+> *runtime, haha.
+
+### Consequence
+
+The source seam is no longer assumed to mean “download a whole book into Git before play.” Two legitimate ingestion modes are now visible and should remain distinct until executable pressure chooses between them.
+
+### Mode A — preingested source
+
+A public-domain text is acquired ahead of play, provenance is recorded, and the accepted source (plus any explicitly derived play representation) lives in the repository.
+
+This gives the strongest reproducibility and easiest occurrence addressing.
+
+### Mode B — JIT source instantiation
+
+A run may instead begin from a provenance-bearing public-domain source link, with acquisition/parsing occurring at or near runtime. The deterministic game can then instantiate only the textual region and derived assets actually needed by the encounter.
+
+The important distinction is:
+
+**network acquisition is not deterministic world state.**
+
+If runtime retrieval is explored, the fetched source should cross an explicit acceptance/cache boundary before lexical rules treat it as authoritative run material. Once admitted, the run should be able to identify the exact source payload or digest from which its occurrences were derived.
+
+This keeps web availability, source drift, HTML wrappers, mirrors, encoding differences, and parser changes from silently changing an existing run.
+
+### Asset generation is allowed to be lazy
+
+Neither ingestion mode requires eagerly compiling a book into every possible character, object, place, relationship, or visual asset.
+
+A useful candidate shape is:
+
+**source provenance → admitted text shard → encountered occurrence/context → JIT semantic/visual asset when play creates demand → committed historical instance if consequence survives**
+
+Preingestion and JIT generation are therefore orthogonal:
+
+- a whole source can be preingested while assets remain lazy;
+- source text itself can be acquired JIT while admitted shards become deterministic run evidence;
+- later evidence may justify a hybrid cache without changing the mutation rules.
+
+### What is not yet earned
+
+Do not build a general Gutenberg scraper, crawler, ingestion service, book database, or asset compiler before the first run needs one.
+
+A Gutenberg link is currently a candidate provenance/acquisition seam, not a hard dependency or privileged authority format. The first book can test the smallest version of this boundary.
+
+### New question for the first run
+
+Book selection can now test more than literary suitability:
+
+> **How little of a public-domain book must become deterministic local state before Syntax Reroll can safely begin playing with it?**
+
+This question belongs to the executable expedition and may be answered differently by later books.
