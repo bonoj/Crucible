@@ -152,10 +152,8 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
       emit(clipSupport(clipWet([a,b,cc])));emit(clipSupport(clipWet([a,cc,d])));
     }
     for(const [a,b] of sideEdges.values()){
-      const ba=terrain.terrainHeight(a.x,a.z),bb=terrain.terrainHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
-      // Close against the actual terrain-volume intersection, never the plinth support.
-      const ay=Math.min(a.y,ba),by=Math.min(b.y,bb);if(a.y-ay<1e-3&&b.y-by<1e-3)continue;
-      const base=sideVi;sidePos.push(a.x,ay,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,by,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
+      const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
+      const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
     sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
