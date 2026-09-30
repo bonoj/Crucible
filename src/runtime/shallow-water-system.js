@@ -187,7 +187,18 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     return w>1e-6?{depth:depth/w,surface:eta/w,u:u/w,v:v/w}:null;
   }
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
+  function captureDiagnostic(){
+    const wetCells=[];
+    for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(h[k]<=DRY||!valid(k))continue;wetCells.push({ix:x,iz:z,x:wx(x),z:wz(z),bed:bed[k],h:h[k],eta:bed[k]+h[k],hu:hu[k],hv:hv[k]});}
+    const p=geometry.getAttribute("position"),index=geometry.getIndex(),vertices=p?Array.from(p.array):[],indices=index?Array.from(index.array):[];
+    const triangles=[];for(let i=0;i<indices.length;i+=3){const ia=indices[i],ib=indices[i+1],ic=indices[i+2],a=ia*3,b=ib*3,c=ic*3;
+      const ax=vertices[a],ay=vertices[a+1],az=vertices[a+2],bx=vertices[b],by=vertices[b+1],bz=vertices[b+2],cx=vertices[c],cy=vertices[c+1],cz=vertices[c+2];
+      const abx=bx-ax,aby=by-ay,abz=bz-az,acx=cx-ax,acy=cy-ay,acz=cz-az,nx=aby*acz-abz*acy,ny=abz*acx-abx*acz,nz=abx*acy-aby*acx;
+      triangles.push({i:i/3,indices:[ia,ib,ic],a:[ax,ay,az],b:[bx,by,bz],c:[cx,cy,cz],normal:[nx,ny,nz],spanXZ:Math.max(Math.hypot(ax-bx,az-bz),Math.hypot(bx-cx,bz-cz),Math.hypot(cx-ax,cz-az)),y:[Math.min(ay,by,cy),Math.max(ay,by,cy)]});
+    }
+    return{kind:"crucible-water-diagnostic",version:1,grid:{n:N,size:SIZE,dx:DX,min:MIN,dry:DRY},solver:{enabled,steps,sources:sources.map(s=>({...s})),wetCells},surface:{vertices,indices,triangles},inspect:inspect()};
+  }
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
