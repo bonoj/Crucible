@@ -72,13 +72,46 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     }
     steps++;
   }
+  // Presentation reconstruction is deliberately finer than the solver grid.
+  // Solver cells are measurements/state; they are not render polygons.
+  const SURFACE_SUBDIV=2,SURFACE_STEP=DX/SURFACE_SUBDIV,SURFACE_MIN=MIN+DX*.5,SURFACE_MAX=MIN+SIZE-DX*.5;
+  function renderSample(x,z){
+    const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz),fx=gx-x0,fz=gz-z0;
+    if(x0<0||z0<0||x0>=N-1||z0>=N-1)return{depth:0,surface:NaN};
+    const cells=[[x0,z0,(1-fx)*(1-fz)],[x0+1,z0,fx*(1-fz)],[x0,z0+1,(1-fx)*fz],[x0+1,z0+1,fx*fz]];
+    let depth=0,eta=0,w=0;
+    for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
+    return{depth,surface:w>1e-8?eta/w:NaN};
+  }
+  function supported(x,z){return Number.isFinite(terrain.groundHeight(x,z))}
+  function supportBoundary(a,b){
+    let lo={...a},hi={...b},loIn=supported(lo.x,lo.z);
+    if(loIn===supported(hi.x,hi.z))return loIn?hi:lo;
+    if(!loIn){const q=lo;lo=hi;hi=q;loIn=true}
+    for(let i=0;i<8;i++){const m={x:(lo.x+hi.x)*.5,z:(lo.z+hi.z)*.5};if(supported(m.x,m.z))lo=m;else hi=m}
+    const rs=renderSample(lo.x,lo.z);return{x:lo.x,z:lo.z,y:rs.surface};
+  }
+  function wetBoundary(a,b){
+    const da=a.depth-DRY,db=b.depth-DRY,t=THREE.MathUtils.clamp(da/(da-db),0,1),x=THREE.MathUtils.lerp(a.x,b.x,t),z=THREE.MathUtils.lerp(a.z,b.z,t),rs=renderSample(x,z);
+    return{x,z,y:rs.surface,depth:DRY};
+  }
+  function clipWet(poly){
+    const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=a.depth>DRY;
+    for(const b of poly){const bin=b.depth>DRY;if(ain!==bin)out.push(wetBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
+  }
+  function clipSupport(poly){
+    const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=supported(a.x,a.z);
+    for(const b of poly){const bin=supported(b.x,b.z);if(ain!==bin)out.push(supportBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
+  }
   function refresh(){
-    const pos=[],ind=[];let vi=0;const stride=Math.max(1,Math.ceil((26-displayDensity)/5));
-    // Surface vertices are eta = bed + solved depth. No presentation-authored wave term.
-    for(let z=0;z<N-1;z+=stride)for(let x=0;x<N-1;x+=stride){const x1=Math.min(N-1,x+stride),z1=Math.min(N-1,z+stride),ks=[idx(x,z),idx(x1,z),idx(x1,z1),idx(x,z1)];
-      if(ks.some(k=>h[k]<=DRY||!valid(k)))continue;
-      for(const k of ks){const ix=k%N,iz=Math.floor(k/N);pos.push(wx(ix),bed[k]+h[k]+.008,wz(iz))}
-      ind.push(vi,vi+1,vi+2,vi,vi+2,vi+3);vi+=4;
+    const pos=[],ind=[];let vi=0;
+    const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
+    const emit=poly=>{if(poly.length<3)return;const base=vi;for(const p of poly){if(!Number.isFinite(p.y)){const r=renderSample(p.x,p.z);p.y=r.surface}if(!Number.isFinite(p.y))return;pos.push(p.x,p.y+.008,p.z);vi++}for(let j=1;j+1<poly.length;j++)ind.push(base,base+j,base+j+1)};
+    for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
+      const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),c=sample(x1,z1),d=sample(x,z1);
+      // Triangles avoid square saddle ambiguity. Wet/dry is interpolated from solver depth;
+      // material support is clipped independently against the continuous terrain/plinth query.
+      emit(clipSupport(clipWet([a,b,c])));emit(clipSupport(clipWet([a,c,d])));
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
   }
