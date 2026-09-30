@@ -389,6 +389,111 @@ This is deliberately stronger than the old rolling-context mechanism: the conver
 
 The purpose is not exhaustive transcript preservation for its own sake. The purpose is to prevent interpretation from outrunning evidence and to make later selective recovery possible from the actual local expedition record.
 
+
+## Dig 002 — Home / Hispaniolautilus, second raster shard
+
+### Human evidence
+
+The human supplied ten further historical rasters with no explanatory text.
+
+The shard has two visibly different but continuous strata.
+
+#### World-model stratum
+
+The first four rasters return to the impossible Home / literary-world geography:
+
+- an ornate observatory-library contains a large physical world-model whose geography includes cities, mountains, seas, islands, a central abyss, and an armillary-like instrument;
+- H. P. Lovecraft's *The White Ship* is visibly present as source material beside the model in the first frame;
+- between frames the modeled geography changes materially, especially around the abyss and waterfall-like edges, while the room and central apparatus remain recognizable;
+- the next view places three human figures on a terrace overlooking what appears to be the same impossible geography at inhabited scale;
+- the following view shows the sail-rigged submarine / Hispaniolautilus docked directly inside that world.
+
+The sequence therefore presents a particularly strong visual relation between **source text → manipulable world-model → inhabited world → persistent vehicle inside that world**. The rasters alone do not establish the exact causal mechanism between those stages.
+
+#### Notebook / retrospective stratum
+
+The remaining six rasters are notebook spreads that retrospectively diagram a chain of experiments and questions.
+
+The visible headings and claims include:
+
+1. **Moth — Prototype Loop (v0)**  
+   World → Attention → Focus → LLM Action → World Update → Memory, with Persistent Salience feeding the loop. Notes emphasize deterministic attention before inference, incomplete perception, asymmetric attention, and memory changing future attention.
+
+2. **Moth — Early Behavioural Observations (v0.1)**  
+   A blue flower and insect demonstrate salience changing across time after pleasant and negative experience. The page distinguishes **World State**, **Private Salience**, and **Memory / Causal History** and states: “Past experience changes future attention, even when the world is the same.”
+
+3. **Digital Familiar — From Moth to a Shared Observer / Play as Development — Into the Breach Experiments**  
+   Human and Familiar have different attention but contribute to a **Shared Causal History**. Repeated play produces shared handles including Mortal Kazbat, Lil' Smoky, Kazero / Sub-Zero, and Kaztile / Reptile. The page frames breakpoints, movement/access, flight/direction, terrain/action economy, and frozen enemies/population control as vocabulary discovered through play rather than predefined mechanics.
+
+4. **Digital Familiar — Observed Phenomena / Post-Run Causal Synthesis**  
+   The notebook names Joint Attention, Associative Transport, Semantic Compression, and Failure Changes the Shared Model. A post-run Into the Breach synthesis is described as a spontaneous causal retrospective rather than a list of events, with the open question of whether persistent shared history changes what synthesis becomes available.
+
+5. **Building a Better Laboratory / What Should We Build Ourselves?**  
+   The Into the Breach substrate is characterized as small, deterministic, inspectable, and rich enough for strategies to emerge. A division of labor is drawn between deterministic world, human exact observation/execution, and familiar patterns/abstractions. The facing page asks what kind of world could be deliberately built for co-discovery and sketches expandable grids, carriers/drones, regions/frontiers, embodiment, voice, vision, memory, and attention.
+
+6. **The Messy Middle / Ideas That Kept Surviving**  
+   Branches include Small Deterministic Worlds, Memory/Attention, Narrative Engine, Embodiment/Collaboratory, Golemancy/Emergent Assistance, Moth, and Digital Familiar. The facing page identifies recurring patterns: Limited Perception, Persistent State, Small Deterministic Substrate, Generative Interpretation, and Human + Model Negotiation.
+
+   At the bottom appears **A Small Literary Intrusion**:
+
+   > The old weather gate stood beneath the oak.
+
+   Individual words are boxed and connected to movable lexical units. The page says:
+
+   > These aren't merely descriptions. They are constraints on what can be true.
+
+   and asks:
+
+   > What happens if we move one?
+
+### Clara — immediate archaeological reading
+
+This shard changes the shape of the dig.
+
+The notebook sequence is not evidence that the later named architecture already existed in executable form at each earlier stage. It is itself a historical retrospective surface, apparently trying to understand how several experiments related. Its value is therefore different from a source-code specification or contemporaneous event log.
+
+What it does preserve unusually well is a **conceptual migration path**:
+
+**bounded attention → history-dependent salience → shared observation → vocabulary earned through repeated play → causal retrospective → deliberately designed co-discovery laboratory → branching experimental substrate → language as world constraint**
+
+The final literary intrusion sits immediately adjacent to the conceptual territory later occupied by Syntax Reroll. Without consulting deeper historical text, this raster shard suggests that literary manipulation did not arrive as an isolated game mechanic. It emerged inside a longer question about what kind of deterministic, inspectable world could support human/model co-discovery.
+
+The first four world-model rasters provide a complementary route into the same territory. They visually bind books, models, inhabited spaces, and persistent objects without explaining their machinery. The notebook pages then ask how to build worlds whose constraints and histories can be reasoned about together.
+
+A useful present hypothesis is therefore:
+
+> **Syntax Reroll may be one answer to “what should the world be made of?”: make the world partly out of language whose provenance and constraints can survive manipulation.**
+
+This is an archaeological interpretation, not recovered historical intent.
+
+### Relation to Dig 001 — Syntax Reroll
+
+The shard creates a bridge between Dig 002 and Dig 001 without collapsing them into one chronology.
+
+Dig 001 already showed a mature lexical consequence: `azure` moves into Poe's prose and the world must minimally honor the mutation.
+
+This shard exposes an earlier-looking conceptual surface where the question is still open:
+
+> “What happens if we move one?”
+
+The relation is striking, but the expedition should not infer missing intermediate steps merely because the endpoints fit neatly.
+
+### Immediate result
+
+The rasters again behave as high-density continuity parcels. In one shard they preserve:
+
+- world identity and spatial continuity;
+- source-material adjacency;
+- persistent vehicles and impossible geography;
+- explicit experimental diagrams;
+- named emergent handles;
+- revised assumptions;
+- abandoned and surviving branches;
+- and a lexical question that strongly foreshadows the later Syntax Reroll evidence.
+
+No deeper historical conversation has been consulted for this reading.
+
+
 ## Reconciliation turn — one expedition, many digs
 
 ### Human
