@@ -664,3 +664,18 @@ This is another perceptual correction pass:
 - replace the interior's visually one-sided wall treatment with hard wall geometry that remains legible/occluding from the internal camera near room edges.
 
 No new interaction or semantic machinery is implied.
+
+
+## Turn 10 — screenshot-grounded exterior cleanup
+
+### Human
+
+> Teeth from image one facing wrong direction. And the 4 rails on top and sides (2 shown in image 2) can go bye bye.
+>
+> Whoops, forgot the images.
+
+### Evidence and consequence
+
+The supplied screenshots remove the ambiguity from the previous verbal correction. The orange throat members visible around the open end are raked away from the opening; their orientation must be reversed so they visually bite into the dark throat. The screenshots also identify the unwanted rail-like geometry: four long thin members riding proud of the hull on the top/side quadrants. Remove those members completely while preserving the smaller organized greeble arrays.
+
+This turn is a useful example of perceptual evidence tightening a natural-language instruction: the images identify which geometry the human means without requiring a more elaborate naming scheme or editor selection mechanism.
