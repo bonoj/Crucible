@@ -1,7 +1,7 @@
 export function createLighthuggerExterior({THREE,scene}){
   const root=new THREE.Group();root.name="lighthugger-exterior";
   // Horizontal over the Continuity Station: monumental enough to read, small enough to share Crucible.
-  root.position.set(-1.2,8.4,-1.2);root.rotation.z=Math.PI/2;scene.add(root);
+  root.position.set(-1.2,11.4,-1.2);root.rotation.z=Math.PI/2;scene.add(root);
 
   const hull=new THREE.MeshStandardMaterial({color:0x3b3934,roughness:.58,metalness:.72}),
     brass=new THREE.MeshStandardMaterial({color:0x8f6333,roughness:.43,metalness:.78}),
@@ -40,7 +40,17 @@ export function createLighthuggerExterior({THREE,scene}){
     const mast=new THREE.Mesh(new THREE.CylinderGeometry(.018,.026,.38+Math.abs(k)*.06,5),brass);mast.position.set(2.02,y,k*.22);mast.rotation.z=Math.PI/2;root.add(mast);
   }
   // End-cap spars around the open throat.
-  for(const end of [-1,1])for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;const b=new THREE.Mesh(new THREE.BoxGeometry(.08,.34,.08),brass);b.position.set(Math.sin(a)*1.38,end*length*.515,Math.cos(a)*1.38);b.rotation.z=a;root.add(b);}
+  for(const end of [-1,1])for(let i=0;i<8;i++){
+    const a=Math.PI/8+i*Math.PI/4;
+    const radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
+    const inward=new THREE.Vector3(0,-end,0);
+    const dir=radial.clone().multiplyScalar(-.48).add(inward.multiplyScalar(.88)).normalize();
+    const toothLength=.62;
+    const b=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,toothLength,5),brass);
+    b.position.copy(radial).multiplyScalar(1.38);b.position.y=end*length*.515;
+    b.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
+    root.add(b);
+  }
   root.traverse(o=>{if(o.isMesh)o.userData.lighthuggerExterior=true});
   return{object:root,inspect:()=>({kind:"lighthugger-exterior",shape:"horizontal cored octagonal vessel",length,outerRadius:outer,innerRadius:inner,entryTarget:true})};
 }
