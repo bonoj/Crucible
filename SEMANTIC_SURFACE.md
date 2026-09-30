@@ -242,3 +242,10 @@ Before adding a control, inspect the current shell for existing symbols, orderin
 Controls that select a persistent interaction mode use the existing `.active` state convention. Compact glyph controls carry their explanatory name through `aria-label`; visible prose is not required when the surrounding control surface already uses glyph grammar.
 
 The present terrain/transport point instruments are shell-defined and mutually selected through the shared `data-terrain-tool` grammar: `⛏️` carve, `🪏` raise, `💧` source, and `🩸` thicker source. The existing meteor apparatus remains separate rather than being duplicated as another point-tool button.
+
+
+### Legacy sea volume
+
+The existing bounded sea volume remains provisional executable world vocabulary while fluid representation is unresolved. It does not require a dedicated control-bar affordance, but its state should remain semantically reachable for inspection and deliberate use.
+
+**Future removal condition:** remove the legacy sea entity once Transport has earned an accepted fluid representation that subsumes the sea volume's useful role. Do not remove it merely as cleanup before that crossing.
