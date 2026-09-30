@@ -742,3 +742,14 @@ Code inspection explains the collapse. A, B, C, and E share the same 48×48 mass
 **Result:** the A–F labels overstate executable diversity. Do not tune or cosmetically differentiate these six. Preserve A as the scalar-carrier bucket candidate. Preserve C's swirling motion only as evidence that a velocity/parcel presentation can expose coherent circulation; it is not accepted as liquid. E currently adds no earned representation beyond field + C-like tracers.
 
 **Method correction:** future n-representation boards must differ at the ontology/state/presentation level strongly enough that a human can identify the causal hypothesis without reading its label. Parameter changes or alternate update laws behind the same state and renderer do not count as separate representations.
+
+
+### Restart — independent liquid candidates, one at a time
+
+The failed A–F board changes implementation method. No new liquid candidate may inherit scalar-carrier update functions merely to accelerate comparison. Candidate A remains preserved separately as the scalar-carrier result. The premature A–F selector is removed.
+
+The first fresh liquid candidate is a purpose-built **depth-averaged shallow-water solver**. Its authoritative state is water depth plus two horizontal momentum components over sampled mutable terrain. It uses finite-volume/Rusanov-style interface flux with hydrostatic reconstruction, explicit bed-pressure forcing, wet/dry cells, CFL-bounded stepping, and frictional damping. Its rendered surface is derived directly from solved free-surface elevation `bed + depth`; there is no synthetic wave term. It imports no code from the scalar carrier or failed comparative bucket.
+
+This candidate is deliberately matched to the present apparatus: bowls, slopes, raised barriers, carved channels, point sources, and mutable terrain. It is not a claim to general 3D fluid behavior. Acceptance begins with simpler obligations: source water must spread under gravity; depressions must retain it; resting water should tend toward a level free surface; raised terrain must impede it; a sufficiently low carved escape path must redirect/release it; and no motion may exist solely because presentation asked for motion.
+
+Only after this representation is experienced and diagnosed do we decide whether to refine it, preserve it in the liquid bucket, or discard it and implement the next known representation independently.
