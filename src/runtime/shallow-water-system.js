@@ -13,6 +13,11 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:true,opacity:.72,roughness:.18,metalness:0,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
+  // Cheap cutaway companion: the solver already knows the water column. Render that
+  // knowledge only where the finite material octagon exposes its side.
+  const sideGeometry=new THREE.BufferGeometry();
+  const sideMaterial=new THREE.MeshStandardMaterial({color:0x2b7894,transparent:true,opacity:.42,roughness:.22,metalness:0,depthWrite:false,side:THREE.DoubleSide});
+  const waterSide=new THREE.Mesh(sideGeometry,sideMaterial);waterSide.name="shallow-water-boundary-curtain";waterSide.renderOrder=3;scene.add(waterSide);
 
   function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);bed[k]=terrain.materialBoundary(wx(x),wz(z)).inside?terrain.groundHeight(wx(x),wz(z)):-Infinity}}
   const valid=k=>Number.isFinite(bed[k]);
@@ -114,6 +119,25 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=supported(a.x,a.z);
     for(const b of poly){const bin=supported(b.x,b.z);if(ain!==bin)out.push(supportBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
   }
+  function refreshBoundaryCurtain(){
+    // materialBoundary.offset is the apothem of the regular octagonal world.
+    const A=terrain.materialBoundary(0,0).offset,R=A/Math.cos(Math.PI/8),segmentsPerFace=8,inset=DX*.55;
+    const corners=[];for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;corners.push({x:Math.cos(a)*R,z:Math.sin(a)*R})}
+    const pos=[],ind=[];let vi=0;
+    for(let e=0;e<8;e++){
+      const a=corners[e],b=corners[(e+1)%8],mx=(a.x+b.x)*.5,mz=(a.z+b.z)*.5,ml=Math.hypot(mx,mz),nx=mx/ml,nz=mz/ml;
+      let prev=null;
+      for(let j=0;j<=segmentsPerFace;j++){
+        const t=j/segmentsPerFace,x=THREE.MathUtils.lerp(a.x,b.x,t),z=THREE.MathUtils.lerp(a.z,b.z,t);
+        const sx=x-nx*inset,sz=z-nz*inset,ws=sampleState(sx,sz),floor=terrain.groundHeight(sx,sz);
+        const q=ws&&Number.isFinite(floor)&&ws.surface>floor+DRY?{x,z,top:ws.surface+.006,bottom:floor}:null;
+        if(prev&&q){const base=vi;pos.push(prev.x,prev.bottom,prev.z,prev.x,prev.top,prev.z,q.x,q.top,q.z,q.x,q.bottom,q.z);ind.push(base,base+1,base+2,base,base+2,base+3);vi+=4}
+        prev=q;
+      }
+    }
+    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));sideGeometry.setIndex(ind);
+    if(pos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&pos.length>0;
+  }
   function refresh(){
     const pos=[],ind=[];let vi=0;
     const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
@@ -125,6 +149,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
       emit(clipSupport(clipWet([a,b,c])));emit(clipSupport(clipWet([a,c,d])));
     }
     geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
+    refreshBoundaryCurtain();
   }
   function update(now){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
@@ -157,5 +182,5 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface,sideObject:waterSide};
 }
