@@ -689,3 +689,21 @@ The review also exposed a missing workbench interaction. The human should not be
 The first UI exposes these as `⬆️`, `⛏️`, and `💧`. Repeated Raise/Carve taps supply magnitude through repeated physical action rather than parameter sliders. Source currently represents one movable source: placing it resets Candidate A, positions the source, and enables Transport. Multi-source authoring is deferred until evidence asks for it.
 
 This is a meaningful division of collaboration: the model can generate and reason through causal representations while the human can directly sculpt the shared physical world and choose where material enters it. The semantic/API surface should retain equivalent high-control operations; the graphical instruments are not a substitute for model accessibility.
+
+
+### Land bucket — Candidate A
+
+The first twelve-representation Geological Diversity board is retired from the live interface after human review. Specimen 6 is preserved as **Land Candidate A** because it was the only member judged not terrible and because its bowl was specifically judged successful.
+
+Provenance parameters are retained with the executable candidate rather than promoted as geological vocabulary: `relief 3.2 · slope .08 · trunk 1.05 · tributary .58 · width .92 · plateau .78 · warp .14`. These labels describe the generating recipe; they have not earned semantic-surface authority. The purpose of the land bucket is to preserve successful representations so their causal/semantic surface can be recovered experimentally later rather than lost when a generation board is discarded.
+
+Science now begins directly on Land Candidate A with Transport disabled. The live geology-board selector and the other rejected board representations are removed from the interface.
+
+Human point-instrument grammar is corrected to the established compact icon language:
+
+- `⛏️` carve
+- `🪏` raise
+- `💧` source
+- `🩸` thicker source
+
+The existing meteor control remains the meteor control and is not duplicated. The two source instruments share placement semantics and differ only in source rate for the present candidate (`.9` versus `2.7`). Their existence should survive replacement of the underlying transport representation if point-source placement remains useful.
