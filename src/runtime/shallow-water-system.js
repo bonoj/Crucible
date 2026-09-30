@@ -5,14 +5,14 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const K=N*N,idx=(x,z)=>x+N*z,wx=x=>MIN+(x+.5)*DX,wz=z=>MIN+(z+.5)*DX;
   const h=new Float32Array(K),hu=new Float32Array(K),hv=new Float32Array(K),bed=new Float32Array(K);
   const nh=new Float32Array(K),nhu=new Float32Array(K),nhv=new Float32Array(K);
-  let enabled=false,lastNow=null,acc=0,steps=0,totalInjected=0,totalEscaped=0,displayDensity=25;
+  let enabled=false,lastNow=null,acc=0,steps=0,totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25;
   let sources=[{x:0,z:0,rate:.9}];
 
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshStandardMaterial({color:0x318fb2,transparent:true,opacity:.72,roughness:.18,metalness:0,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
 
-  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)bed[idx(x,z)]=terrain.groundHeight(wx(x),wz(z))}
+  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++)bed[idx(x,z)]=terrain.worldBedHeight(wx(x),wz(z))}
   const valid=k=>Number.isFinite(bed[k]);
   function cell(x,z){return{x:THREE.MathUtils.clamp(Math.floor((x-MIN)/DX),0,N-1),z:THREE.MathUtils.clamp(Math.floor((z-MIN)/DX),0,N-1)}}
   function addWater(q,x,z){if(!(q>0))return 0;const c=cell(x,z),k=idx(c.x,c.z);if(!valid(k))return 0;h[k]+=q/(DX*DX);totalInjected+=q;return q}
@@ -83,7 +83,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
     return{depth,surface:w>1e-8?eta/w:NaN};
   }
-  function supported(x,z){return Number.isFinite(terrain.groundHeight(x,z))}
+  function supported(x,z){return Number.isFinite(terrain.worldBedHeight(x,z))}
   function supportBoundary(a,b){
     let lo={...a},hi={...b},loIn=supported(lo.x,lo.z);
     if(loIn===supported(hi.x,hi.z))return loIn?hi:lo;
@@ -121,7 +121,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     let guard=0;while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
     refresh();
   }
-  function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=steps=0;acc=0;sampleBed();refresh()}
+  function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
   function setSource({x=sources[0]?.x??0,z=sources[0]?.z??0,rate=sources[0]?.rate??0}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
   function setSources(a=[]){sources=a.map(s=>({x:s.x??0,z:s.z??0,rate:Math.max(0,s.rate??0)}));return sources.map(s=>({...s}))}
@@ -138,7 +138,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     return w>1e-6?{depth:depth/w,surface:eta/w,u:u/w,v:v/w}:null;
   }
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
-  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed},wetCells:wet,steps}}
+  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps}}
   sampleBed();refresh();
   return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,inspect,object:surface};
 }
