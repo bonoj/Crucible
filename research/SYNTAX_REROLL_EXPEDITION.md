@@ -550,7 +550,7 @@ The candidate build for source head `6069da17c0492a57e66b6bebcfc72ecf097cf0b7` p
 
 ### Human
 
-> I think the plinth volume eats entire scene? Let's instead put a long lighthugger horizontally above the orbital station, basically an octagonal oneill cylinder. It can just hang there as if it just dropped out of hyperspace. In my head I'm seeing an octagonal version of the dune spacing guild heighliner. So maybe a cored out octagon informed by the plint and orbital station simultaneously? Greeble the shit out of it with tiny bits and bobs in comprehensible areays. Windows can just be tiny warm barely outside cubes. Tapping that takes us inside. Solves the plinth tap swallowing.
+> I think the plinth volume eats entire scene? Let's instead put a long lighthugger horizontally above the orbital station, basically an octagonal oneill cylinder. It can just hang there as if it just dropped out of hyperspace. In my head I'm seeing an octagonal version of the dune spacing guild heighliner. So maybe a cored out octagon informed by the plint and orbital station simultaneously? Greeble the shit out of it with tiny bits and bobs in comprehensible arrays. Windows can just be tiny warm barely outside cubes. Tapping that takes us inside. Solves the plinth tap swallowing.
 
 ### Consequence
 
@@ -580,3 +580,26 @@ A new `src/runtime/lighthugger-exterior.js` now places a long horizontal, cored 
 The vessel itself is now the raycast entry target. The plinth no longer enters the interior. Tapping the Lighthugger switches into the same experimental interior; the existing return affordance exits back to the Terrordrome.
 
 Source head `40aa1238f63390b24399ca8f330cb411275d241f` passed the repository build/test workflow. Stable promotion remains untouched pending human experience.
+
+
+## Turn 6 — microscopic correction inside macroscopic delegation
+
+### Human
+
+> Just checked the log out of curiosity. Can you correct my arrays typo? Hahaha. And this counts as a turn, too. It's a fantastic example of the control granularity a human still has despite trusting the model with massive single turn tasks.
+
+### Consequence
+
+The typo `areays` in Turn 5 is corrected to `arrays` at the human's request. This is an explicit correction to the captured human evidence rather than a silent editorial cleanup.
+
+More importantly, the correction itself is evidence about the collaboration's control surface.
+
+Large delegation and fine human control are not opposites. The human can hand the model a broad executable expedition, allow thousands of ordinary implementation decisions to happen without interruption, and still reach into the resulting trajectory to correct one word when that word matters.
+
+Candidate collaboration property:
+
+> **Control granularity is independent of delegation scale.**
+
+The model may carry a massive single-turn task while the human retains the ability to intervene at the scale of architecture, behavior, presentation, a single rule, or a single typo. Trust reduces required micromanagement; it does not remove the human's capacity to steer precisely.
+
+This turn is itself preserved because the act of correcting the record demonstrates the property better than a retrospective description would.
