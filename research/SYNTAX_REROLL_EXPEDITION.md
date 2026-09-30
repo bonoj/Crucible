@@ -569,3 +569,14 @@ The Lighthugger earns an exterior body in the Terrordrome:
 - plinth taps return to their prior Crucible behavior and no longer act as a scene-wide portal.
 
 The exterior is an entrance handle and world participant, not a requirement to explain propulsion, hyperspace, crew, scale physics, or interior/exterior metric consistency yet.
+
+
+### Executable consequence — exterior portal candidate
+
+The plinth-entry experiment was rejected after human inspection because the plinth's large interaction volume swallowed too much of the scene. The implementation has been corrected rather than tuned around that bad affordance.
+
+A new `src/runtime/lighthugger-exterior.js` now places a long horizontal, cored octagonal vessel above the Continuity Station. Its exterior uses repeated hull slabs and collars, ordered service-module arrays, longitudinal rails, small antenna/mast clusters, and tiny warm window cubes to establish scale and machinery without requiring bespoke assets.
+
+The vessel itself is now the raycast entry target. The plinth no longer enters the interior. Tapping the Lighthugger switches into the same experimental interior; the existing return affordance exits back to the Terrordrome.
+
+Source head `40aa1238f63390b24399ca8f330cb411275d241f` passed the repository build/test workflow. Stable promotion remains untouched pending human experience.
