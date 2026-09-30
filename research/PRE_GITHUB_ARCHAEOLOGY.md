@@ -654,3 +654,44 @@ Feed this completed local record to a cold receiver and see whether it can orien
 There is **more historical material available, but no archaeological debt**. The most valuable next move should come from curiosity rather than completeness pressure.
 
 If the upload window reopens and the notebook sequence remains fun, continue feeding the rich case studies. If executable pressure wins first, make one tiny Crucible probe. If neither feels necessary, Dig 001 may stop here without losing the result.
+
+
+## Turn — archaeology stays open; Syntax Reroll earns an executable collision
+
+### Human
+
+> Let's keep this expedition open to continue archaeology once we get image uploads back. We can explore syntax reroll directly in crucible by running the game inside the engine just like Cinnabar and Cinnamon. And now we have a use for your scissors... it'll become a dev button down at the bottom of the ui. We can use the same cnc format to keep it beautifully siloed. The terrordrome can suddenly get noisy as hell. Systems and experiments collide. And Clara can sit above attending as she sees fit with a nod to Eunice Akinye in her lunar sanctum.
+
+### Consequence
+
+The Pre-GitHub Archaeology expedition remains **open**. Image-upload availability is only a temporary aperture constraint; it is not an expedition finish line. Additional historical raster shards can resume here when available.
+
+At the same time, Dig 001 has now earned an executable branch inside Crucible.
+
+The intended shape is explicitly **not** a reconstructed standalone Syntax Reroll engine. Syntax Reroll becomes a Crucible-hosted game/experiment in the same spirit as Cinnabar & Cinnamon: locally siloed machinery that can run inside the shared world and therefore collide with other systems when useful.
+
+The playful expedition-selection artifact also acquires executable meaning: **Scissors** becomes a developer button at the bottom of the Crucible UI and serves as the entry/activation handle for the Syntax Reroll experiment.
+
+The existing Cinnabar & Cinnamon organizational pattern is the preferred precedent for keeping the implementation bounded rather than spreading literary-game state through unrelated Crucible systems.
+
+This creates a new experimental property that the historical Syntax Reroll work did not possess: the game no longer needs to own its universe. It can inhabit the Terrordrome alongside bearings, terrain, meteors, Cinnabar & Cinnamon, CLARA, and whatever else Crucible has legitimately accumulated. The resulting collisions are part of the opportunity rather than contamination to be prevented automatically.
+
+Candidate principle:
+
+> **Systems and experiments collide.**
+
+Silo implementation boundaries where they preserve legibility; do not silo world consequences merely to preserve conceptual purity.
+
+CLARA remains spatially above the shared world and may attend to these events through whatever bounded observation/attention machinery is actually available or later earned. The human's image of Clara in a lunar sanctum is a deliberate nod to **Eunice Akinye** and should be preserved as creative orientation, not silently promoted into a new autonomous-attention capability.
+
+### Executable frontier earned by this turn
+
+- Keep archaeology open for later raster continuation.
+- Inspect Cinnabar & Cinnamon's current code/research boundaries before implementing Syntax Reroll.
+- Add **Scissors** as a bottom developer control using existing Crucible UI conventions.
+- Implement the smallest playable Syntax Reroll probe inside a similarly siloed game boundary.
+- Let it operate on Crucible world state rather than reconstructing the old self-contained universe.
+- Preserve current Crucible systems unless an actual collision earns integration work.
+- Do not manufacture autonomous CLARA attention merely because the spatial metaphor is compelling.
+
+The precise first literary substrate, lexical inventory, mutation rule, and physical consequence should be chosen from the recovered archaeological evidence and current executable affordances rather than by rebuilding the historical implementation wholesale.
