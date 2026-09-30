@@ -55,7 +55,7 @@ const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensit
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
 const interiorTarget=world.entity();world.add(interiorTarget,Transform,{position:new THREE.Vector3(0,-29.7,0),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});world.add(interiorTarget,Locus,{id:interiorTarget,kind:"lighthugger-interior"});
-const interiorCamera=addCamera({name:"Lighthugger Interior",position:[5.2,-27.2,7.2],orbit:{azimuth:.58,polar:1.12,distance:7.7,minDistance:3.4,maxDistance:9.5,minPolar:.5,maxPolar:1.46,minWorldY:-31.8},fov:48,targetEntity:interiorTarget});
+const interiorCamera=addCamera({name:"Lighthugger Interior",position:[4.1,-27.4,5.6],orbit:{azimuth:.58,polar:1.12,distance:6.2,minDistance:3.0,maxDistance:7.0,minPolar:.5,maxPolar:1.46,minWorldY:-31.8},fov:48,targetEntity:interiorTarget});
 const lighthuggerInterior=createLighthuggerInterior({THREE,scene:three.scene,origin:new THREE.Vector3(0,-32,0)});
 const lighthuggerExterior=createLighthuggerExterior({THREE,scene:three.scene});
 const exitLighthuggerButton=document.querySelector("#exit-lighthugger");
