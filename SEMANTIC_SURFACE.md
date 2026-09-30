@@ -231,3 +231,14 @@ For an entity carrying both `Transform` and `RenderObject`, `Transform.visible` 
 Presentation objects that are not independently registered as ECS `RenderObject` entities may own local Three.js visibility. Examples include internal HUD elements, debug footprint lines, chronograph marks, meteor wakes, and other child/helper presentation whose visibility is not synchronized from an ECS transform.
 
 The distinction is ownership, not whether the object happens to be rendered by Three.js: **ECS-owned render visibility changes through ECS state; presentation-owned visibility changes locally.**
+
+
+## Control-surface grammar
+
+Crucible's compact construction controls are declared in `src/shell.html`, styled as first-class controls in `src/styles.css`, and bound to behavior from runtime code. New ordinary controls should inherit this existing shell grammar rather than being created ad hoc from JavaScript.
+
+Before adding a control, inspect the current shell for existing symbols, ordering, grouping, active-state behavior, and semantics. **Do not reuse an existing visible symbol for a different operation and do not duplicate an existing operation merely because a new experiment needs access to it.** Semantic novelty does not imply UI novelty.
+
+Controls that select a persistent interaction mode use the existing `.active` state convention. Compact glyph controls carry their explanatory name through `aria-label`; visible prose is not required when the surrounding control surface already uses glyph grammar.
+
+The present terrain/transport point instruments are shell-defined and mutually selected through the shared `data-terrain-tool` grammar: `⛏️` carve, `🪏` raise, `💧` source, and `🩸` thicker source. The existing meteor apparatus remains separate rather than being duplicated as another point-tool button.
