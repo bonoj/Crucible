@@ -1,6 +1,8 @@
+import {createTerrainRecipeGenerator} from "./terrain-recipe-generator.js";
 // Deterministic 2D terrain genesis. Heightmaps author the initial surface;
 // Crucible's signed-density field becomes authoritative immediately afterward.
 export function createTerrainGenesis({terrain}){
+  const procedural=createTerrainRecipeGenerator();
   const TAU=Math.PI*2,clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),smooth=t=>t*t*(3-2*t),fract=v=>v-Math.floor(v);
   const hash=(x,z,s)=>fract(Math.sin(x*127.1+z*311.7+s*74.7)*43758.5453123);
   function noise(x,z,s){
@@ -53,8 +55,8 @@ export function createTerrainGenesis({terrain}){
     if(op.kind==="tilt")return op.amp*(x*Math.cos(op.angle)+z*Math.sin(op.angle))/12;
     return 0;
   }
-  function run(index=0,worldSeed=741){
-    const recipe=recipes[((index%recipes.length)+recipes.length)%recipes.length],meta=terrain.inspect(),[nx,ny,nz]=meta.grid,[sx,sy,sz]=meta.volume.spacing,[minx,miny,minz]=meta.volume.min;
+  function execute(recipe,worldSeed,source){
+    const meta=terrain.inspect(),[nx,ny,nz]=meta.grid,[sx,sy,sz]=meta.volume.spacing,[minx,miny,minz]=meta.volume.min;
     const height=new Float32Array(nx*nz),passes=[];
     for(const op of recipe.ops){
       const d=domain(worldSeed,recipe.id+":"+op.id);let sum=0,max=0;
@@ -65,7 +67,10 @@ export function createTerrainGenesis({terrain}){
     const targetLo=-2.25,targetHi=4.65,span=Math.max(.001,hi-lo),f=terrain.field;
     for(let z=0;z<nz;z++)for(let x=0;x<nx;x++){const h=targetLo+(height[x+nx*z]-lo)/span*(targetHi-targetLo);height[x+nx*z]=h;for(let y=0;y<ny;y++){const wy=miny+y*sy;f[x+nx*(y+ny*z)]=h-wy;}}
     terrain.rebuildAll();
-    return{kind:"heightmap-genesis",seed:worldSeed,index:recipes.indexOf(recipe),recipe:{id:recipe.id,label:recipe.label,ops:recipe.ops.map(o=>({...o}))},heightmap:{grid:[nx,nz],min:Math.min(...height),max:Math.max(...height),values:[...height]},passes};
+    return{kind:"heightmap-genesis",source,seed:worldSeed,index:recipes.indexOf(recipe),recipe:{id:recipe.id,label:recipe.label,family:recipe.family??null,ops:recipe.ops.map(o=>({...o}))},heightmap:{grid:[nx,nz],min:Math.min(...height),max:Math.max(...height),values:[...height]},passes};
   }
-  return{run,recipes:()=>recipes.map(r=>({id:r.id,label:r.label,ops:r.ops.map(o=>({...o}))}))};
+  }
+  function run(index=0,worldSeed=741){const recipe=recipes[((index%recipes.length)+recipes.length)%recipes.length];return execute(recipe,worldSeed,"authored");}
+  function runSeed(seed=741){const recipe=procedural.generate(seed|0);return execute(recipe,seed|0,"seed");}
+  return{run,runSeed,generateRecipe:seed=>procedural.generate(seed|0),families:procedural.families,recipes:()=>recipes.map(r=>({id:r.id,label:r.label,ops:r.ops.map(o=>({...o}))}))};
 }
