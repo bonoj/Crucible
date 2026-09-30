@@ -1,26 +1,26 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Crucible — a conversationally grown physical world."><title>Crucible</title>
-<style>*{box-sizing:border-box}html,body,#world{margin:0;width:100%;height:100%;overflow:hidden}body{height:100dvh;background:#342820;color:#ead9bb;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}#world{position:fixed;inset:0;touch-action:none;overscroll-behavior:none}#world canvas{display:block;width:100%;height:100%}#mark{position:fixed;left:max(.7rem,env(safe-area-inset-left));top:max(.7rem,env(safe-area-inset-top));padding:.45rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font-size:11px;letter-spacing:.06em;pointer-events:none}#debug-tools{position:fixed;z-index:10;right:max(.6rem,env(safe-area-inset-right));bottom:max(.6rem,env(safe-area-inset-bottom));display:flex;align-items:end;gap:.45rem;font:12px/1.2 ui-monospace,monospace}#fps-counter,#build-id{padding:.42rem .5rem;border:1px solid #d1a36b33;border-radius:.4rem;background:#2b211bdd;color:#ead9bb}#debug-refresh,#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#export-locus-log,#time-scale,#impact-buckets button{min-height:2.1rem;padding:.4rem .65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font:inherit}#impact-buckets{display:flex;gap:.18rem}#impact-buckets button{min-width:2rem;padding:.4rem}#impact-buckets button.active{outline:1px solid #ead9bb;background:#5a4030}#call-meteor,#spawn-bearings,#toggle-water,#randomize-terrain,#debug-refresh,#export-locus-log,#time-scale{font-size:1rem}#toggle-water.active{outline:1px solid #bfe9ee;background:#304c52}#diagnostics{position:fixed;z-index:20;left:.7rem;right:.7rem;bottom:.7rem;max-height:45vh;overflow:auto;margin:0;padding:.8rem;border:2px solid #9f3e2e;background:#2a1713;color:#ffd9bd;white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace}@media(max-width:28rem){#debug-tools{max-width:calc(100vw - 1.2rem);flex-wrap:wrap;justify-content:end}}#exit-lighthugger{position:fixed;z-index:15;left:50%;bottom:max(.8rem,env(safe-area-inset-bottom));transform:translateX(-50%);min-height:2.4rem;padding:.55rem .9rem;border:1px solid #d7ae72aa;border-radius:.45rem;background:#171715e8;color:#f0d7aa;font:12px/1.2 ui-monospace,monospace;letter-spacing:.08em}body.inside-lighthugger #debug-tools,body.inside-lighthugger #mark{display:none}</style></head>
+<style>*{box-sizing:border-box}html,body,#world{margin:0;width:100%;height:100%;overflow:hidden}body{height:100dvh;background:#342820;color:#ead9bb;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}#world{position:fixed;inset:0;touch-action:none;overscroll-behavior:none}#world canvas{display:block;width:100%;height:100%}#mark{position:fixed;left:max(.7rem,env(safe-area-inset-left));top:max(.7rem,env(safe-area-inset-top));padding:.45rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font-size:11px;letter-spacing:.06em;pointer-events:none}#debug-tools{position:fixed;z-index:10;right:max(.6rem,env(safe-area-inset-right));bottom:max(.6rem,env(safe-area-inset-bottom));display:flex;align-items:end;gap:.45rem;font:12px/1.2 ui-monospace,monospace}#diagnostics{position:fixed;z-index:20;left:.7rem;right:.7rem;bottom:.7rem;max-height:45vh;overflow:auto;margin:0;padding:.8rem;border:2px solid #9f3e2e;background:#2a1713;color:#ffd9bd;white-space:pre-wrap;font:12px/1.4 ui-monospace,monospace}@media(max-width:28rem){#debug-tools{max-width:calc(100vw - 1.2rem);flex-wrap:wrap;justify-content:end}}#exit-lighthugger{position:fixed;z-index:15;left:50%;bottom:max(.8rem,env(safe-area-inset-bottom));transform:translateX(-50%);min-height:2.4rem;padding:.55rem .9rem;border:1px solid #d7ae72aa;border-radius:.45rem;background:#171715e8;color:#f0d7aa;font:12px/1.2 ui-monospace,monospace;letter-spacing:.08em}body.inside-lighthugger #debug-tools,body.inside-lighthugger #mark{display:none}
+/* DevUI grammar: controls are styled by role, never by operation id. */
+#debug-tools .dev-group,#debug-tools .dev-controls{display:flex;gap:.18rem}#debug-tools .dev-control{min-height:2.1rem;padding:.4rem .65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font:inherit;font-size:1rem}#debug-tools .dev-control.active{outline:1px solid #ead9bb;background:#5a4030}#debug-tools .dev-readout{padding:.42rem .5rem;border:1px solid #d1a36b33;border-radius:.4rem;background:#2b211bdd;color:#ead9bb}
+
+/* Uniform DevUI geometry. Every current and future control inherits this. */
+#debug-tools{align-items:center}#debug-tools .dev-group,#debug-tools .dev-controls{align-items:stretch}#debug-tools .dev-control{display:inline-flex;align-items:center;justify-content:center;height:2.1rem;min-width:2.1rem}#debug-tools .dev-readout{display:inline-flex;align-items:center;height:2.1rem}
+
+/* DevUI layout is deterministic: semantic groups do not participate in geometry. */
+#debug-tools{display:grid;grid-template-columns:repeat(7,2.65rem);grid-auto-rows:2.65rem;gap:.28rem;align-items:stretch;justify-items:stretch;max-width:none}#debug-tools .dev-group,#debug-tools .dev-controls{display:contents}#debug-tools .dev-control{box-sizing:border-box;width:100%;height:100%;min-width:0;padding:0;line-height:1}#debug-tools .dev-readout{box-sizing:border-box;width:100%;height:100%;min-width:0;padding:.35rem .45rem;justify-content:center;white-space:nowrap}#debug-tools .dev-readout:first-child{grid-column:span 2}#debug-tools .dev-readout:nth-child(2){grid-column:span 3}@media(max-width:28rem){#debug-tools{grid-template-columns:repeat(7,minmax(0,1fr));width:min(calc(100vw - 1.2rem),25rem);max-width:min(calc(100vw - 1.2rem),25rem)}}
+
+/* Runtime status sits beneath the Crucible mark; controls remain operation-only. */
+#dev-status{position:fixed;z-index:10;left:max(.7rem,env(safe-area-inset-left));top:calc(max(.7rem,env(safe-area-inset-top)) + 2.35rem);padding:.42rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font:11px/1.2 ui-monospace,monospace;letter-spacing:.02em;pointer-events:none}body.inside-lighthugger #dev-status{display:none}#debug-tools .dev-control[aria-label^="Call meteor"]{font-size:calc(1rem * var(--meteor-scale,1))}
+</style></head>
 <body><main id="world" aria-label="Crucible world. Drag to orbit; pinch or use the mouse wheel to change distance."></main>
 <aside id="mark"><b>⚗️ CRUCIBLE</b></aside>
-<aside id="debug-tools" aria-label="Construction controls">
-  <output id="fps-counter" aria-label="Frames per second">fps …</output>
-  <output id="build-id">build …</output>
-  <span id="impact-buckets" aria-label="Impact magnitude">
-    <button type="button" data-impact-bucket aria-label="Impact magnitude 1">1</button><button type="button" data-impact-bucket aria-label="Impact magnitude 2">2</button><button type="button" data-impact-bucket aria-label="Impact magnitude 3">3</button><button type="button" data-impact-bucket aria-label="Impact magnitude 4">4</button>
-  </span>
-  <button id="call-meteor" type="button" aria-label="Call meteor">☄</button>
-  <button id="spawn-bearings" type="button" aria-label="Spawn 25 thousand bearings">+25K ●</button>
-  <button id="toggle-water" type="button" aria-label="Toggle water">💧</button>
-  <button id="randomize-terrain" type="button" aria-label="Randomize terrain">⛰️</button>
-  <button id="export-locus-log" type="button" aria-label="Export locus observation log">LOG</button>
-  <button id="time-scale" type="button" aria-label="Simulation speed 1 times">1×</button>
-  <button id="debug-refresh" type="button" aria-label="Refresh">↻</button>
-</aside>
+<aside id="dev-status" aria-label="Runtime status"></aside>
+<aside id="debug-tools" aria-label="Construction controls"></aside>
 <button id="exit-lighthugger" type="button" hidden aria-label="Return to the Terrordrome">↖ RETURN</button>
 <pre id="diagnostics" role="alert" hidden></pre>
-<script>globalThis.__CRUCIBLE_BUILD__="99fdc6be04ff4fbf9d1ae5f7f9db61c36796cb97";</script>
+<script>globalThis.__CRUCIBLE_BUILD__="53dce6604eec0ecb7165a743ba4b644e3f532e7c";</script>
 <script>(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -42239,6 +42239,10 @@ void main() {
       }
       return { q, nx, nz };
     }
+    function materialBoundary(x, z) {
+      const b = boundary(x, z);
+      return { inside: b.q <= MATERIAL_APOTHEM + 1e-6, distance: MATERIAL_APOTHEM - b.q, nx: b.nx, nz: b.nz, offset: MATERIAL_APOTHEM };
+    }
     function clipPlane(poly, nx, nz) {
       if (!poly.length) return poly;
       const out = [];
@@ -42311,8 +42315,26 @@ void main() {
       const s = Math.sin(n * 127.1 + seed * 311.7) * 43758.5453123;
       return s - Math.floor(s);
     }
+    const LAND_CANDIDATE_A = { id: "land-a", provenance: "Geological Diversity board 1 specimen 6", relief: 3.2, slope: 0.08, trunk: 1.05, trib: 0.58, width: 0.92, plateau: 0.78, warp: 0.14 };
+    const segDist = (x, z, ax, az, bx, bz) => {
+      const dx = bx - ax, dz = bz - az, l = dx * dx + dz * dz || 1, t = THREE2.MathUtils.clamp(((x - ax) * dx + (z - az) * dz) / l, 0, 1);
+      return Math.hypot(x - (ax + dx * t), z - (az + dz * t));
+    };
     function terrainSeedHeight(x, z) {
-      return SURFACE_Y;
+      const g = LAND_CANDIDATE_A;
+      const radial = Math.hypot(x * 0.82, z * 0.72), plateau = g.plateau * Math.max(0, 1 - Math.pow(radial / 9.4, 4));
+      const macro = g.relief * (0.24 * Math.sin(x * 0.34 + seed * 0.71) + 0.18 * Math.cos(z * 0.29 - seed * 0.43) + g.warp * 0.12 * Math.sin((x + z) * 0.71 + seed));
+      const downhill = -g.slope * (x + 8);
+      let h = SURFACE_Y + plateau + macro + downhill;
+      const bend = 1.15 * Math.sin(seed * 1.37), trunk = segDist(x, z, -7.8, bend, -0.5, 0.15 * bend) + segDist(x, z, -0.5, 0.15 * bend, 8.5, -0.55 * bend);
+      h -= g.trunk * Math.exp(-(trunk * trunk) / (2 * g.width * g.width));
+      const joins = [[-6.2, 5.8, -2, 1.2], [-5.4, -5.9, -1.2, -0.8], [0.2, 5.6, 2.8, -0.1], [0.8, -5.8, 3.4, -0.35]];
+      for (let i = 0; i < joins.length; i++) {
+        if ((seed + i) % 3 === 0 && g.trib < 0.7) continue;
+        const [ax, az, bx, bz] = joins[i], d = segDist(x, z, ax, az, bx, bz), w = g.width * (0.58 + 0.08 * (i % 2));
+        h -= g.trib * (0.72 + 0.12 * i) * Math.exp(-(d * d) / (2 * w * w));
+      }
+      return h;
     }
     function synthesize(nextSeed = seed) {
       seed = nextSeed | 0;
@@ -42457,6 +42479,37 @@ void main() {
       const terrainY = bearingTerrainHeight(x, z);
       return insideApparatus(x, z) ? Math.max(terrainY, APPARATUS_TOP) : terrainY;
     }
+    function worldBedHeight(x, z) {
+      if (!insideApparatus(x, z)) return -Infinity;
+      const terrainY = terrainHeight(x, z);
+      return Number.isFinite(terrainY) ? terrainY : APPARATUS_BOTTOM;
+    }
+    function raise(center, { radius = 3.2, height = 2.2 } = {}) {
+      const r = Math.max(0.3, radius), h = Math.max(0.04, height), ix0 = Math.max(1, Math.floor((center.x - r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1), iz0 = Math.max(1, Math.floor((center.z - r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) - 1), iz1 = Math.min(NZ - 2, Math.ceil((center.z + r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) + 1);
+      for (let z = iz0; z <= iz1; z++) for (let x = ix0; x <= ix1; x++) {
+        const p = wp(x, 0, z), radial = Math.hypot(p.x - center.x, p.z - center.z);
+        if (radial >= r) continue;
+        const w = 1 - radial / r, delta = h * w * w * (3 - 2 * w);
+        for (let y = 1; y < NY - 1; y++) field[idx(x, y, z)] += delta;
+      }
+      const dirty = { x0: ix0, x1: ix1, z0: iz0, z1: iz1 };
+      rebuild(dirty);
+      rebuildSupport(dirty);
+      return { radius: r, height: h };
+    }
+    function lower(center, { radius = 3.2, depth = 2.2 } = {}) {
+      const r = Math.max(0.3, radius), d = Math.max(0.04, depth), ix0 = Math.max(1, Math.floor((center.x - r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1), iz0 = Math.max(1, Math.floor((center.z - r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) - 1), iz1 = Math.min(NZ - 2, Math.ceil((center.z + r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) + 1);
+      for (let z = iz0; z <= iz1; z++) for (let x = ix0; x <= ix1; x++) {
+        const p = wp(x, 0, z), radial = Math.hypot(p.x - center.x, p.z - center.z);
+        if (radial >= r) continue;
+        const w = 1 - radial / r, delta = d * w * w * (3 - 2 * w);
+        for (let y = 1; y < NY - 1; y++) field[idx(x, y, z)] -= delta;
+      }
+      const dirty = { x0: ix0, x1: ix1, z0: iz0, z1: iz1 };
+      rebuild(dirty);
+      rebuildSupport(dirty);
+      return { radius: r, depth: d };
+    }
     function excavate(center, { radius = 0.62, depth = 0.34 } = {}) {
       const r = Math.max(0.3, radius), d = Math.max(0.04, depth), ix0 = Math.max(1, Math.floor((center.x - r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1), iz0 = Math.max(1, Math.floor((center.z - r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) - 1), iz1 = Math.min(NZ - 2, Math.ceil((center.z + r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) + 1);
       for (let z = iz0; z <= iz1; z++) for (let x = ix0; x <= ix1; x++) {
@@ -42496,16 +42549,33 @@ void main() {
       rebuildSupport(dirty);
       return { magnitude: e, radius, depth, rim, centralUplift: peakStrength };
     }
+    function snapshot() {
+      return { seed, field: field.slice() };
+    }
+    function restore(state) {
+      if (!state?.field || state.field.length !== field.length) throw new Error("Invalid terrain snapshot");
+      seed = state.seed | 0;
+      field.set(state.field);
+      rebuild();
+      rebuildSupport();
+      return seed;
+    }
     function reset() {
       field.set(initial);
       rebuild();
       rebuildSupport();
     }
-    function randomize(nextSeed = seed + 1) {
-      synthesize(nextSeed);
+    function loadLandCandidate({ rebuild: doRebuild = true } = {}) {
+      synthesize(6);
+      if (doRebuild) {
+        rebuild();
+        rebuildSupport();
+      }
+      return LAND_CANDIDATE_A.id;
+    }
+    function rebuildAll() {
       rebuild();
       rebuildSupport();
-      return seed;
     }
     function collideSphere(position, velocity, radius, restitution = 0.28, drag = 0.86) {
       if (position.y - radius >= APPARATUS_TOP || position.y + radius <= APPARATUS_BOTTOM) return false;
@@ -42562,14 +42632,14 @@ void main() {
     }
     rebuild();
     rebuildSupport();
-    return { mesh, apparatus, field, rebuild, impact, excavate, reset, randomize, groundHeight, groundHeightExact, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, collideSphere, collideBearingState, segmentApparatusHit, belowPlinthOcclusion, occludeBelowPlinth, inspect: () => ({ grid: [NX, NY, NZ], chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
+    return { mesh, apparatus, field, rebuild, impact, excavate, raise, lower, snapshot, restore, reset, loadLandCandidate, rebuildAll, groundHeight, groundHeightExact, worldBedHeight, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, materialBoundary, collideSphere, collideBearingState, segmentApparatusHit, belowPlinthOcclusion, occludeBelowPlinth, landCandidate: () => ({ ...LAND_CANDIDATE_A }), inspect: () => ({ grid: [NX, NY, NZ], volume: { min: [MIN.x, MIN.y, MIN.z], max: [MAX.x, MAX.y, MAX.z], spacing: [(MAX.x - MIN.x) / (NX - 1), (MAX.y - MIN.y) / (NY - 1), (MAX.z - MIN.z) / (NZ - 1)] }, chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
   }
 
   // src/runtime/meteor-system.js
   function createMeteorSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, onImpact = () => {
   } }) {
     const { Transform: Transform2, RenderObject: RenderObject2, Meteor, MeteorShower, Body: Body2, Locus: Locus2 } = components2;
-    let serial = 0, clockNow = 0;
+    let serial = 0, clockNow = 0, enabled = true, pausedAt = null;
     const clamp3 = (x, a, b) => Math.max(a, Math.min(b, x));
     class RNG {
       constructor(s = 1) {
@@ -42651,8 +42721,37 @@ void main() {
       if (Locus2) world2.add(id, Locus2, { id: locus2 });
       return id;
     }
+    function setEnabled(next, now = clockNow) {
+      next = !!next;
+      if (next === enabled) return enabled;
+      if (!next) {
+        pausedAt = now;
+        enabled = false;
+        for (const id of world2.query(Meteor)) {
+          const m = Meteor.get(id), t = Transform2.get(id);
+          if (t) t.visible = false;
+          if (m?.wake) m.wake.visible = false;
+        }
+        return enabled;
+      }
+      const shift = Math.max(0, now - (pausedAt ?? now));
+      for (const id of world2.query(Meteor)) {
+        const m = Meteor.get(id), t = Transform2.get(id);
+        m.born += shift;
+        m.wakeLastEmit += shift;
+        for (const p of m.wakeParticles || []) p.born += shift;
+        if (t) t.visible = true;
+        if (m?.wake) m.wake.visible = true;
+      }
+      for (const id of world2.query(MeteorShower)) MeteorShower.get(id).next += shift;
+      pausedAt = null;
+      enabled = true;
+      clockNow = now;
+      return enabled;
+    }
     function update(now) {
       clockNow = now;
+      if (!enabled) return;
       for (const id of world2.query(Transform2, Meteor)) {
         const t = Transform2.get(id), m = Meteor.get(id), u = clamp3((now - m.born) / m.life, 0, 1), e = 1 - Math.pow(1 - u, 2), prev = t.position.clone(), next = m.start.clone().lerp(m.target, e);
         if (m.packet && m.packet.count > 1) {
@@ -42702,7 +42801,7 @@ void main() {
         else s.next = now + s.delays[s.index++];
       }
     }
-    return { meteor, meteors: meteors2, launch, targetAt, update, inspect: () => ({ falling: world2.query(Meteor).length, showers: world2.query(MeteorShower).length }) };
+    return { meteor, meteors: meteors2, launch, targetAt, update, setEnabled, inspect: () => ({ enabled, falling: world2.query(Meteor).length, showers: world2.query(MeteorShower).length }) };
   }
 
   // src/runtime/meteor-weather-system.js
@@ -42721,7 +42820,7 @@ void main() {
       }
     }
     const rng = new RNG(seed);
-    let nextAt = 2200 + rng.next() * 2800, events = 0, impacts2 = 0, lastKind = null, clockNow = 0, pending = [], packetSerial = 0;
+    let nextAt = 2200 + rng.next() * 2800, events = 0, impacts2 = 0, lastKind = null, clockNow = 0, pending = [], packetSerial = 0, enabled = true, pausedAt = null;
     const powers = [0.18, 0.28, 0.42, 0.62, 0.85, 1.15, 1.55];
     function target() {
       for (let i = 0; i < 8; i++) {
@@ -42738,8 +42837,25 @@ void main() {
     function schedule(now) {
       nextAt = now + 1800 + rng.next() * 7200;
     }
+    function setEnabled(next, now = clockNow) {
+      next = !!next;
+      if (next === enabled) return enabled;
+      if (!next) {
+        pausedAt = now;
+        enabled = false;
+        return enabled;
+      }
+      const shift = Math.max(0, now - (pausedAt ?? now));
+      nextAt += shift;
+      for (const item of pending) item.at += shift;
+      pausedAt = null;
+      enabled = true;
+      clockNow = now;
+      return enabled;
+    }
     function update(now) {
       clockNow = now;
+      if (!enabled) return;
       const abatement = field?.turn?.(4) ?? null;
       if (abatement && now >= abatement.at) {
         nextAt = Math.max(nextAt, abatement.at + abatement.duration);
@@ -42780,9 +42896,9 @@ void main() {
       }
       schedule(now);
     }
-    return { update, inspect: () => {
+    return { update, setEnabled, inspect: () => {
       const a = field?.turn?.(4) ?? null, abating = !!a && clockNow >= a.at && clockNow < a.at + a.duration, abated = !!a && clockNow >= a.at + a.duration;
-      return { seed, events, impacts: impacts2, packets: packetSerial, pending: pending.length, lastKind, nextInMs: abated ? null : Math.max(0, Math.round(nextAt - clockNow)), abating, abated };
+      return { seed, enabled, events, impacts: impacts2, packets: packetSerial, pending: pending.length, lastKind, nextInMs: abated ? null : Math.max(0, Math.round(nextAt - clockNow)), abating, abated };
     } };
   }
 
@@ -43344,8 +43460,8 @@ void main() {
   }
 
   // src/runtime/bearing-system.js
-  function createBearingSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, impacts: impacts2, maxBearings = 1e6 }) {
-    const BALL_R = 0.055, PG = 96, MAX_RENDERED = 18e4, PROJECTION_GRID = 64, PROJECTION_MIN = -10, PROJECTION_SPAN = 20;
+  function createBearingSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, impacts: impacts2, water: water2 = null, maxBearings = 1e6 }) {
+    const BALL_R = 0.055, BEARING_RELATIVE_DENSITY = 0.55, PG = 96, MAX_RENDERED = 18e4, PROJECTION_GRID = 64, PROJECTION_MIN = -10, PROJECTION_SPAN = 20;
     const projection = new Uint32Array(PROJECTION_GRID * PROJECTION_GRID);
     const bx = new Float32Array(maxBearings), by = new Float32Array(maxBearings), bz = new Float32Array(maxBearings);
     const bvx = new Float32Array(maxBearings), bvy = new Float32Array(maxBearings), bvz = new Float32Array(maxBearings);
@@ -43395,7 +43511,23 @@ void main() {
       const g = -8.5, renderStride = count > 5e5 ? 8 : count > 25e4 ? 5 : count > 1e5 ? 3 : count > 5e4 ? 2 : 1;
       let rendered = 0;
       for (let i = 0; i < count; i++) {
+        const ws = water2?.sampleState?.(bx[i], bz[i]);
+        let submerged = 0;
+        if (ws && ws.depth > 0) {
+          const t = THREE2.MathUtils.clamp((ws.surface - (by[i] - BALL_R)) / (BALL_R * 2), 0, 1);
+          submerged = t * t * (3 - 2 * t);
+        }
         bvy[i] += g * dt;
+        if (submerged > 0) {
+          bvy[i] += -g * (submerged / BEARING_RELATIVE_DENSITY) * dt;
+          const verticalDamp = Math.exp(-3.2 * submerged * dt), horizontalDamp = Math.exp(-1.15 * submerged * dt);
+          bvy[i] *= verticalDamp;
+          bvx[i] *= horizontalDamp;
+          bvz[i] *= horizontalDamp;
+          const follow = 1 - Math.exp(-2.4 * submerged * dt);
+          bvx[i] += ((ws.u ?? 0) - bvx[i]) * follow;
+          bvz[i] += ((ws.v ?? 0) - bvz[i]) * follow;
+        }
         bvx[i] *= 0.998;
         bvz[i] *= 0.998;
         bx[i] += bvx[i] * dt;
@@ -43477,8 +43609,30 @@ void main() {
       }
       return { grains, cells, cellSize: cell };
     }
+    function snapshot() {
+      return { count, bx: bx.slice(0, count), by: by.slice(0, count), bz: bz.slice(0, count), bvx: bvx.slice(0, count), bvy: bvy.slice(0, count), bvz: bvz.slice(0, count) };
+    }
+    function clear() {
+      count = 0;
+      pile.fill(0);
+      projection.fill(0);
+      mesh.count = 0;
+      mesh.instanceMatrix.needsUpdate = true;
+    }
+    function restore(state) {
+      clear();
+      if (!state) return 0;
+      count = Math.min(state.count ?? 0, maxBearings);
+      bx.set(state.bx.subarray(0, count));
+      by.set(state.by.subarray(0, count));
+      bz.set(state.bz.subarray(0, count));
+      bvx.set(state.bvx.subarray(0, count));
+      bvy.set(state.bvy.subarray(0, count));
+      bvz.set(state.bvz.subarray(0, count));
+      return count;
+    }
     const unsubscribe = impacts2?.subscribe(applyImpact);
-    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count }) };
+    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, snapshot, clear, restore, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count, waterCoupling: !!water2, relativeDensity: BEARING_RELATIVE_DENSITY }) };
   }
 
   // src/runtime/impact-system.js
@@ -43544,7 +43698,7 @@ void main() {
     world2.add(id, Support2, { kind: "ground" });
     world2.add(id, SpatialBounds, { kind: "sphere", radius: 0.42 });
     if (Locus2) world2.add(id, Locus2, { id: locus2 });
-    let heading = 0.31, targetHeading = 0.31, lastDig = -Infinity, lastNow = null, digs = 0, produced = 0, turns = 0, emissionSequence = 0;
+    let heading = 0.31, targetHeading = 0.31, lastDig = -Infinity, lastNow = null, digs = 0, produced = 0, turns = 0, emissionSequence = 0, enabled = true;
     const emissions = [];
     function queueYield(now) {
       const durations = [1e3, 2e3, 3e3], duration = durations[emissionSequence++ % durations.length], total = 48;
@@ -43569,7 +43723,18 @@ void main() {
         if (progress >= 1 && e.emitted >= e.total) emissions.splice(i, 1);
       }
     }
+    function setEnabled(next) {
+      enabled = !!next;
+      const t = Transform2.get(id);
+      if (t) {
+        t.visible = enabled;
+        if (!enabled) t.velocity.set(0, 0, 0);
+      }
+      lastNow = null;
+      return enabled;
+    }
     function update(now) {
+      if (!enabled) return;
       const t = Transform2.get(id);
       if (!t) return;
       const dt = lastNow == null ? 0 : Math.min(0.1, Math.max(0, (now - lastNow) / 1e3));
@@ -43600,9 +43765,9 @@ void main() {
       }
       emitYield(now);
     }
-    return { id, object: root, update, inspect: () => {
+    return { id, object: root, update, setEnabled, inspect: () => {
       const t = Transform2.get(id);
-      return { kind: "autonomous-extruder", id, position: t ? [t.position.x, t.position.y, t.position.z] : null, heading, digs, producedBearings: produced, pendingEmissions: emissions.length, turns };
+      return { kind: "autonomous-extruder", id, enabled, position: t ? [t.position.x, t.position.y, t.position.z] : null, heading, digs, producedBearings: produced, pendingEmissions: emissions.length, turns };
     } };
   }
 
@@ -44232,11 +44397,841 @@ void main() {
     return { object: root, inspect: () => ({ kind: "lighthugger-exterior", shape: "horizontal cored octagonal vessel", length, outerRadius: outer, innerRadius: inner, entryTarget: true, greebleTreatment: "H" }) };
   }
 
+  // src/runtime/shallow-water-system.js
+  function createShallowWaterSystem({ THREE: THREE2, scene, terrain: terrain2 }) {
+    const N = 64, SIZE = 18, DX = SIZE / N, MIN = -SIZE / 2, G = 9.81, CFL = 0.32, MAX_DT = 0.012, DRY = 1e-4;
+    const K = N * N, idx = (x, z) => x + N * z, wx = (x) => MIN + (x + 0.5) * DX, wz = (z) => MIN + (z + 0.5) * DX;
+    const h = new Float32Array(K), hu = new Float32Array(K), hv = new Float32Array(K), bed = new Float32Array(K);
+    const nh = new Float32Array(K), nhu = new Float32Array(K), nhv = new Float32Array(K);
+    const wallNx = new Float32Array(K), wallNz = new Float32Array(K), wallNear = new Uint8Array(K);
+    function cacheBoundary() {
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = idx(x, z), b = terrain2.materialBoundary(wx(x), wz(z));
+        wallNx[k] = b.nx;
+        wallNz[k] = b.nz;
+        wallNear[k] = b.inside && b.distance <= DX * 1.5 ? 1 : 0;
+      }
+    }
+    let enabled = false, lastNow = null, acc = 0, steps = 0, probeFrame = { substeps: 0, minDt: 0, maxDt: 0, remainingAcc: 0, solveMs: 0 }, totalInjected = 0, totalEscaped = 0, totalDryLoss = 0, displayDensity = 25;
+    let sources = [{ x: 0, z: 0, rate: 0.9 }];
+    const geometry = new THREE2.BufferGeometry();
+    const material = new THREE2.MeshStandardMaterial({ color: 3248050, transparent: true, opacity: 0.72, roughness: 0.18, metalness: 0, depthWrite: false, side: THREE2.DoubleSide });
+    const surface = new THREE2.Mesh(geometry, material);
+    surface.name = "shallow-water-free-surface";
+    surface.renderOrder = 4;
+    scene.add(surface);
+    function sampleBed() {
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = idx(x, z);
+        bed[k] = terrain2.materialBoundary(wx(x), wz(z)).inside ? terrain2.groundHeight(wx(x), wz(z)) : -Infinity;
+      }
+    }
+    const valid = (k) => Number.isFinite(bed[k]);
+    function cell(x, z) {
+      return { x: THREE2.MathUtils.clamp(Math.floor((x - MIN) / DX), 0, N - 1), z: THREE2.MathUtils.clamp(Math.floor((z - MIN) / DX), 0, N - 1) };
+    }
+    function addWater(q, x, z) {
+      if (!(q > 0)) return 0;
+      const c = cell(x, z), k = idx(c.x, c.z);
+      if (!valid(k)) return 0;
+      h[k] += q / (DX * DX);
+      totalInjected += q;
+      return q;
+    }
+    function fluxX(kL, kR) {
+      const bL = bed[kL], bR = bed[kR], etaL = bL + h[kL], etaR = bR + h[kR], bs = Math.max(bL, bR);
+      const HL = Math.max(0, etaL - bs), HR = Math.max(0, etaR - bs);
+      const uL = h[kL] > DRY ? hu[kL] / h[kL] : 0, vL = h[kL] > DRY ? hv[kL] / h[kL] : 0;
+      const uR = h[kR] > DRY ? hu[kR] / h[kR] : 0, vR = h[kR] > DRY ? hv[kR] / h[kR] : 0;
+      const a = Math.max(Math.abs(uL) + Math.sqrt(G * HL), Math.abs(uR) + Math.sqrt(G * HR));
+      return [
+        0.5 * (HL * uL + HR * uR) - 0.5 * a * (HR - HL),
+        0.5 * (HL * uL * uL + 0.5 * G * HL * HL + HR * uR * uR + 0.5 * G * HR * HR) - 0.5 * a * (HR * uR - HL * uL),
+        0.5 * (HL * uL * vL + HR * uR * vR) - 0.5 * a * (HR * vR - HL * vL)
+      ];
+    }
+    function fluxZ(kD, kU) {
+      const bD = bed[kD], bU = bed[kU], etaD = bD + h[kD], etaU = bU + h[kU], bs = Math.max(bD, bU);
+      const HD = Math.max(0, etaD - bs), HU = Math.max(0, etaU - bs);
+      const uD = h[kD] > DRY ? hu[kD] / h[kD] : 0, vD = h[kD] > DRY ? hv[kD] / h[kD] : 0;
+      const uU = h[kU] > DRY ? hu[kU] / h[kU] : 0, vU = h[kU] > DRY ? hv[kU] / h[kU] : 0;
+      const a = Math.max(Math.abs(vD) + Math.sqrt(G * HD), Math.abs(vU) + Math.sqrt(G * HU));
+      return [
+        0.5 * (HD * vD + HU * vU) - 0.5 * a * (HU - HD),
+        0.5 * (HD * uD * vD + HU * uU * vU) - 0.5 * a * (HU * uU - HD * uD),
+        0.5 * (HD * vD * vD + 0.5 * G * HD * HD + HU * vU * vU + 0.5 * G * HU * HU) - 0.5 * a * (HU * vU - HD * vD)
+      ];
+    }
+    function stableDt() {
+      let s = 0;
+      for (let k = 0; k < K; k++) if (h[k] > DRY && valid(k)) {
+        const u = hu[k] / h[k], v = hv[k] / h[k];
+        s = Math.max(s, Math.abs(u) + Math.sqrt(G * h[k]), Math.abs(v) + Math.sqrt(G * h[k]));
+      }
+      return s > 1e-6 ? Math.min(MAX_DT, CFL * DX / s) : MAX_DT;
+    }
+    function solve(dt) {
+      nh.set(h);
+      nhu.set(hu);
+      nhv.set(hv);
+      const scale = dt / DX;
+      for (let z = 0; z < N; z++) for (let x = 0; x < N - 1; x++) {
+        const L = idx(x, z), R = idx(x + 1, z);
+        if (!valid(L) || !valid(R)) continue;
+        const f = fluxX(L, R);
+        nh[L] -= scale * f[0];
+        nhu[L] -= scale * f[1];
+        nhv[L] -= scale * f[2];
+        nh[R] += scale * f[0];
+        nhu[R] += scale * f[1];
+        nhv[R] += scale * f[2];
+      }
+      for (let z = 0; z < N - 1; z++) for (let x = 0; x < N; x++) {
+        const D = idx(x, z), U = idx(x, z + 1);
+        if (!valid(D) || !valid(U)) continue;
+        const f = fluxZ(D, U);
+        nh[D] -= scale * f[0];
+        nhu[D] -= scale * f[1];
+        nhv[D] -= scale * f[2];
+        nh[U] += scale * f[0];
+        nhu[U] += scale * f[1];
+        nhv[U] += scale * f[2];
+      }
+      for (let z = 1; z < N - 1; z++) for (let x = 1; x < N - 1; x++) {
+        const k = idx(x, z);
+        if (!valid(k) || nh[k] <= DRY) continue;
+        const xp = idx(x + 1, z), xm = idx(x - 1, z), zp = idx(x, z + 1), zm = idx(x, z - 1), bk = bed[k];
+        const dbx = ((valid(xp) ? bed[xp] : bk) - (valid(xm) ? bed[xm] : bk)) / (2 * DX), dbz = ((valid(zp) ? bed[zp] : bk) - (valid(zm) ? bed[zm] : bk)) / (2 * DX);
+        nhu[k] -= dt * G * nh[k] * dbx;
+        nhv[k] -= dt * G * nh[k] * dbz;
+      }
+      for (let k = 0; k < K; k++) {
+        if (!valid(k)) {
+          h[k] = hu[k] = hv[k] = 0;
+          continue;
+        }
+        h[k] = Math.max(0, nh[k]);
+        if (h[k] <= DRY) {
+          h[k] = hu[k] = hv[k] = 0;
+        } else {
+          const damp2 = Math.exp(-0.22 * dt);
+          hu[k] = nhu[k] * damp2;
+          hv[k] = nhv[k] * damp2;
+          const sp = Math.hypot(hu[k] / h[k], hv[k] / h[k]), max = 12;
+          if (sp > max) {
+            hu[k] *= max / sp;
+            hv[k] *= max / sp;
+          }
+        }
+      }
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = idx(x, z);
+        if (!valid(k) || h[k] <= DRY) continue;
+        if (!wallNear[k]) continue;
+        const nx = wallNx[k], nz = wallNz[k];
+        const un = (hu[k] * nx + hv[k] * nz) / h[k];
+        if (un > 0) {
+          hu[k] -= h[k] * un * nx;
+          hv[k] -= h[k] * un * nz;
+        }
+      }
+      steps++;
+    }
+    const SURFACE_SUBDIV = 2, SURFACE_STEP = DX / SURFACE_SUBDIV, SURFACE_MIN = MIN + DX * 0.5, SURFACE_MAX = MIN + SIZE - DX * 0.5;
+    function renderSample(x, z) {
+      const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz), fx = gx - x0, fz = gz - z0;
+      if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return { depth: 0, surface: NaN };
+      const cells = [[x0, z0, (1 - fx) * (1 - fz)], [x0 + 1, z0, fx * (1 - fz)], [x0, z0 + 1, (1 - fx) * fz], [x0 + 1, z0 + 1, fx * fz]];
+      let depth = 0, eta = 0, w = 0;
+      for (const [ix, iz, q] of cells) {
+        const k = idx(ix, iz);
+        if (!valid(k) || h[k] <= DRY) continue;
+        depth += h[k] * q;
+        eta += (bed[k] + h[k]) * q;
+        w += q;
+      }
+      return { depth, surface: w > 1e-8 ? eta / w : NaN };
+    }
+    function supported(x, z) {
+      return terrain2.materialBoundary(x, z).inside;
+    }
+    function supportBoundary(a, b) {
+      let lo = { ...a }, hi = { ...b }, loIn = supported(lo.x, lo.z);
+      if (loIn === supported(hi.x, hi.z)) return loIn ? hi : lo;
+      if (!loIn) {
+        const q = lo;
+        lo = hi;
+        hi = q;
+        loIn = true;
+      }
+      for (let i = 0; i < 8; i++) {
+        const m = { x: (lo.x + hi.x) * 0.5, z: (lo.z + hi.z) * 0.5 };
+        if (supported(m.x, m.z)) lo = m;
+        else hi = m;
+      }
+      const rs = renderSample(lo.x, lo.z);
+      return { x: lo.x, z: lo.z, y: rs.surface };
+    }
+    function wetBoundary(a, b) {
+      const da = a.depth - DRY, db = b.depth - DRY, t = THREE2.MathUtils.clamp(da / (da - db), 0, 1), x = THREE2.MathUtils.lerp(a.x, b.x, t), z = THREE2.MathUtils.lerp(a.z, b.z, t), rs = renderSample(x, z);
+      return { x, z, y: rs.surface, depth: DRY };
+    }
+    function clipWet(poly) {
+      const out = [];
+      if (!poly.length) return out;
+      let a = poly.at(-1), ain = a.depth > DRY;
+      for (const b of poly) {
+        const bin = b.depth > DRY;
+        if (ain !== bin) out.push(wetBoundary(a, b));
+        if (bin) out.push(b);
+        a = b;
+        ain = bin;
+      }
+      return out;
+    }
+    function clipSupport(poly) {
+      const out = [];
+      if (!poly.length) return out;
+      let a = poly.at(-1), ain = supported(a.x, a.z);
+      for (const b of poly) {
+        const bin = supported(b.x, b.z);
+        if (ain !== bin) out.push(supportBoundary(a, b));
+        if (bin) out.push(b);
+        a = b;
+        ain = bin;
+      }
+      return out;
+    }
+    function refresh() {
+      const pos = [], ind = [];
+      let vi = 0;
+      const samples = /* @__PURE__ */ new Map(), sample = (x, z) => {
+        const key = x.toFixed(6) + "," + z.toFixed(6);
+        if (samples.has(key)) return samples.get(key);
+        const r = renderSample(x, z), p = { x, z, y: r.surface, depth: r.depth };
+        samples.set(key, p);
+        return p;
+      };
+      const emit = (poly) => {
+        if (poly.length < 3) return;
+        const base = vi;
+        for (const p of poly) {
+          if (!Number.isFinite(p.y)) {
+            const r = renderSample(p.x, p.z);
+            p.y = r.surface;
+          }
+          if (!Number.isFinite(p.y)) return;
+          pos.push(p.x, p.y + 8e-3, p.z);
+          vi++;
+        }
+        for (let j = 1; j + 1 < poly.length; j++) ind.push(base, base + j, base + j + 1);
+      };
+      for (let z = SURFACE_MIN; z < SURFACE_MAX - 1e-6; z += SURFACE_STEP) for (let x = SURFACE_MIN; x < SURFACE_MAX - 1e-6; x += SURFACE_STEP) {
+        const x1 = Math.min(SURFACE_MAX, x + SURFACE_STEP), z1 = Math.min(SURFACE_MAX, z + SURFACE_STEP), a = sample(x, z), b = sample(x1, z), c = sample(x1, z1), d = sample(x, z1);
+        emit(clipSupport(clipWet([a, b, c])));
+        emit(clipSupport(clipWet([a, c, d])));
+      }
+      geometry.setAttribute("position", new THREE2.Float32BufferAttribute(pos, 3));
+      geometry.setIndex(ind);
+      if (pos.length) geometry.computeVertexNormals();
+      geometry.computeBoundingSphere();
+      surface.visible = enabled;
+    }
+    function update(now) {
+      if (!enabled) {
+        lastNow = now;
+        return;
+      }
+      if (lastNow == null) lastNow = now;
+      acc += Math.min(0.05, Math.max(0, (now - lastNow) / 1e3));
+      lastNow = now;
+      sampleBed();
+      let guard = 0, minDt = Infinity, maxDt = 0;
+      const probeStart = performance.now();
+      while (acc > 1e-5 && guard++ < 16) {
+        const dt = Math.min(acc, stableDt());
+        minDt = Math.min(minDt, dt);
+        maxDt = Math.max(maxDt, dt);
+        for (const s of sources) addWater(s.rate * dt, s.x, s.z);
+        solve(dt);
+        acc -= dt;
+      }
+      probeFrame = { substeps: guard, minDt: Number.isFinite(minDt) ? minDt : 0, maxDt, remainingAcc: acc, solveMs: performance.now() - probeStart };
+      refresh();
+    }
+    function reset() {
+      h.fill(0);
+      hu.fill(0);
+      hv.fill(0);
+      totalInjected = totalEscaped = totalDryLoss = steps = 0;
+      acc = 0;
+      sampleBed();
+      refresh();
+    }
+    function setEnabled(v) {
+      enabled = !!v;
+      lastNow = null;
+      refresh();
+      return enabled;
+    }
+    function setSource({ x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0, rate = sources[0]?.rate ?? 0 } = {}) {
+      sources = [{ x, z, rate: Math.max(0, rate) }];
+      return { ...sources[0] };
+    }
+    function setSources(a = []) {
+      sources = a.map((s) => ({ x: s.x ?? 0, z: s.z ?? 0, rate: Math.max(0, s.rate ?? 0) }));
+      return sources.map((s) => ({ ...s }));
+    }
+    function inject(q = 1, x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0) {
+      return addWater(q, x, z);
+    }
+    function fillRegion({ x = 0, z = 0, radius = 1, amount = 1 } = {}) {
+      const cells = [];
+      for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) if (Math.hypot(wx(ix) - x, wz(iz) - z) <= radius && valid(idx(ix, iz))) cells.push(idx(ix, iz));
+      if (!cells.length) return 0;
+      const dh = amount / (cells.length * DX * DX);
+      for (const k of cells) h[k] += dh;
+      totalInjected += amount;
+      return amount;
+    }
+    function cycleDisplayDensity() {
+      displayDensity = displayDensity >= 25 ? 1 : displayDensity + 1;
+      refresh();
+      return inspect2().display;
+    }
+    function setDisplayDensity(v) {
+      displayDensity = THREE2.MathUtils.clamp(v | 0, 1, 25);
+      refresh();
+      return inspect2().display;
+    }
+    function sampleState(x, z) {
+      const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz), fx = gx - x0, fz = gz - z0;
+      if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return null;
+      const cells = [[x0, z0, (1 - fx) * (1 - fz)], [x0 + 1, z0, fx * (1 - fz)], [x0, z0 + 1, (1 - fx) * fz], [x0 + 1, z0 + 1, fx * fz]];
+      let depth = 0, eta = 0, u = 0, v = 0, w = 0;
+      for (const [ix, iz, q] of cells) {
+        const k = idx(ix, iz);
+        if (!valid(k) || h[k] <= DRY) continue;
+        depth += h[k] * q;
+        eta += (bed[k] + h[k]) * q;
+        u += hu[k] / h[k] * q;
+        v += hv[k] / h[k] * q;
+        w += q;
+      }
+      return w > 1e-6 ? { depth: depth / w, surface: eta / w, u: u / w, v: v / w } : null;
+    }
+    function surfaceHeight(x, z) {
+      return sampleState(x, z)?.surface ?? NaN;
+    }
+    function inspect2() {
+      let volume = 0, wet = 0, maxDepth = 0, maxSpeed = 0;
+      for (let k = 0; k < K; k++) if (h[k] > DRY) {
+        wet++;
+        volume += h[k] * DX * DX;
+        maxDepth = Math.max(maxDepth, h[k]);
+        maxSpeed = Math.max(maxSpeed, Math.hypot(hu[k], hv[k]) / h[k]);
+      }
+      return { kind: "shallow-water", independent: true, enabled, grid: [N, N], cellSize: DX, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, water: { injected: totalInjected, volume, maxDepth, maxSpeed, escaped: totalEscaped, dryLoss: totalDryLoss, accounted: volume + totalEscaped + totalDryLoss, balanceError: totalInjected - (volume + totalEscaped + totalDryLoss) }, wetCells: wet, steps, probe: probeFrame };
+    }
+    cacheBoundary();
+    sampleBed();
+    refresh();
+    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, cycleDisplayDensity, setDisplayDensity, sampleState, surfaceHeight, inspect: inspect2, object: surface };
+  }
+
+  // src/runtime/transport-system.js
+  function createTransportSystem({ THREE: THREE2, scene, terrain: terrain2, supportHeight = null, name = "transport-free-surface", verticalOffset = 0.055 }) {
+    const N = 48, SIZE = 18, CELL = SIZE / N, MIN = -SIZE / 2, COUNT = N * N, DT = 0.035, FLOW = 0.42;
+    const mass = new Float32Array(COUNT), next = new Float32Array(COUNT), ground = new Float32Array(COUNT), vx = new Float32Array(COUNT), vz = new Float32Array(COUNT), nextVx = new Float32Array(COUNT), nextVz = new Float32Array(COUNT);
+    const index = (x, z) => x + N * z, worldX = (x) => MIN + (x + 0.5) * CELL, worldZ = (z) => MIN + (z + 0.5) * CELL;
+    let totalInjected = 0, totalEscaped = 0, steps = 0, enabled = false, lastNow = null, accumulator = 0, sources = [{ x: -5.4, z: 0, rate: 0.9 }], displayDensity = 25;
+    const support = (x, z) => supportHeight ? supportHeight(x, z) : terrain2.groundHeight(x, z);
+    function sampleGround() {
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) ground[index(x, z)] = support(worldX(x), worldZ(z));
+    }
+    sampleGround();
+    const geometry = new THREE2.BufferGeometry();
+    const material = new THREE2.MeshStandardMaterial({ color: 2990018, transparent: true, opacity: 0.72, roughness: 0.22, metalness: 0, depthWrite: false, side: THREE2.DoubleSide, vertexColors: true });
+    const surface = new THREE2.Mesh(geometry, material);
+    surface.name = name;
+    surface.frustumCulled = false;
+    surface.renderOrder = 4;
+    scene.add(surface);
+    function refreshPresentation() {
+      const stride = Math.max(1, Math.ceil((26 - displayDensity) / 5)), pos = [], col = [], ind = [];
+      let vi = 0;
+      for (let z = 0; z < N - 1; z += stride) for (let x = 0; x < N - 1; x += stride) {
+        const x1 = Math.min(N - 1, x + stride), z1 = Math.min(N - 1, z + stride), ks = [index(x, z), index(x1, z), index(x1, z1), index(x, z1)];
+        if (ks.some((k) => mass[k] <= 1e-4 || !Number.isFinite(ground[k]))) continue;
+        for (const k of ks) {
+          const ix = k % N, iz = Math.floor(k / N), m = mass[k], speed = Math.hypot(vx[k], vz[k]), wave = 0.018 * Math.sin(steps * 0.23 + ix * 0.9 + iz * 0.57 + speed * 2.5);
+          pos.push(worldX(ix), ground[k] + verticalOffset + Math.min(0.48, m * 0.12) + wave, worldZ(iz));
+          const q = Math.min(1, Math.sqrt(m * 0.45) + speed * 0.12);
+          col.push(0.08 + 0.12 * q, 0.42 + 0.38 * q, 0.62 + 0.32 * q);
+        }
+        ind.push(vi, vi + 1, vi + 2, vi, vi + 2, vi + 3);
+        vi += 4;
+      }
+      geometry.setAttribute("position", new THREE2.Float32BufferAttribute(pos, 3));
+      geometry.setAttribute("color", new THREE2.Float32BufferAttribute(col, 3));
+      geometry.setIndex(ind);
+      if (pos.length) geometry.computeVertexNormals();
+      geometry.computeBoundingSphere();
+      surface.visible = enabled;
+    }
+    function nearestCell(x, z) {
+      return { x: THREE2.MathUtils.clamp(Math.floor((x - MIN) / CELL), 0, N - 1), z: THREE2.MathUtils.clamp(Math.floor((z - MIN) / CELL), 0, N - 1) };
+    }
+    function inject(amount = 1, x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0) {
+      const c = nearestCell(x, z), k = index(c.x, c.z);
+      if (!Number.isFinite(ground[k])) return 0;
+      mass[k] += amount;
+      totalInjected += amount;
+      return amount;
+    }
+    function step() {
+      sampleGround();
+      next.fill(0);
+      nextVx.fill(0);
+      nextVz.fill(0);
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = index(x, z), m = mass[k], g = ground[k];
+        if (m <= 1e-7 || !Number.isFinite(g)) continue;
+        const xm = Math.max(0, x - 1), xp = Math.min(N - 1, x + 1), zm = Math.max(0, z - 1), zp = Math.min(N - 1, z + 1), gx = (ground[index(xp, z)] - ground[index(xm, z)]) / Math.max(CELL, (xp - xm) * CELL), gz = (ground[index(x, zp)] - ground[index(x, zm)]) / Math.max(CELL, (zp - zm) * CELL);
+        let ux = (vx[k] - gx * 0.24) * 0.94, uz = (vz[k] - gz * 0.24) * 0.94;
+        const speed = Math.hypot(ux, uz), maxSpeed = 0.82;
+        if (speed > maxSpeed) {
+          ux *= maxSpeed / speed;
+          uz *= maxSpeed / speed;
+        }
+        const tx = THREE2.MathUtils.clamp(x + ux, 0, N - 1), tz = THREE2.MathUtils.clamp(z + uz, 0, N - 1), x0 = Math.floor(tx), z0 = Math.floor(tz), x1 = Math.min(N - 1, x0 + 1), z1 = Math.min(N - 1, z0 + 1), fx = tx - x0, fz = tz - z0;
+        for (const [ix, iz, w] of [[x0, z0, (1 - fx) * (1 - fz)], [x1, z0, fx * (1 - fz)], [x0, z1, (1 - fx) * fz], [x1, z1, fx * fz]]) {
+          if (w <= 0) continue;
+          const j = index(ix, iz);
+          if (!Number.isFinite(ground[j])) {
+            totalEscaped += m * w;
+            continue;
+          }
+          const q = m * w;
+          next[j] += q;
+          nextVx[j] += ux * q;
+          nextVz[j] += uz * q;
+        }
+      }
+      for (let k = 0; k < COUNT; k++) {
+        mass[k] = next[k];
+        if (next[k] > 1e-8) {
+          vx[k] = nextVx[k] / next[k];
+          vz[k] = nextVz[k] / next[k];
+        } else {
+          vx[k] = 0;
+          vz[k] = 0;
+        }
+      }
+      steps++;
+    }
+    function update(now) {
+      if (!enabled) {
+        lastNow = now;
+        return;
+      }
+      if (lastNow == null) lastNow = now;
+      accumulator += Math.min(0.15, Math.max(0, (now - lastNow) / 1e3));
+      lastNow = now;
+      while (accumulator >= DT) {
+        for (const source of sources) inject(source.rate * DT, source.x, source.z);
+        step();
+        accumulator -= DT;
+      }
+      refreshPresentation();
+    }
+    function setEnabled(v) {
+      enabled = !!v;
+      surface.visible = enabled;
+      lastNow = null;
+      return enabled;
+    }
+    function reset() {
+      mass.fill(0);
+      vx.fill(0);
+      vz.fill(0);
+      totalInjected = 0;
+      totalEscaped = 0;
+      steps = 0;
+      accumulator = 0;
+      sampleGround();
+      refreshPresentation();
+    }
+    function setSource({ x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0, rate = sources[0]?.rate ?? 0 } = {}) {
+      sources = [{ x, z, rate: Math.max(0, rate) }];
+      return { ...sources[0] };
+    }
+    function fillRegion({ x = 0, z = 0, radius = 1, amount = 1 } = {}) {
+      let cells = [];
+      for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) {
+        const wx = worldX(ix), wz = worldZ(iz), k = index(ix, iz);
+        if (Number.isFinite(ground[k]) && Math.hypot(wx - x, wz - z) <= radius) cells.push(k);
+      }
+      if (!cells.length) return 0;
+      const each = amount / cells.length;
+      for (const k of cells) mass[k] += each;
+      totalInjected += amount;
+      refreshPresentation();
+      return amount;
+    }
+    function setSources(next2 = []) {
+      sources = next2.map(({ x = 0, z = 0, rate = 0 }) => ({ x, z, rate: Math.max(0, rate) }));
+      return sources.map((s) => ({ ...s }));
+    }
+    function cycleDisplayDensity() {
+      displayDensity = displayDensity >= 25 ? 1 : displayDensity + 1;
+      refreshPresentation();
+      return inspect2().display;
+    }
+    function setDisplayDensity(level) {
+      displayDensity = THREE2.MathUtils.clamp(level | 0, 1, 25);
+      refreshPresentation();
+      return inspect2().display;
+    }
+    function inspect2() {
+      let stored = 0, wet = 0, max = 0;
+      for (const m of mass) {
+        stored += m;
+        if (m > 1e-5) wet++;
+        max = Math.max(max, m);
+      }
+      return { kind: "surface-mass-flux-field", enabled, grid: [N, N], cellSize: CELL, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, mass: { injected: totalInjected, stored, escaped: totalEscaped, error: totalInjected - stored - totalEscaped }, wetCells: wet, maxCellMass: max, steps };
+    }
+    refreshPresentation();
+    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, cycleDisplayDensity, setDisplayDensity, inspect: inspect2, object: surface };
+  }
+
+  // src/runtime/dev-ui.js
+  function createDevUI({ mount: mount2, statusMount, build, actions }) {
+    if (!mount2) throw new Error("DevUI mount missing");
+    const groups = [
+      { kind: "choice", label: "Spatial tools", items: [{ id: "meteor", text: "\u2604\uFE0F", label: "Call meteor at tapped point", tool: "meteor", cycle: actions.meteorMagnitude }] },
+      { kind: "choice", label: "Bearing controls", items: [
+        { id: "bearings-many", text: "\u2022\u2022", label: "Spawn 25 thousand bearings at tapped point", tool: "bearings-many" },
+        { id: "bearings-packet", text: "\u2022", label: "Spawn 25 bearings at tapped point", tool: "bearing-packet" }
+      ] },
+      { kind: "choice", label: "Terrain tools", items: [
+        { id: "carve", text: "\u26CF\uFE0F", label: "Carve terrain at tapped point", tool: "carve" },
+        { id: "raise", text: "\u{1FA8F}", label: "Raise terrain at tapped point", tool: "raise" }
+      ] },
+      { kind: "choice", label: "Transport tools", items: [
+        { id: "source", text: "\u{1F4A7}", label: "Place transport source at tapped point", tool: "source" },
+        { id: "source-thick", text: "\u{1FA78}", label: "Place thicker transport source at tapped point", tool: "source-thick" }
+      ] },
+      { kind: "controls", items: [
+        { id: "science", text: "\u{1F52C}", label: "Toggle Science mode", on: actions.science },
+        { id: "terrain-next", text: "NEXT", label: "Next deterministic terrain", on: actions.terrainNext },
+        { id: "log", text: "LOG", label: "Export locus observation log", on: actions.exportLog },
+        { id: "time", text: "1\xD7", label: "Simulation speed 1 times", on: actions.timeScale },
+        { id: "save", text: "SAVE", label: "Save terrain state", on: actions.terrainEvidence },
+        { id: "refresh", text: "\u21BB", label: "Refresh", on: actions.refresh }
+      ] }
+    ];
+    let tool = "meteor", fps = "\u2026", meteorMagnitude = 1;
+    const nodes = /* @__PURE__ */ new Map();
+    mount2.replaceChildren();
+    if (statusMount) {
+      statusMount.replaceChildren();
+      const o = document.createElement("output");
+      o.className = "dev-status-readout";
+      nodes.set("status", o);
+      statusMount.append(o);
+    }
+    function syncStatus() {
+      const n = nodes.get("status");
+      if (n) n.textContent = `${String(build || "local").slice(0, 8)} \u2022 fps ${fps}`;
+    }
+    function button(item) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "dev-control";
+      b.textContent = item.text;
+      b.setAttribute("aria-label", item.label);
+      nodes.set(item.id, b);
+      b.addEventListener("click", () => {
+        if (item.tool) {
+          if (item.tool === tool && item.cycle) {
+            meteorMagnitude = (meteorMagnitude + 1) % 4;
+            item.cycle(meteorMagnitude);
+            syncMeteor();
+          } else {
+            tool = item.tool;
+            syncTools();
+            actions.tool?.(tool);
+          }
+        } else item.on?.(b);
+      });
+      return b;
+    }
+    for (const group of groups) {
+      if (group.kind === "readout") {
+        for (const [id, value, label] of group.items) {
+          const o = document.createElement("output");
+          o.className = "dev-readout";
+          o.textContent = value;
+          o.setAttribute("aria-label", label);
+          nodes.set(id, o);
+          mount2.append(o);
+        }
+        continue;
+      }
+      const host = document.createElement("span");
+      host.className = group.kind === "choice" ? "dev-group" : "dev-controls";
+      if (group.label) host.setAttribute("aria-label", group.label);
+      for (const item of group.items) host.append(button(item));
+      mount2.append(host);
+    }
+    function syncTools() {
+      for (const group of groups) for (const item of group.items || []) if (item?.tool) nodes.get(item.id)?.classList.toggle("active", item.tool === tool);
+    }
+    function syncMeteor() {
+      const n = nodes.get("meteor");
+      if (!n) return;
+      n.style.setProperty("--meteor-scale", String(1 + meteorMagnitude * 0.08));
+      n.setAttribute("aria-label", `Call meteor magnitude ${meteorMagnitude + 1} at tapped point`);
+    }
+    function setPressed(id, value) {
+      const n = nodes.get(id);
+      n?.classList.toggle("active", !!value);
+      n?.setAttribute("aria-pressed", String(!!value));
+    }
+    function setChoice(prefix, index) {
+      for (let i = 0; i < 16; i++) {
+        const n = nodes.get(`${prefix}-${i + 1}`);
+        if (n) n.classList.toggle("active", i === index);
+      }
+    }
+    function setText(id, text, label) {
+      const n = nodes.get(id);
+      if (!n) return;
+      n.textContent = text;
+      if (label) n.setAttribute("aria-label", label);
+    }
+    syncTools();
+    syncMeteor();
+    syncStatus();
+    return { get tool() {
+      return tool;
+    }, setTool(v) {
+      tool = v;
+      syncTools();
+      return tool;
+    }, setPressed, setChoice, setText, setFps: (v) => {
+      fps = v;
+      syncStatus();
+    }, inspect: () => ({ tool, controls: [...nodes.keys()] }) };
+  }
+
+  // src/runtime/terrain-recipe-generator.js
+  function createTerrainRecipeGenerator() {
+    const TAU2 = Math.PI * 2;
+    function rng(seed) {
+      let s = seed >>> 0;
+      return () => {
+        s = s + 1831565813 >>> 0;
+        let t = s;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    const between = (r, a, b) => a + (b - a) * r(), integer = (r, a, b) => Math.floor(between(r, a, b + 1)), pick = (r, a) => a[Math.floor(r() * a.length)];
+    function path(r, { points = 4, axis = null } = {}) {
+      const out = [], angle = axis ?? between(r, 0, TAU2), ca = Math.cos(angle), sa = Math.sin(angle), bend = between(r, -2.8, 2.8);
+      for (let i = 0; i < points; i++) {
+        const t = i / (points - 1), along = -10 + 20 * t, cross = bend * Math.sin(t * Math.PI) + between(r, -1.6, 1.6);
+        out.push(ca * along - sa * cross, sa * along + ca * cross);
+      }
+      return out;
+    }
+    const op = {
+      broad: (r, id, amp = [0.5, 2.4]) => ({ id, kind: "broad", amp: between(r, ...amp), scale: between(r, 0.055, 0.17) }),
+      ridge: (r, id, amp = [1.1, 3.8], width = [0.65, 2.8], axis = null) => ({ id, kind: "ridge", amp: between(r, ...amp), width: between(r, ...width), path: path(r, { points: integer(r, 3, 5), axis }) }),
+      trench: (r, id, amp = [-0.7, -2.8], width = [0.45, 1.4], axis = null) => ({ id, kind: "trench", amp: between(r, ...amp), width: between(r, ...width), path: path(r, { points: integer(r, 3, 5), axis }) }),
+      basin: (r, id, amp = [-1.2, -3.8]) => ({ id, kind: "basin", amp: between(r, ...amp), cx: between(r, -6, 6), cz: between(r, -6, 6), rx: between(r, 1.1, 4.4), rz: between(r, 1.1, 4.4) }),
+      shelf: (r, id, amp = [0.55, 1.8]) => ({ id, kind: "shelf", amp: between(r, ...amp), angle: between(r, 0, TAU2), offset: between(r, -4, 4), width: between(r, 0.65, 3.2) }),
+      fault: (r, id) => ({ id, kind: "fault", amp: between(r, 0.65, 1.8), angle: between(r, 0, TAU2), offset: between(r, -3, 3), width: between(r, 0.35, 1.25) }),
+      tilt: (r, id) => ({ id, kind: "tilt", amp: between(r, 0.45, 2), angle: between(r, 0, TAU2) })
+    };
+    const families = [
+      ["ranges", (r, ops) => {
+        const a = between(r, 0, TAU2);
+        ops.push(op.broad(r, "ground", [0.35, 1.2]), op.ridge(r, "spine", [2.4, 4.4], [1.1, 2.5], a));
+        if (r() < 0.8) ops.push(op.ridge(r, "parallel", [1, 2.7], [0.7, 1.8], a + between(r, -0.35, 0.35)));
+        for (let i = 0, n = integer(r, 1, 3); i < n; i++) ops.push(op.trench(r, "drain-" + i, [-0.7, -1.8], [0.4, 0.9], a + Math.PI / 2 + between(r, -0.6, 0.6)));
+      }],
+      ["basin-field", (r, ops) => {
+        ops.push(op.broad(r, "rolling", [0.7, 1.8]));
+        for (let i = 0, n = integer(r, 3, 7); i < n; i++) ops.push(op.basin(r, "basin-" + i, [-1.2, -4.5]));
+        if (r() < 0.65) ops.push(op.shelf(r, "shelf"));
+      }],
+      ["rift", (r, ops) => {
+        const a = between(r, 0, TAU2);
+        ops.push(op.broad(r, "mass", [0.7, 2]), op.fault(r, "fault-a"), op.trench(r, "rift", [-2.2, -4.2], [0.8, 1.8], a));
+        if (r() < 0.7) ops.push(op.ridge(r, "shoulder-a", [1, 2.5], [0.7, 1.7], a), op.ridge(r, "shoulder-b", [0.8, 2.2], [0.7, 1.7], a + between(r, -0.2, 0.2)));
+      }],
+      ["plateau", (r, ops) => {
+        ops.push(op.tilt(r, "tilt"), op.broad(r, "ground", [0.4, 1.2]), op.shelf(r, "escarpment", [1.1, 2.4]));
+        for (let i = 0, n = integer(r, 1, 3); i < n; i++) ops.push(op.trench(r, "cut-" + i, [-1.1, -2.8], [0.5, 1.2]));
+      }],
+      ["knotted", (r, ops) => {
+        ops.push(op.broad(r, "ground", [0.5, 1.5]));
+        for (let i = 0, n = integer(r, 2, 4); i < n; i++) ops.push(op.ridge(r, "ridge-" + i, [1.2, 3.1], [0.7, 2.2]));
+        for (let i = 0, n = integer(r, 1, 3); i < n; i++) ops.push(r() < 0.55 ? op.basin(r, "void-" + i, [-1, -3.2]) : op.trench(r, "cut-" + i, [-0.8, -2.2], [0.5, 1.1]));
+      }],
+      ["lowlands", (r, ops) => {
+        ops.push(op.broad(r, "low-relief", [0.25, 0.85]), op.tilt(r, "drift"));
+        for (let i = 0, n = integer(r, 2, 5); i < n; i++) ops.push(op.trench(r, "channel-" + i, [-0.45, -1.35], [0.55, 1.45]));
+        if (r() < 0.6) ops.push(op.basin(r, "wet-basin", [-0.7, -2]));
+      }]
+    ];
+    function generate(seed) {
+      const r = rng(seed), [family, build] = pick(r, families), ops = [];
+      build(r, ops);
+      if (r() < 0.45) ops.push(op.fault(r, "intrusion-fault"));
+      if (r() < 0.38) ops.push(op.basin(r, "intrusion-basin", [-0.7, -2.4]));
+      if (r() < 0.32) ops.push(op.ridge(r, "intrusion-ridge", [0.7, 2], [0.55, 1.4]));
+      return { id: `seed-${seed}`, label: `seed ${seed} / ${family}`, family, seed, ops };
+    }
+    return { generate, families: () => families.map(([name]) => name) };
+  }
+
+  // src/runtime/terrain-genesis.js
+  function createTerrainGenesis({ terrain: terrain2 }) {
+    const procedural = createTerrainRecipeGenerator();
+    const TAU2 = Math.PI * 2, clamp3 = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), smooth = (t) => t * t * (3 - 2 * t), fract = (v) => v - Math.floor(v);
+    const hash = (x, z, s) => fract(Math.sin(x * 127.1 + z * 311.7 + s * 74.7) * 43758.5453123);
+    function noise(x, z, s) {
+      const ix = Math.floor(x), iz = Math.floor(z), fx = smooth(fract(x)), fz = smooth(fract(z)), mix = (a, b, t) => a + (b - a) * t;
+      return mix(mix(hash(ix, iz, s), hash(ix + 1, iz, s), fx), mix(hash(ix, iz + 1, s), hash(ix + 1, iz + 1, s), fx), fz) * 2 - 1;
+    }
+    const seedFor = (seed, id) => {
+      let h = (seed | 0) ^ 2654435769;
+      for (const c of id) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+      return h >>> 0;
+    };
+    function domain(seed, id) {
+      const s = seedFor(seed, id), r = (n) => (hash(n, 17, s) + 1) * 0.5;
+      return { seed: s, angle: r(1) * TAU2, sx: 0.55 + r(2) * 1.55, sz: 0.55 + r(3) * 1.55, ox: (r(4) - 0.5) * 37, oz: (r(5) - 0.5) * 37, warp: 0.4 + r(6) * 1.5 };
+    }
+    function n2(d, x, z, scale = 0.12) {
+      const ca = Math.cos(d.angle), sa = Math.sin(d.angle), rx = (ca * x - sa * z) * d.sx, rz = (sa * x + ca * z) * d.sz;
+      const w = noise(rx * 0.09 + d.ox, rz * 0.09 + d.oz, d.seed);
+      const X = (rx + d.ox + w * d.warp) * scale, Z = (rz + d.oz - w * d.warp) * scale;
+      return 0.6 * noise(X, Z, d.seed) + 0.27 * noise(X * 2.07 + 7, Z * 1.93 - 11, d.seed + 101) + 0.13 * noise(X * 4.13 - 3, Z * 3.89 + 5, d.seed + 307);
+    }
+    const segDist = (x, z, ax, az, bx, bz) => {
+      const dx = bx - ax, dz = bz - az, l = dx * dx + dz * dz || 1, t = clamp3(((x - ax) * dx + (z - az) * dz) / l);
+      return Math.hypot(x - ax - dx * t, z - az - dz * t);
+    };
+    const recipes = [
+      { id: "folded-range", label: "folded mountain system", ops: [
+        { id: "ground", kind: "broad", amp: 0.65, scale: 0.075 },
+        { id: "spine", kind: "ridge", amp: 3.2, width: 1.7, path: [-9, -3, -3, 1, 3, -0.3, 9, 3] },
+        { id: "parallel", kind: "ridge", amp: 1.7, width: 1.15, path: [-8, -5, -2, -2, 4, -3, 8, -1] },
+        { id: "pass", kind: "basin", amp: -1.35, cx: 0.2, cz: 0.2, rx: 2.1, rz: 1.5 },
+        { id: "drain-a", kind: "trench", amp: -1.1, width: 0.7, path: [-6, 7, -3, 2, -0.5, 0.4] },
+        { id: "drain-b", kind: "trench", amp: -0.9, width: 0.6, path: [7, -7, 4, -2, 1, 0] }
+      ] },
+      { id: "sinkhole-country", label: "basins and sinkholes", ops: [
+        { id: "rolling", kind: "broad", amp: 1.25, scale: 0.11 },
+        { id: "shelf", kind: "shelf", amp: 0.8, angle: 0.35, offset: -1.5, width: 2.8 },
+        { id: "hole-a", kind: "basin", amp: -3.4, cx: -4.3, cz: 2.8, rx: 2.1, rz: 1.7 },
+        { id: "hole-b", kind: "basin", amp: -2.7, cx: 2.8, cz: 3.4, rx: 1.45, rz: 2.25 },
+        { id: "hole-c", kind: "basin", amp: -2.25, cx: 4.5, cz: -3.1, rx: 2.2, rz: 1.3 },
+        { id: "scar", kind: "trench", amp: -0.8, width: 0.8, path: [-8, -5, -2, -2, 3, -2, 8, -5] }
+      ] },
+      { id: "broken-highlands", label: "broken highlands and deep valleys", ops: [
+        { id: "mass", kind: "broad", amp: 2.15, scale: 0.07 },
+        { id: "upland-a", kind: "ridge", amp: 2.2, width: 2.7, path: [-8, 4, -2, 2, 4, 5, 9, 3] },
+        { id: "upland-b", kind: "ridge", amp: 1.7, width: 2.3, path: [-7, -5, -1, -3, 5, -5, 9, -2] },
+        { id: "fault", kind: "fault", amp: 1.15, angle: 1.08, offset: 0.2, width: 0.8 },
+        { id: "valley", kind: "trench", amp: -2.65, width: 1.15, path: [-8, 0, -3, -0.5, 2, 1, 8, -0.5] },
+        { id: "tributary", kind: "trench", amp: -1.2, width: 0.72, path: [1, 8, 1, 4, 2, 1] }
+      ] },
+      { id: "asymmetric-field", label: "unnamed asymmetric terrain", ops: [
+        { id: "tilt", kind: "tilt", amp: 1.5, angle: 2.2 },
+        { id: "broad", kind: "broad", amp: 1.45, scale: 0.095 },
+        { id: "arc-a", kind: "ridge", amp: 2.25, width: 1.3, path: [-9, 5, -5, 1, -1, -1, 4, -0.2, 8, -4] },
+        { id: "cut-a", kind: "trench", amp: -1.55, width: 0.9, path: [-7, -7, -3, -1, 1, 3, 7, 6] },
+        { id: "sink", kind: "basin", amp: -2, cx: 4.4, cz: 3.4, rx: 3.1, rz: 1.7 },
+        { id: "ledge", kind: "shelf", amp: 1.1, angle: -0.72, offset: 2.1, width: 1.4 }
+      ] }
+    ];
+    function pathDistance(x, z, path) {
+      let best = Infinity;
+      for (let i = 0; i + 3 < path.length; i += 2) best = Math.min(best, segDist(x, z, path[i], path[i + 1], path[i + 2], path[i + 3]));
+      return best;
+    }
+    function contribution(op, d, x, z) {
+      const texture = 0.78 + 0.22 * n2(d, x, z, op.scale || 0.15);
+      if (op.kind === "broad") return op.amp * n2(d, x, z, op.scale) * (0.82 + 0.18 * n2(d, x + 11, z - 7, (op.scale || 0.1) * 1.9));
+      if (op.kind === "ridge" || op.kind === "trench") {
+        const q = pathDistance(x, z, op.path), w = op.width * (0.72 + 0.32 * ((n2(d, x, z, 0.16) + 1) * 0.5)), g = Math.exp(-0.5 * (q / w) * (q / w));
+        return op.amp * g * texture;
+      }
+      if (op.kind === "basin") {
+        const ca = Math.cos(d.angle), sa = Math.sin(d.angle), dx = x - op.cx, dz = z - op.cz, u = (ca * dx - sa * dz) / (op.rx * (0.82 + 0.22 * texture)), v = (sa * dx + ca * dz) / (op.rz * (0.82 + 0.22 * texture)), q = Math.hypot(u, v);
+        return q < 1 ? op.amp * smooth(1 - q) * texture : 0;
+      }
+      if (op.kind === "shelf" || op.kind === "fault") {
+        const q = x * Math.cos(op.angle) + z * Math.sin(op.angle) - op.offset, w = op.width || 1;
+        return op.amp * Math.tanh(q / w) * texture;
+      }
+      if (op.kind === "tilt") return op.amp * (x * Math.cos(op.angle) + z * Math.sin(op.angle)) / 12;
+      return 0;
+    }
+    function execute(recipe, worldSeed, source) {
+      const meta = terrain2.inspect(), [nx, ny, nz] = meta.grid, [sx, sy, sz] = meta.volume.spacing, [minx, miny, minz] = meta.volume.min;
+      const height = new Float32Array(nx * nz), passes = [];
+      for (const op of recipe.ops) {
+        const d = domain(worldSeed, recipe.id + ":" + op.id);
+        let sum = 0, max = 0;
+        for (let z = 0; z < nz; z++) for (let x = 0; x < nx; x++) {
+          const wx = minx + x * sx, wz = minz + z * sz, delta = contribution(op, d, wx, wz), k = x + nx * z;
+          height[k] += delta;
+          sum += delta * delta;
+          max = Math.max(max, Math.abs(delta));
+        }
+        passes.push({ id: op.id, kind: op.kind, seed: d.seed, rms: Math.sqrt(sum / (nx * nz)), max });
+      }
+      let lo = Infinity, hi = -Infinity;
+      for (const h of height) {
+        lo = Math.min(lo, h);
+        hi = Math.max(hi, h);
+      }
+      const targetLo = -2.25, targetHi = 4.65, span = Math.max(1e-3, hi - lo), f = terrain2.field;
+      for (let z = 0; z < nz; z++) for (let x = 0; x < nx; x++) {
+        const h = targetLo + (height[x + nx * z] - lo) / span * (targetHi - targetLo);
+        height[x + nx * z] = h;
+        for (let y = 0; y < ny; y++) {
+          const wy = miny + y * sy;
+          f[x + nx * (y + ny * z)] = h - wy;
+        }
+      }
+      terrain2.rebuildAll();
+      return { kind: "heightmap-genesis", source, seed: worldSeed, index: recipes.indexOf(recipe), recipe: { id: recipe.id, label: recipe.label, family: recipe.family ?? null, ops: recipe.ops.map((o) => ({ ...o })) }, heightmap: { grid: [nx, nz], min: Math.min(...height), max: Math.max(...height), values: [...height] }, passes };
+    }
+    function run(index = 0, worldSeed = 741) {
+      const recipe = recipes[(index % recipes.length + recipes.length) % recipes.length];
+      return execute(recipe, worldSeed, "authored");
+    }
+    function runSeed(seed = 741) {
+      const recipe = procedural.generate(seed | 0);
+      return execute(recipe, seed | 0, "seed");
+    }
+    return { run, runSeed, generateRecipe: (seed) => procedural.generate(seed | 0), families: procedural.families, recipes: () => recipes.map((r) => ({ id: r.id, label: r.label, ops: r.ops.map((o) => ({ ...o })) })) };
+  }
+
   // src/main.js
   var mount = document.querySelector("#world");
   var diagnostics = installDiagnostics(document.querySelector("#diagnostics"));
-  document.querySelector("#build-id").textContent = "build " + String(globalThis.__CRUCIBLE_BUILD__ || "local").slice(0, 7);
-  document.querySelector("#debug-refresh").addEventListener("click", () => location.reload());
+  var devUI = null;
   var world = createWorld();
   var three = createThreeRuntime({ mount, diagnostics });
   var THREE = three.THREE;
@@ -44277,6 +45272,10 @@ void main() {
   var fillLight = addLight({ name: "Fill", kind: "directional", color: 8168346, intensity: 0.7, position: [12, 8, -10] });
   lights.syncAll();
   var terrain = createTerrainSystem({ THREE, scene: three.scene });
+  var terrainGenesis = createTerrainGenesis({ terrain });
+  var terrainGenesisEvidence = null;
+  var terrainGenesisIndex = 0;
+  var terrainGenesisSeed = 741;
   var interiorTarget = world.entity();
   world.add(interiorTarget, Transform, { position: new THREE.Vector3(0, -29.7, 0), rotation: new THREE.Euler(), scale: new THREE.Vector3(1, 1, 1), visible: true });
   world.add(interiorTarget, Locus, { id: interiorTarget, kind: "lighthugger-interior" });
@@ -44312,8 +45311,10 @@ void main() {
   } });
   var cinnabarAndCinnamon = createCinnabarAndCinnamon();
   var meteorWeather = createMeteorWeatherSystem({ THREE, terrain, meteors, field: cinnabarAndCinnamon });
-  var bearings = createBearingSystem({ world, components, THREE, scene: three.scene, terrain, locus, impacts });
+  var transport = createShallowWaterSystem({ THREE, scene: three.scene, terrain });
+  var bearings = createBearingSystem({ world, components, THREE, scene: three.scene, terrain, locus, impacts, water: transport });
   var extruder = createExtruderSystem({ world, components, THREE, scene: three.scene, terrain, bearings, locus });
+  var waterScalar = createTransportSystem({ THREE, scene: three.scene, terrain, supportHeight: (x, z) => transport.surfaceHeight(x, z), name: "water-surface-scalar-field", verticalOffset: 0.018 });
   var cinnabarDome = createCinnabarDomeSystem({ THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon });
   var cinnabarKite = createCinnabarKiteSystem({ THREE, scene: three.scene, field: cinnabarAndCinnamon, dome: cinnabarDome });
   var cinnabarSpire = createCinnabarSpireSystem({ THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon });
@@ -44342,6 +45343,63 @@ void main() {
   function toggleCinnabarPacked() {
     return setCinnabarPacked(!cinnabarPacked);
   }
+  var scienceMode = false;
+  var scienceSnapshot = null;
+  function setScienceMode(active) {
+    active = !!active;
+    if (active === scienceMode) return scienceMode;
+    if (active) {
+      scienceSnapshot = { terrain: terrain.snapshot(), bearings: bearings.snapshot(), cinnabarVisible: cinnabarLayer.visible, extruderEnabled: extruder.inspect().enabled, weatherEnabled: meteorWeather.inspect().enabled };
+      scienceMode = true;
+      meteorWeather.setEnabled(false, simNow);
+      extruder.setEnabled(false);
+      cinnabarLayer.visible = false;
+      bearings.clear();
+      terrainGenesisEvidence = terrainGenesis.runSeed(terrainGenesisSeed);
+      transport.reset();
+      transport.setEnabled(false);
+      waterScalar.reset();
+      waterScalar.setEnabled(false);
+      lastImpactTarget = meteors.targetAt();
+    } else {
+      const s = scienceSnapshot;
+      scienceMode = false;
+      terrainGenesisEvidence = null;
+      if (s) {
+        terrain.restore(s.terrain);
+        bearings.restore(s.bearings);
+        cinnabarLayer.visible = s.cinnabarVisible;
+        extruder.setEnabled(s.extruderEnabled);
+        transport.setEnabled(false);
+        waterScalar.setEnabled(false);
+        meteorWeather.setEnabled(s.weatherEnabled, simNow);
+      }
+      scienceSnapshot = null;
+      lastImpactTarget = meteors.targetAt();
+    }
+    devUI?.setPressed("science", scienceMode);
+    return scienceMode;
+  }
+  function toggleScienceMode() {
+    return setScienceMode(!scienceMode);
+  }
+  function showTerrainSeed(seed) {
+    terrainGenesisSeed = seed | 0;
+    if (scienceMode) {
+      bearings.clear();
+      terrainGenesisEvidence = terrainGenesis.runSeed(terrainGenesisSeed);
+      transport.reset();
+      transport.setEnabled(false);
+      waterScalar.reset();
+      waterScalar.setEnabled(false);
+      lastImpactTarget = meteors.targetAt();
+    }
+    devUI?.setText("terrain-next", "NEXT", `Next deterministic terrain after seed ${terrainGenesisSeed}`);
+    return terrainGenesisEvidence;
+  }
+  function nextTerrain() {
+    return showTerrainSeed(terrainGenesisSeed + 1);
+  }
   var continuityStation = createContinuityStationSystem({ world, components, THREE, scene: three.scene });
   var footprints = createFootprintSystem({ world, components, THREE, scene: three.scene, terrain });
   var footprintOccupancy = createFootprintOccupancySystem({ world, components, footprints });
@@ -44363,7 +45421,7 @@ void main() {
   var lastImpactTarget = meteors.targetAt();
   function setImpactBucket(index) {
     impactBucket = THREE.MathUtils.clamp(index, 0, impactBuckets.length - 1);
-    document.querySelectorAll("[data-impact-bucket]").forEach((button, i) => button.classList.toggle("active", i === impactBucket));
+    return impactBucket;
   }
   function callImpact(target = lastImpactTarget) {
     lastImpactTarget = target.clone();
@@ -44411,7 +45469,32 @@ void main() {
   var last = performance.now();
   var fpsWindowStart = last;
   var fpsFrames = 0;
-  var fpsCounter = document.querySelector("#fps-counter");
+  function cycleTimeScale() {
+    timeScaleIndex = (timeScaleIndex + 1) % timeScales.length;
+    timeScale = timeScales[timeScaleIndex];
+    devUI?.setText("time", `${timeScale}\xD7`, `Simulation speed ${timeScale} times`);
+    devUI?.setPressed("time", timeScale !== 1);
+  }
+  function captureTerrain() {
+    const f = terrain.field, meta = terrain.inspect();
+    let min = Infinity, max = -Infinity, solid = 0, empty = 0, surface = 0;
+    for (const v of f) {
+      min = Math.min(min, v);
+      max = Math.max(max, v);
+      if (v > 0) solid++;
+      else empty++;
+      if (Math.abs(v) < 0.1) surface++;
+    }
+    const cam = components.CameraView.get(cameras.activeId())?.camera, e = { kind: "crucible-terrain-density", version: 1, build: globalThis.__CRUCIBLE_BUILD__, capturedAt: (/* @__PURE__ */ new Date()).toISOString(), terrain: meta, summary: { samples: f.length, min, max, solid, empty, nearSurface: surface }, view: cam ? { position: cam.position.toArray(), quaternion: cam.quaternion.toArray() } : null, interaction: { tool: devUI?.tool ?? null, meteorMagnitude: impactBuckets[impactBucket] }, density: [...f] }, a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(e)], { type: "application/json" }));
+    a.download = `crucible-terrain-${Date.now()}.json`;
+    a.click();
+    return e.summary;
+  }
+  devUI = createDevUI({ mount: document.querySelector("#debug-tools"), statusMount: document.querySelector("#dev-status"), build: globalThis.__CRUCIBLE_BUILD__, actions: { meteorMagnitude: setImpactBucket, science: () => toggleScienceMode(), terrainNext: nextTerrain, terrainEvidence: captureTerrain, exportLog: () => locusLedger.download(), timeScale: cycleTimeScale, refresh: () => location.reload() } });
+  setImpactBucket(1);
+  devUI.setPressed("science", scienceMode);
+  setScienceMode(true);
   function frame(now) {
     const realDt = Math.min(0.033, Math.max(0, (now - last) / 1e3));
     last = now;
@@ -44421,16 +45504,18 @@ void main() {
     physicsAccumulator += simDt;
     fpsFrames++;
     if (now - fpsWindowStart >= 500) {
-      fpsCounter.textContent = `fps ${Math.round(fpsFrames * 1e3 / (now - fpsWindowStart))}`;
+      devUI.setFps(Math.round(fpsFrames * 1e3 / (now - fpsWindowStart)));
       fpsWindowStart = now;
       fpsFrames = 0;
     }
     extruder.update(simNow);
     const fieldNow = cinnabarAndCinnamon.update(simNow);
-    cinnabarDome.update(fieldNow);
-    cinnabarKite.update(fieldNow);
-    cinnabarSpire.update(fieldNow);
-    coupletTrial.update(fieldNow, simDt);
+    if (!scienceMode) {
+      cinnabarDome.update(fieldNow);
+      cinnabarKite.update(fieldNow);
+      cinnabarSpire.update(fieldNow);
+      coupletTrial.update(fieldNow, simDt);
+    }
     if (cinnabarPackY !== cinnabarPackTarget) {
       cinnabarPackElapsed = Math.min(cinnabarPackDuration, cinnabarPackElapsed + realDt);
       const packT = cinnabarPackElapsed / cinnabarPackDuration, packEase = packT * packT * (3 - 2 * packT);
@@ -44445,7 +45530,7 @@ void main() {
       physicsAccumulator -= physicsStep;
       steps++;
     }
-    if (domeGranularTurn && fieldNow >= domeGranularTurn.at) {
+    if (!scienceMode && domeGranularTurn && fieldNow >= domeGranularTurn.at) {
       const u = Math.min(1, Math.max(0, (fieldNow - domeGranularTurn.at) / domeGranularTurn.duration));
       const ease = u * u * (3 - 2 * u);
       let radius = 4.2, strength = 0.032 * ease, lift = 15e-4 * ease;
@@ -44459,6 +45544,7 @@ void main() {
       bearings.applyField({ x: 2.7, z: 1.8 }, { radius, strength, lift });
     }
     bearings.update(Math.min(0.15, simDt));
+    transport.update(simNow);
     if (steps === 32) physicsAccumulator = 0;
     meteorWeather.update(simNow);
     meteors.update(simNow);
@@ -44486,38 +45572,44 @@ void main() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, lighthuggerInterior: lighthuggerInterior.inspect(), lighthuggerExterior: lighthuggerExterior.inspect(), looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: terrain.inspect(), water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
-  var systems = { renderSync, cameras, orbit, lights, lighthuggerInterior, lighthuggerExterior, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
+  var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, science: { active: scienceMode, baseline: "S0" }, lighthuggerInterior: lighthuggerInterior.inspect(), lighthuggerExterior: lighthuggerExterior.inspect(), looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: { ...terrain.inspect(), genesis: terrainGenesisEvidence }, water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), transport: transport.inspect(), waterScalar: waterScalar.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
+  var systems = { renderSync, cameras, orbit, lights, transport, waterScalar, lighthuggerInterior, lighthuggerExterior, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
   var entities = { locus, interiorTarget, continuityStation: continuityStation.id, overviewCamera, interiorCamera, skyLight, keyLight, fillLight };
-  globalThis.crucible = { lighthugger: { enter: () => setLighthuggerInterior(true), exit: () => setLighthuggerInterior(false), inspect: () => lighthuggerInterior.inspect() }, cinnabarAndCinnamon: { replay: () => cinnabarAndCinnamon.replay(), inspect: () => cinnabarAndCinnamon.inspect(simNow), advance: () => coupletTrial.advance(), stow: () => setCinnabarPacked(true), deploy: () => setCinnabarPacked(false), togglePacked: toggleCinnabarPacked }, spawnMatter, spawnBearings: (count = 25e3) => bearings.spawnBatch(count), meteor: callImpact, groundHeight: terrain.groundHeight, runSpatialProbes: () => lastProbeResults = spatialProbes.run(), spatialProbeResults: () => lastProbeResults, locusLog: () => locusLedger.snapshot(), exportLocusLog: () => locusLedger.download(), inspect };
+  globalThis.crucible = {
+    sea: { show: () => water.visible = true, hide: () => water.visible = false, toggle: () => water.visible = !water.visible, inspect: () => ({ visible: water.visible, level: waterLevel, bottom: waterBottom, radius: waterRadius }) },
+    terrain: { reset: () => {
+      terrain.loadLandCandidate();
+      transport.reset();
+      transport.setEnabled(false);
+      lastImpactTarget = meteors.targetAt();
+      return terrain.inspect();
+    }, raise: (x, z, options = {}) => terrain.raise({ x, z }, options), carve: (x, z, options = {}) => terrain.excavate({ x, z }, options), inspect: () => terrain.inspect() },
+    transport: { reset: () => transport.reset(), inject: (amount = 1, x, z) => transport.inject(amount, x, z), fillRegion: (options) => transport.fillRegion(options), setSource: (options) => transport.setSource(options), setSources: (sources) => transport.setSources(sources), cycleDisplayDensity: () => transport.cycleDisplayDensity(), setDisplayDensity: (level) => transport.setDisplayDensity(level), inspect: () => transport.inspect() },
+    science: { enter: () => setScienceMode(true), exit: () => setScienceMode(false), toggle: toggleScienceMode, inspect: () => ({ active: scienceMode, baseline: "S0" }) },
+    terrainGenesis: { recipes: () => terrainGenesis.recipes(), families: () => terrainGenesis.families(), inspect: () => terrainGenesisEvidence, seed: () => terrainGenesisSeed, showSeed: showTerrainSeed, next: nextTerrain, showAuthored: (index) => {
+      terrainGenesisIndex = (index % 4 + 4) % 4;
+      if (scienceMode) {
+        bearings.clear();
+        terrainGenesisEvidence = terrainGenesis.run(terrainGenesisIndex, 741);
+        transport.reset();
+        transport.setEnabled(false);
+        lastImpactTarget = meteors.targetAt();
+      }
+      return terrainGenesisEvidence;
+    } },
+    lighthugger: { enter: () => setLighthuggerInterior(true), exit: () => setLighthuggerInterior(false), inspect: () => lighthuggerInterior.inspect() },
+    cinnabarAndCinnamon: { replay: () => cinnabarAndCinnamon.replay(), inspect: () => cinnabarAndCinnamon.inspect(simNow), advance: () => coupletTrial.advance(), stow: () => setCinnabarPacked(true), deploy: () => setCinnabarPacked(false), togglePacked: toggleCinnabarPacked },
+    spawnMatter,
+    spawnBearings: (count = 25e3) => bearings.spawnBatch(count),
+    meteor: callImpact,
+    groundHeight: terrain.groundHeight,
+    runSpatialProbes: () => lastProbeResults = spatialProbes.run(),
+    spatialProbeResults: () => lastProbeResults,
+    locusLog: () => locusLedger.snapshot(),
+    exportLocusLog: () => locusLedger.download(),
+    inspect
+  };
   installDebugApi({ world, components, terrain, three, systems, entities, water, inspect });
-  document.querySelectorAll("[data-impact-bucket]").forEach((button, i) => button.addEventListener("click", () => setImpactBucket(i)));
-  setImpactBucket(1);
-  document.querySelector("#call-meteor")?.addEventListener("click", () => callImpact());
-  document.querySelector("#spawn-bearings")?.addEventListener("click", () => bearings.spawnBatch(25e3));
-  document.querySelector("#toggle-water")?.addEventListener("click", (event) => {
-    water.visible = !water.visible;
-    event.currentTarget.classList.toggle("active", water.visible);
-  });
-  document.querySelector("#randomize-terrain")?.addEventListener("click", () => {
-    terrain.randomize();
-    lastImpactTarget = meteors.targetAt();
-  });
-  document.querySelector("#export-locus-log")?.addEventListener("click", () => locusLedger.download());
-  var timeScaleButton = document.querySelector("#time-scale");
-  function syncTimeScale() {
-    timeScale = timeScales[timeScaleIndex];
-    if (timeScaleButton) {
-      timeScaleButton.textContent = `${timeScale}\xD7`;
-      timeScaleButton.setAttribute("aria-label", `Simulation speed ${timeScale} times`);
-      timeScaleButton.classList.toggle("active", timeScale !== 1);
-    }
-  }
-  timeScaleButton?.addEventListener("click", () => {
-    timeScaleIndex = (timeScaleIndex + 1) % timeScales.length;
-    syncTimeScale();
-  });
-  syncTimeScale();
   var raycaster = new THREE.Raycaster();
   var pointer = new THREE.Vector2();
   var tapStart = null;
@@ -44557,7 +45649,25 @@ void main() {
       return;
     }
     const hit = raycaster.intersectObject(terrain.mesh, true)[0];
-    if (hit && terrain.insideMaterial(hit.point.x, hit.point.z)) callImpact(meteors.targetAt(hit.point.x, hit.point.z));
+    if (hit && terrain.insideMaterial(hit.point.x, hit.point.z)) {
+      const p = hit.point;
+      if (devUI.tool === "raise") {
+        terrain.raise(p, { radius: 1.15, height: 0.55 });
+        lastImpactTarget = meteors.targetAt(p.x, p.z);
+      } else if (devUI.tool === "carve") {
+        terrain.excavate(p, { radius: 0.82, depth: 0.42 });
+        lastImpactTarget = meteors.targetAt(p.x, p.z);
+      } else if (devUI.tool === "bearings-many") {
+        bearings.spawnBatch(25e3, new THREE.Vector3(p.x, p.y + 0.35, p.z));
+      } else if (devUI.tool === "bearing-packet") {
+        bearings.spawnBatch(25, new THREE.Vector3(p.x, p.y + 0.35, p.z));
+      } else if (devUI.tool === "source" || devUI.tool === "source-thick") {
+        transport.reset();
+        const source = { x: p.x, z: p.z, rate: devUI.tool === "source-thick" ? 2.7 : 0.9 };
+        transport.setSource(source);
+        transport.setEnabled(true);
+      } else callImpact(meteors.targetAt(p.x, p.z));
+    }
   });
   diagnostics.ready();
 })();
