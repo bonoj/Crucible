@@ -107,6 +107,12 @@ This is intentionally not a CFD solver, shallow-water solver, or particle liquid
 
 **Interpretation:** This is the expedition's first observational friction. It does not yet earn a new scientific instrument; it establishes that visualization must expose state contrast before it can serve as evidence.
 
+**Human observation 2:** A deliberate meteor crater was physically consequential to the transported field, but the displayed field was not dense/expressive enough to read the redistribution confidently.
+
+**Result:** The first terrain-coupling prediction passes qualitatively: Transport responds to authoritative terrain mutation without crater-specific logic. The quantitative/interpretive question remains unanswered because presentation does not expose mass concentration strongly enough.
+
+**Turn 2 intervention selected:** Preserve the physical representation unchanged. Encode authoritative cell mass more strongly in presentation so accumulation and depletion are perceptually distinct before earning a separate scientific instrument.
+
 
 
 ## Why this expedition exists
