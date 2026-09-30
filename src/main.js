@@ -33,6 +33,7 @@ import {createShallowWaterSystem} from "./runtime/shallow-water-system.js";
 import {buildTransportWatershed} from "./transport-watershed.js";
 import {buildTransportDamBreak} from "./transport-dam-break.js";
 import {createDevUI} from "./runtime/dev-ui.js";
+import {createCalderaStudy} from "./runtime/caldera-study.js";
 
 const mount=document.querySelector("#world"),diagnostics=installDiagnostics(document.querySelector("#diagnostics"));let devUI=null;
 
@@ -56,6 +57,7 @@ const keyLight=addLight({name:"Key",kind:"directional",color:0xffc57d,intensity:
 const fillLight=addLight({name:"Fill",kind:"directional",color:0x7ca39a,intensity:.7,position:[12,8,-10]});lights.syncAll();
 
 const terrain=createTerrainSystem({THREE,scene:three.scene});
+const calderaStudy=createCalderaStudy({THREE,scene:three.scene,terrain});
 const interiorTarget=world.entity();world.add(interiorTarget,Transform,{position:new THREE.Vector3(0,-29.7,0),rotation:new THREE.Euler(),scale:new THREE.Vector3(1,1,1),visible:true});world.add(interiorTarget,Locus,{id:interiorTarget,kind:"lighthugger-interior"});
 const interiorCamera=addCamera({name:"Lighthugger Interior",position:[4.1,-27.4,5.6],orbit:{azimuth:.58,polar:1.12,distance:6.2,minDistance:3.0,maxDistance:7.0,minPolar:.5,maxPolar:1.46,minWorldY:-31.8},fov:48,targetEntity:interiorTarget});
 const lighthuggerInterior=createLighthuggerInterior({THREE,scene:three.scene,origin:new THREE.Vector3(0,-32,0)});
@@ -93,9 +95,9 @@ function setScienceMode(active){
  active=!!active;if(active===scienceMode)return scienceMode;
  if(active){
    scienceSnapshot={terrain:terrain.snapshot(),bearings:bearings.snapshot(),cinnabarVisible:cinnabarLayer.visible,extruderEnabled:extruder.inspect().enabled,weatherEnabled:meteorWeather.inspect().enabled};
-   scienceMode=true;meteorWeather.setEnabled(false,simNow);extruder.setEnabled(false);cinnabarLayer.visible=false;bearings.clear();terrain.loadLandCandidate();transport.reset();transport.setEnabled(false);lastImpactTarget=meteors.targetAt();
+   scienceMode=true;meteorWeather.setEnabled(false,simNow);extruder.setEnabled(false);cinnabarLayer.visible=false;bearings.clear();terrain.loadLandCandidate();calderaStudy.apply();transport.reset();transport.setEnabled(false);lastImpactTarget=meteors.targetAt();
  }else{
-   const s=scienceSnapshot;scienceMode=false;if(s){terrain.restore(s.terrain);bearings.restore(s.bearings);cinnabarLayer.visible=s.cinnabarVisible;extruder.setEnabled(s.extruderEnabled);transport.setEnabled(false);meteorWeather.setEnabled(s.weatherEnabled,simNow)}scienceSnapshot=null;lastImpactTarget=meteors.targetAt();
+   const s=scienceSnapshot;scienceMode=false;calderaStudy.clear();if(s){terrain.restore(s.terrain);bearings.restore(s.bearings);cinnabarLayer.visible=s.cinnabarVisible;extruder.setEnabled(s.extruderEnabled);transport.setEnabled(false);meteorWeather.setEnabled(s.weatherEnabled,simNow)}scienceSnapshot=null;lastImpactTarget=meteors.targetAt();
  }
  devUI?.setPressed("science",scienceMode);return scienceMode;
 }
