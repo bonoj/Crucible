@@ -5,9 +5,9 @@ export function createDevUI({mount,build,actions}){
   const groups=[
     {kind:"readout",items:[["fps","fps …","Frames per second"],["build",`build ${String(build||"local").slice(0,7)}`,"Build"]]},
     {kind:"choice",label:"Impact magnitude",items:[1,2,3,4].map((n,i)=>({id:`impact-${n}`,text:String(n),label:`Impact magnitude ${n}`,on:()=>actions.impactBucket(i)}))},
-    {kind:"controls",items:[{id:"meteor",text:"☄️",label:"Call meteor",on:actions.meteor}]},
+    {kind:"choice",label:"Spatial tools",items:[{id:"meteor",text:"☄️",label:"Call meteor at tapped point",tool:"meteor"}]},
     {kind:"choice",label:"Bearing controls",items:[
-      {id:"bearings-many",text:"••",label:"Spawn 25 thousand bearings",on:actions.bearingsMany},
+      {id:"bearings-many",text:"••",label:"Spawn 25 thousand bearings at tapped point",tool:"bearings-many"},
       {id:"bearings-packet",text:"•",label:"Spawn 25 bearings at tapped point",tool:"bearing-packet"}
     ]},
     {kind:"choice",label:"Terrain tools",items:[
