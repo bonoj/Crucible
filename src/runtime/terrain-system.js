@@ -95,6 +95,12 @@ export function createTerrainSystem({THREE,scene}){
     const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);return{radius:r,height:h};
   }
 
+  function lower(center,{radius=3.2,depth=2.2}={}){
+    const r=Math.max(.3,radius),d=Math.max(.04,depth),ix0=Math.max(1,Math.floor((center.x-r-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+r-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1),iz0=Math.max(1,Math.floor((center.z-r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))-1),iz1=Math.min(NZ-2,Math.ceil((center.z+r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))+1);
+    for(let z=iz0;z<=iz1;z++)for(let x=ix0;x<=ix1;x++){const p=wp(x,0,z),radial=Math.hypot(p.x-center.x,p.z-center.z);if(radial>=r)continue;const w=1-radial/r,delta=d*w*w*(3-2*w);for(let y=1;y<NY-1;y++)field[idx(x,y,z)]-=delta;}
+    const dirty={x0:ix0,x1:ix1,z0:iz0,z1:iz1};rebuild(dirty);rebuildSupport(dirty);return{radius:r,depth:d};
+  }
+
   function excavate(center,{radius=.62,depth=.34}={}){
     const r=Math.max(.3,radius),d=Math.max(.04,depth),ix0=Math.max(1,Math.floor((center.x-r-MIN.x)/(MAX.x-MIN.x)*(NX-1))-1),ix1=Math.min(NX-2,Math.ceil((center.x+r-MIN.x)/(MAX.x-MIN.x)*(NX-1))+1),iz0=Math.max(1,Math.floor((center.z-r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))-1),iz1=Math.min(NZ-2,Math.ceil((center.z+r-MIN.z)/(MAX.z-MIN.z)*(NZ-1))+1);
     for(let z=iz0;z<=iz1;z++)for(let x=ix0;x<=ix1;x++){const p=wp(x,0,z),radial=Math.hypot(p.x-center.x,p.z-center.z);if(radial>=r)continue;const w=1-radial/r,delta=d*w*w;for(let y=1;y<NY-1;y++)field[idx(x,y,z)]-=delta;}
@@ -129,5 +135,5 @@ export function createTerrainSystem({THREE,scene}){
   }
   function segmentApparatusHit(a,b){let enter=0,exit=1,normal=null;const d=b.clone().sub(a),slabs=PLANES.map(([nx,nz])=>({n:new THREE.Vector3(nx,0,nz),c:APPARATUS_APOTHEM}));slabs.push({n:new THREE.Vector3(0,1,0),c:APPARATUS_TOP},{n:new THREE.Vector3(0,-1,0),c:-APPARATUS_BOTTOM});for(const s of slabs){const da=s.n.dot(a)-s.c,dd=s.n.dot(d);if(Math.abs(dd)<1e-8){if(da>0)return null;continue}const t=-da/dd;if(dd<0){if(t>enter){enter=t;normal=s.n}}else exit=Math.min(exit,t);if(enter>exit)return null}return enter>=0&&enter<=1&&normal?{t:enter,point:a.clone().lerp(b,enter),normal:normal.clone()}:null;}
   rebuild();rebuildSupport();
-  return{mesh,apparatus,field,rebuild,impact,excavate,raise,snapshot,restore,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
+  return{mesh,apparatus,field,rebuild,impact,excavate,raise,lower,snapshot,restore,reset,randomize,groundHeight,groundHeightExact,bearingTerrainHeight,terrainHeight,insideMaterial,insideApparatus,collideSphere,collideBearingState,segmentApparatusHit,belowPlinthOcclusion,occludeBelowPlinth,inspect:()=>({grid:[NX,NY,NZ],chunks:[CX,CZ],triangles:chunks.reduce((n,c)=>n+c.triangles,0),seed,apparatus:{radius:APPARATUS_RADIUS,top:APPARATUS_TOP,bottom:APPARATUS_BOTTOM},materialApothem:MATERIAL_APOTHEM})};
 }
