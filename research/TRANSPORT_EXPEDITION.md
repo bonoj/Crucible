@@ -943,3 +943,57 @@ Shoreline reconstruction and unsupported-terrain behavior are separate questions
 The new terrain generator is now valuable test load for both: sequential deterministic worlds provide bowls, channels, ridges, shelves, cliffs, steep gradients, and awkward shoreline geometry without manufacturing one special fluid test case.
 
 **Preserved judgment:** the current water candidate is cheap and useful. Its blocky visible boundary should not be mistaken for failure of the state representation, and its behavior beyond supported shallow terrain has not yet been earned.
+
+## Material water and data-driven forcing
+
+The shallow-water work exposed a broader Crucible seam: a representation can be physically useful without also owning its final visible geometry.
+
+The current shallow-water state is a cheap supported material field. For each wet XZ sample it can provide water depth, free-surface elevation, and horizontal momentum. The visible surface may later be reconstructed independently. Other systems can consume the water state without knowing how the water is rendered.
+
+This makes buoyancy a deliberately separate coupling. Bearings do not currently float because of either the shallow-water or scalar systems; their existing dynamics are gravity, terrain contact/piling, impacts, and explicit applied fields. A future material can instead query local water state and decide whether it floats, sinks, or is advected. The water solver remains ignorant of bearings, and presentation remains ignorant of the physical decision.
+
+The same separation makes real data interesting as more than visualization.
+
+A measured field can provide an initial condition or forcing field while Crucible's material systems remain explicit about what the numbers do. In particular, precipitation has a unusually direct dimensional crossing into the shallow-water representation. If a cell has horizontal area A and water depth h, its represented water volume is
+
+    V = A h
+
+A precipitation observation expressed as accumulated depth p over an exposed area therefore supplies a known volume
+
+    delta V = p A
+
+after establishing the mapping between Crucible world units and physical units. Ten millimeters of precipitation need not become an arbitrary visual parameter such as “rain strength”; it can become the corresponding quantity of material added to the modeled surface.
+
+That suggests a material water-cycle experiment:
+
+    measured precipitation
+        -> known incoming water volume
+        -> terrain routing
+        -> pooling and changing free-surface height
+        -> overflow / escape
+        -> interaction with other material
+
+The useful evidence is then an accounting ledger rather than merely an animation. In the simplest form,
+
+    initial water + precipitation
+        = surface water + stored water + escaped water + accounting error
+
+Additional reservoirs such as infiltration, subsurface storage, snow, or evaporation should only enter when their representations and transfer rules are explicit. They are not implied merely by calling the experiment a water cycle.
+
+This is the broader science-shaped direction now visible in Crucible. The terrain is a mutable 3D material field; shallow water can be a conserved material field over it; bearings are discrete material bodies; impacts are controlled interventions; deterministic genesis and captured state provide repeatable initial conditions. A 2D field can also accept measured scalar or vector data without requiring that data to become the simulation's geometry.
+
+The governing separation is:
+
+    observation / dataset
+        != physical law
+        != simulation representation
+        != presentation
+
+A dataset may initialize or force a system. An explicit model determines consequences. A representation carries the state required by that model. A renderer communicates the result. Keeping those roles separate is what permits real measurements and fantastical interventions to inhabit the same apparatus without pretending that either one validates the other.
+
+This does not make Crucible a quantitatively validated scientific simulator by declaration. Particular models still require validation before their outputs can be claimed to represent reality. What the architecture can earn first is something narrower and useful: an inspectable experimental instrument in which measured inputs can become accounted material, interventions can be repeated, state transitions can be preserved, and the provenance of a result can be examined.
+
+Current material-data principle:
+
+**A dataset does not have to color the world. It can supply material to it.**
+
