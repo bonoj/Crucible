@@ -33,10 +33,11 @@ export function createTransportSystem({THREE,scene,terrain}){
   function setEnabled(v){enabled=!!v;points.visible=enabled;lastNow=null;return enabled}
   function reset(){mass.fill(0);vx.fill(0);vz.fill(0);totalInjected=0;totalEscaped=0;steps=0;accumulator=0;sampleGround();refreshPresentation()}
   function setSource({x=sources[0]?.x??0,z=sources[0]?.z??0,rate=sources[0]?.rate??0}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
+  function fillRegion({x=0,z=0,radius=1,amount=1}={}){let cells=[];for(let iz=0;iz<N;iz++)for(let ix=0;ix<N;ix++){const wx=worldX(ix),wz=worldZ(iz),k=index(ix,iz);if(Number.isFinite(ground[k])&&Math.hypot(wx-x,wz-z)<=radius)cells.push(k)}if(!cells.length)return 0;const each=amount/cells.length;for(const k of cells)mass[k]+=each;totalInjected+=amount;refreshPresentation();return amount}
   function setSources(next=[]){sources=next.map(({x=0,z=0,rate=0})=>({x,z,rate:Math.max(0,rate)}));return sources.map(s=>({...s}))}
   function cycleDisplayDensity(){displayDensity=displayDensity>=25?1:displayDensity+1;refreshPresentation();return inspect().display}
   function setDisplayDensity(level){displayDensity=THREE.MathUtils.clamp(level|0,1,25);refreshPresentation();return inspect().display}
   function inspect(){let stored=0,wet=0,max=0;for(const m of mass){stored+=m;if(m>1e-5)wet++;max=Math.max(max,m)}return{kind:"surface-mass-flux-field",enabled,grid:[N,N],cellSize:CELL,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},mass:{injected:totalInjected,stored,escaped:totalEscaped,error:totalInjected-stored-totalEscaped},wetCells:wet,maxCellMass:max,steps}}
   refreshPresentation();
-  return{update,setEnabled,reset,inject,setSource,setSources,cycleDisplayDensity,setDisplayDensity,inspect,object:points};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,inspect,object:points};
 }
