@@ -834,3 +834,98 @@ This is strong evidence for the collaboration's contemporaneous understanding of
 It is still notebook evidence. It does not establish the exact hidden prompt payload, model settings, image-generation implementation, or token/context mechanics used on every historical turn.
 
 No deeper historical conversation was consulted.
+
+
+## Turn — Bookception cadence and the Phenome generalization
+
+### Human evidence
+
+The human supplied nine later notebook spreads. Four preserve the working record and retrospective case study for **Bookception at Sea** aboard Hispaniolautilus. Five form **The Phenome 1/5–5/5**, a later attempt to generalize the interaction pattern across scales and kinds of things.
+
+These have different evidentiary status: Bookception documents a particular run; Phenome is a conceptual extrapolation from accumulated runs.
+
+### Bookception at Sea — turn cadence
+
+The established frame was Treasure Island aboard Hispaniolautilus, with Jim Hawkins, Long John Silver, Cap'n Flint, and crew present. A prior modification had made a whale possible but not yet established it visually.
+
+The intervention was narrow: pause Treasure Island naturally before Jim enters the apple barrel; open Poe's *A Descent into the Maelström* inside the existing world; provide it incrementally; generate after key passages; give no crossover or merge instruction; simply continue the world while reading.
+
+The recorded sequence was:
+
+**stable Treasure Island frame → open Poe → strange waters → storm/vortex escalation → Maelström/full immersion → stop Poe → resume Stevenson → de-escalation without reset → whale remains visible**
+
+The notes repeatedly distinguish **changed** from **still present**. Geography, atmosphere, sea state, light, danger, and eventually almost the whole environment could change while ship, crew, and visual identity remained recognizable.
+
+When Poe stopped, there was no reset prompt, no instruction to remove the Maelström, and no new establishing image. Stevenson resumed. The scene de-escalated, but it did not restore the original sunset: night, wetness, history, and the whale remained.
+
+The notebook marks the whale's cause **UNKNOWN** and lists several possibilities rather than forcing a causal story.
+
+### What this adds to the recovered turn protocol
+
+The previous shard recovered:
+
+**persistent situation → bounded intervention → generative reconciliation → inspection → acceptance/rejection → residue**
+
+Bookception adds temporal resolution. The human controlled not only source selection but **pacing**: where to pause, when to introduce another text, how much to read before another generation, and when to stop applying the second source.
+
+For this class of run, the loop was more precisely:
+
+**established world → add a bounded increment of source context → generate once → inspect continuity/change → add more / stop / switch source → generate again**
+
+This created an important working variable: **semantic pressure over time**.
+
+The generator was not told to make Treasure Island become Poe. It repeatedly received a slightly changed semantic environment and was asked to continue the same world.
+
+The return sequence also shows that persistence was not restoration. “Return” meant renewed contextual dominance, not rollback.
+
+### Semantic overlap — working explanation, not established mechanism
+
+The case study proposes that the run worked easily because Treasure Island and Poe shared maritime vocabulary and affordances: ship, sea, storm, waves, crew, danger, navigation.
+
+The pages retain unresolved questions about less-compatible texts, failure boundaries, duration of latent elements, control of influence, and whether the world maintains anything like a history model or is merely reactive.
+
+The polished Case Study 04 is retrospective synthesis of the same run, not an independent replication.
+
+### Phenome — an attempted generalization
+
+The five Phenome spreads propose a working definition:
+
+> **A phenome is a persistent locus of potential perspective whose experience can affect what it becomes and whose changes must be resolved against what it encounters.**
+
+The proposal is deliberately broad and provisional. A tool, room, forest, organism, Home, world, molecule, atom, or smaller/larger system might express the same pattern with different active capacities.
+
+Proposed capacities include persistence, perception, attention, retention, preference, expression, mutation, negotiation, and reflection. The pages stress that these are capacities rather than requirements and may be dormant.
+
+The proposed loop is:
+
+**state → availability → attention → response/proposal → resolution → state**
+
+with simpler collapsed forms where fewer capacities are active.
+
+Two explicit cautions are important:
+
+> **Capacity is not authority.**
+
+> **Negotiation is not a conversation. It is the universe trying things.**
+
+The final Phenome page leaves origins, activation, identity, boundaries, interaction, scale, experience, composition, and completeness open.
+
+### Archaeological interpretation
+
+Phenome appears to be the collaboration trying to abstract the interaction grammar discovered through books, characters, Home, weather, geography, and semantic mutation into a substrate-independent account of situated change.
+
+The recurring shape is:
+
+**state has history → something becomes locally available → some subset matters now → change is proposed or occurs → encounter/context constrains it → resulting state persists**
+
+That resembles the observed Bookception cadence. But extending the pattern to radically different physical scales was a **hypothesis-generating generalization**, not evidence that one mechanism had been demonstrated across those scales.
+
+This distinction matters now because current Crucible contains persistent ECS entities, bounded observation, collisions, and multi-scale experiments. Similar vocabulary should not be mistaken for proof that Crucible implements the old Phenome proposal.
+
+### Evidence status
+
+Bookception is strong notebook evidence for intended procedure and contemporaneous observations: incremental source dosing, one-generation stepping, no-reset return, persistent residue, and explicit causal uncertainty.
+
+Phenome is strong evidence that the collaboration attempted a broad conceptual generalization. It is not empirical validation of that generalization.
+
+No deeper historical conversation was consulted.
