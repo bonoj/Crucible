@@ -33,20 +33,17 @@ export function createLighthuggerExterior({THREE,scene}){
   for(const face of [0,2,4,6]){const a=Math.PI/8+face*Math.PI/4;for(let j=0;j<8;j++){
     const w=new THREE.Mesh(windowGeo,warm);w.position.set(Math.sin(a)*1.985,-3.75+j*1.05,Math.cos(a)*1.985);w.rotation.y=a;root.add(w);
   }}
-  // Long rails and small antenna forests establish comprehensible machinery bands.
-  const railGeo=new THREE.CylinderGeometry(.025,.025,length*.78,5);
-  for(const a of [0,Math.PI/2,Math.PI,Math.PI*1.5]){const rail=new THREE.Mesh(railGeo,brass);rail.position.set(Math.sin(a)*2.02,0,Math.cos(a)*2.02);root.add(rail);}
-  // End-cap spars around the open throat.
+  // Inward-biting teeth: root on the rim, tip inside the aperture and toward vessel center.
+  function toothBetween(a,b){
+    const d=b.clone().sub(a),m=a.clone().add(b).multiplyScalar(.5);
+    const tooth=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,d.length(),5),brass);
+    tooth.position.copy(m);tooth.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());root.add(tooth);
+  }
   for(const end of [-1,1])for(let i=0;i<8;i++){
-    const a=Math.PI/8+i*Math.PI/4;
-    const radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
-    const inward=new THREE.Vector3(0,-end,0);
-    const dir=radial.clone().multiplyScalar(-.86).add(inward.multiplyScalar(.52)).normalize();
-    const toothLength=.62;
-    const b=new THREE.Mesh(new THREE.CylinderGeometry(.035,.065,toothLength,5),brass);
-    b.position.copy(radial).multiplyScalar(1.62);b.position.y=end*length*.535;
-    b.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
-    root.add(b);
+    const a=Math.PI/8+i*Math.PI/4,radial=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
+    const rootPoint=radial.clone().multiplyScalar(1.52);rootPoint.y=end*length*.505;
+    const tipPoint=radial.clone().multiplyScalar(.78);tipPoint.y=end*(length*.505-.46);
+    toothBetween(rootPoint,tipPoint);
   }
   root.traverse(o=>{if(o.isMesh)o.userData.lighthuggerExterior=true});
   return{object:root,inspect:()=>({kind:"lighthugger-exterior",shape:"horizontal cored octagonal vessel",length,outerRadius:outer,innerRadius:inner,entryTarget:true})};
