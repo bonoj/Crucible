@@ -23,13 +23,13 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     bvx[i]=velocity?.x??0;bvy[i]=velocity?.y??0;bvz[i]=velocity?.z??0;
     return 1;
   }
-  const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
+  const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0},waterSample={depth:0,surface:0,u:0,v:0};
   const probe={updateMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now();
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterActive=water?.hasWater?.()??false;let rendered=0;
     for(let i=0;i<count;i++){
-      const ws=waterActive?water.sampleState(bx[i],bz[i]):null;
+      const ws=waterActive&&water.sampleStateInto?.(bx[i],bz[i],waterSample)?waterSample:null;
       let submerged=0;
       if(ws&&ws.depth>0){
         const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
