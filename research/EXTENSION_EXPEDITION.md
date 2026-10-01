@@ -311,6 +311,22 @@ On the same target Android device:
 
 The important result is not zero cost. It is that **cost now follows material participation**. Merely having another active system in the world no longer taxes the entire bearing population through rich cross-system queries.
 
+### Human contribution to the crossing
+
+The speed of this investigation should not be read as model-alone autonomy. Model-operated repository mechanics removed much of the clerical friction: the model inspected history and implementation, maintained competing hypotheses, edited the executable, built candidates, and preserved provenance. The human remained materially responsible for the quality of the result.
+
+The human contribution was not limited to running candidates on the target device and reporting FPS or perceptual acceptance. During the coupling diagnosis, the human challenged the subsystem framing by asking whether bearings already know their Y height, then supplied the decisive systems abstraction: **terrain and water expose Y scalar fields; bearings read them.** That intervention collapsed several increasingly elaborate optimization realities into the smaller physical vocabulary that survived execution.
+
+The human then supplied acceptance authority at the field boundary: **60 FPS dry / 60 FPS with irrelevant water / ~50 FPS under actual 100k-bearing fluid participation, with correct bobbing**, and judged that consequence sufficient rather than spending further complexity on an already-good result.
+
+This expedition therefore distinguishes at least three human roles when recording collaboration:
+
+- **field access:** hands, device execution, and perceptual evidence outside the model's executable boundary;
+- **cognitive contribution:** framing, systems insight, challenge, taste, or domain reasoning that materially changes the trajectory;
+- **acceptance authority:** deciding which experienced consequences constitute success and where further optimization would cease to improve the work.
+
+These are not measures of turn count or authorship percentage. A single human intervention can be more consequential than many model-operated implementation turns. High collaboration velocity means mechanical friction has been removed; it does not mean the human has been removed.
+
 ### Crossing
 
 The extension expedition accepts:
