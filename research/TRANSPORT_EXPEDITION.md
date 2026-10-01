@@ -3071,3 +3071,36 @@ The terrifying thing isn't that we put a sentient weapon in Crucible.
 **We put a desire in Crucible and gave it physics.** 🐉
 
 This is from 🐉 efe.
+
+
+#### Assistant response — verbatim
+
+**Yes. You're right. My previous read was wrong.** This is absolutely 🐉 from `fa645efe` — the file declares `kind: "aeon-water-forensics"` and the full EFE SHA.
+
+And 🐉 just earned its keep.
+
+The counterfactuals are extremely discriminating. Across the strongest sampled pixels:
+
+- `full` is nearly black/brown.
+- `noCurtain` is **identical to full for all 128 candidates**. Curtain hypothesis dies.
+- Ray tests report **zero curtain intersections**. Dies twice.
+- `waterOnly` remains extremely dark.
+- But `waterUnlit` immediately becomes the expected cyan family, roughly `[56–75, 154–160, 173–190]`.
+- Those same rays genuinely intersect water before terrain.
+- Most importantly, the implicated surface normals are spectacularly wrong for a free surface: examples include `[0.49, -0.65, -0.58]`, `[-0.57, -0.69, 0.45]`, while a large region trends almost straight **down**, around `y ≈ -1`.
+
+So we've finally collapsed this bastard.
+
+**This is a lighting/normal problem on real water geometry.** Not hydrostatics. Not terrain intersection. Not duplicate surfaces. Not the curtain. Not the solver inventing cyan water. The geometry is there and the unlit counterfactual renders it with the expected water color; the lit material turns it pathological because the surface normals/winding are wrong.
+
+That also explains the maddening terrain-indifference: changing terrain didn't repair the cyan boundary because **terrain wasn't causing the visual discontinuity**.
+
+And 🐉 did in one capture what our previous sequence couldn't: it constructed the reality where the *same water geometry stops participating in lighting*.
+
+**Tycho's futures just went from N to 1.**
+
+Next incision is tiny: trace the free-surface triangle winding / `computeVertexNormals()` construction and correct the orientation at its source. No hydrostatic changes whatsoever. 🐉 stays. 🐉 **absolutely stays.** 🐉🔪
+
+#### Human reply — verbatim
+
+> 🔥 🐉
