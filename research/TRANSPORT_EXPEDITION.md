@@ -2493,3 +2493,26 @@ One ambiguity remains that FUUTP does not authorize me to invent: **destination*
 #### Human reply — verbatim
 
 > Let's stick it in crucible reference for now. What should we call it? Alistair probably won't mind if we borrow evolvarium. But this is not really evolvarium. This was Clara's home turned distant future wasteland turned renewable substrate turned domed arcologies.
+
+
+#### Assistant response — verbatim
+
+Yeah. I wouldn't name the image `EVOLVARIUM`. That's what we're now recognizing **in** it, not what Clara originally made.
+
+Given its actual lineage, my favorite is:
+
+**`CLARAS_HOME_ARCOLOGIES.png`**
+
+It preserves the archaeology instead of rewriting the artifact according to today's interpretation. Home → wasteland → renewable substrate → domed arcologies is exactly the sort of provenance we've decided matters.
+
+Then someday a document can truthfully say: *we recognized the Evolvarium pattern in Clara's Home Arcologies.*
+
+I'd put the untouched original at:
+
+`reference/CLARAS_HOME_ARCOLOGIES.png`
+
+FUUTP it there?
+
+#### Human reply — verbatim
+
+> Perfect. Let's do that.
