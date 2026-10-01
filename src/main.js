@@ -86,13 +86,13 @@ const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors,field:cinna
 const transport=createShallowWaterSystem({THREE,scene:three.scene,terrain});
 const lavaTransport=createShallowWaterSystem({THREE,scene:three.scene,terrain,kind:"lava",look:{color:0xffffff,opacity:.82,sideColor:0x4b0903,sideOpacity:.78,depthAccents:true,deepColor:0x260300,hotColor:0xff9a24},initialViscosity:26});
 const steamGroup=new THREE.Group();steamGroup.name="water-lava-steam";three.scene.add(steamGroup);
-const steamGeometry=new THREE.SphereGeometry(.18,7,5),steamMaterial=new THREE.MeshBasicMaterial({color:0xd9ddd8,transparent:true,opacity:.42,depthWrite:false});
+const steamGeometry=new THREE.SphereGeometry(.18,7,5),steamMaterial=new THREE.MeshBasicMaterial({color:0xd9ddd8,transparent:true,opacity:.14,depthWrite:false});
 const steamPuffs=[],steamContactCooldown=new Map();
-function spawnSteam(x,y,z){const mesh=new THREE.Mesh(steamGeometry,steamMaterial.clone());mesh.position.set(x,y+.08,z);const s=.7+Math.random()*.7;mesh.scale.setScalar(s);steamGroup.add(mesh);steamPuffs.push({mesh,age:0,life:1.2+Math.random()*.8,vy:.55+Math.random()*.35});}
+function spawnSteam(x,y,z){const mesh=new THREE.Mesh(steamGeometry,steamMaterial.clone());mesh.position.set(x,y+.08,z);const s=.9+Math.random()*.8;mesh.scale.set(s*.85,s,s*.85);steamGroup.add(mesh);steamPuffs.push({mesh,age:0,life:.9+Math.random()*.65,vy:.65+Math.random()*.4});}
 function updateSteam(dt){
  const now=simNow/1000,waterCells=new Map();transport.forEachWetCell(c=>waterCells.set(c.ix+","+c.iz,c));
  lavaTransport.forEachWetCell(c=>{const key=c.ix+","+c.iz,w=waterCells.get(key);if(!w)return;const last=steamContactCooldown.get(key)??-Infinity;if(now-last<.18)return;steamContactCooldown.set(key,now);spawnSteam(c.x,Math.max(c.surface,w.surface),c.z)});
- for(let i=steamPuffs.length-1;i>=0;i--){const p=steamPuffs[i];p.age+=dt;p.mesh.position.y+=p.vy*dt;p.mesh.scale.multiplyScalar(1+dt*.7);p.mesh.material.opacity=.42*Math.max(0,1-p.age/p.life);if(p.age>=p.life){steamGroup.remove(p.mesh);p.mesh.material.dispose();steamPuffs.splice(i,1)}}
+ for(let i=steamPuffs.length-1;i>=0;i--){const p=steamPuffs[i];p.age+=dt;p.mesh.position.y+=p.vy*dt;p.mesh.scale.multiplyScalar(1+dt*1.15);p.mesh.material.opacity=.14*Math.pow(Math.max(0,1-p.age/p.life),1.35);if(p.age>=p.life){steamGroup.remove(p.mesh);p.mesh.material.dispose();steamPuffs.splice(i,1)}}
  for(const [key,t] of steamContactCooldown)if(now-t>2)steamContactCooldown.delete(key);
 }
 const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts,liquids:[transport,lavaTransport]});
