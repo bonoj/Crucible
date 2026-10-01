@@ -27,7 +27,7 @@
 <aside id="debug-tools" aria-label="Construction controls"></aside>
 <button id="exit-lighthugger" type="button" hidden aria-label="Return to the Terrordrome">↖ RETURN</button>
 <pre id="diagnostics" role="alert" hidden></pre>
-<script>globalThis.__CRUCIBLE_BUILD__="272d51d28ff2325dd4f0289faac0bd98da16aecb";</script>
+<script>globalThis.__CRUCIBLE_BUILD__="d1c5e437197e72b16624c0b7104c6e9d9cbb0d0f";</script>
 <script>(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -43490,7 +43490,7 @@ void main() {
   }
 
   // src/runtime/bearing-system.js
-  function createBearingSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, impacts: impacts2, water: water2 = null, maxBearings = 1e6 }) {
+  function createBearingSystem({ world: world2, components: components2, THREE: THREE2, scene, terrain: terrain2, locus: locus2, impacts: impacts2, water: water2 = null, liquids = null, maxBearings = 1e6 }) {
     const BALL_R = 0.055, BEARING_RELATIVE_DENSITY = 0.55, PG = 96, MAX_RENDERED = 18e4, PROJECTION_GRID = 64, PROJECTION_MIN = -10, PROJECTION_SPAN = 20;
     const projection = new Uint32Array(PROJECTION_GRID * PROJECTION_GRID);
     const bx = new Float32Array(maxBearings), by = new Float32Array(maxBearings), bz = new Float32Array(maxBearings);
@@ -43534,7 +43534,7 @@ void main() {
       bvz[i] = velocity?.z ?? 0;
       return 1;
     }
-    const contact = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }, waterSample = { depth: 0, surface: 0, u: 0, v: 0 };
+    const contact = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }, liquidSample = { depth: 0, surface: 0, u: 0, v: 0 }, liquidFields = liquids ?? (water2 ? [water2] : []);
     const probe = { updateMs: 0, count: 0, rendered: 0, renderStride: 1 };
     function update(dt) {
       const updateStart = performance.now();
@@ -43548,12 +43548,16 @@ void main() {
       const g = -8.5, renderStride = count > 5e5 ? 8 : count > 25e4 ? 5 : count > 1e5 ? 3 : count > 5e4 ? 2 : 1;
       let rendered = 0;
       for (let i = 0; i < count; i++) {
-        const waterY = water2?.surfaceY?.(bx[i], bz[i]) ?? NaN;
         let submerged = 0, ws = null;
-        if (Number.isFinite(waterY) && by[i] - BALL_R < waterY) {
-          const t = THREE2.MathUtils.clamp((waterY - (by[i] - BALL_R)) / (BALL_R * 2), 0, 1);
-          submerged = t * t * (3 - 2 * t);
-          if (submerged > 0 && water2.flowInto?.(bx[i], bz[i], waterSample)) ws = waterSample;
+        for (const liquid of liquidFields) {
+          const surfaceY = liquid?.surfaceY?.(bx[i], bz[i]) ?? NaN;
+          if (!Number.isFinite(surfaceY) || by[i] - BALL_R >= surfaceY) continue;
+          const t = THREE2.MathUtils.clamp((surfaceY - (by[i] - BALL_R)) / (BALL_R * 2), 0, 1), q = t * t * (3 - 2 * t);
+          if (q <= submerged) continue;
+          if (liquid.flowInto?.(bx[i], bz[i], liquidSample)) {
+            submerged = q;
+            ws = { u: liquidSample.u, v: liquidSample.v };
+          }
         }
         bvy[i] += g * dt;
         if (submerged > 0) {
@@ -43683,7 +43687,7 @@ void main() {
       return count;
     }
     const unsubscribe = impacts2?.subscribe(applyImpact);
-    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, snapshot, clear, restore, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count, waterCoupling: !!water2, relativeDensity: BEARING_RELATIVE_DENSITY, probe: { ...probe } }) };
+    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, snapshot, clear, restore, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count, liquidCoupling: liquidFields.length, relativeDensity: BEARING_RELATIVE_DENSITY, probe: { ...probe } }) };
   }
 
   // src/runtime/impact-system.js
@@ -44449,7 +44453,7 @@ void main() {
   }
 
   // src/runtime/shallow-water-system.js
-  function createShallowWaterSystem({ THREE: THREE2, scene, terrain: terrain2 }) {
+  function createShallowWaterSystem({ THREE: THREE2, scene, terrain: terrain2, kind = "water", look = null, initialViscosity = 1 }) {
     const N = 64, SIZE = 18, DX = SIZE / N, MIN = -SIZE / 2, G = 9.81, CFL = 0.32, MAX_DT = 0.012, DRY = 1e-4;
     const K = N * N, idx = (x, z) => x + N * z, wx = (x) => MIN + (x + 0.5) * DX, wz = (z) => MIN + (z + 0.5) * DX;
     const h = new Float32Array(K), hu = new Float32Array(K), hv = new Float32Array(K), bed = new Float32Array(K);
@@ -44465,11 +44469,11 @@ void main() {
     }
     let enabled = false, lastNow = null, acc = 0, steps = 0, probeFrame = { substeps: 0, minDt: 0, maxDt: 0, remainingAcc: 0, solveMs: 0 }, presentationProbe = { refreshMs: 0, vertices: 0, triangles: 0, sideTriangles: 0 }, totalInjected = 0, totalEscaped = 0, totalDryLoss = 0, displayDensity = 25, lastRefresh = 0;
     const presentationEta = new Float32Array(K), presentationSupport = new Uint8Array(K);
-    let sources = [{ x: 0, z: 0, rate: 0.9 }], viscosityLevel = 1;
+    let sources = [], viscosityLevel = THREE2.MathUtils.clamp(initialViscosity | 0, 1, 26);
     const geometry = new THREE2.BufferGeometry();
-    const material = new THREE2.MeshBasicMaterial({ color: 3248050, transparent: true, opacity: 0.72, depthWrite: false, side: THREE2.DoubleSide });
+    const material = new THREE2.MeshBasicMaterial({ color: look?.color ?? 3248050, vertexColors: !!look?.depthAccents, transparent: true, opacity: look?.opacity ?? 0.72, depthWrite: false, side: THREE2.DoubleSide });
     const surface = new THREE2.Mesh(geometry, material);
-    surface.name = "shallow-water-free-surface";
+    surface.name = `shallow-${kind}-free-surface`;
     surface.renderOrder = 4;
     scene.add(surface);
     const waterLooks = [
@@ -44512,11 +44516,14 @@ void main() {
       waterLookIndex = (waterLookIndex + 1) % waterLooks.length;
       return applyWaterLook();
     }
-    applyWaterLook();
+    if (look) {
+      material.color.setHex(look.color ?? 3248050);
+      material.opacity = look.opacity ?? 0.72;
+    } else applyWaterLook();
     const sideGeometry = new THREE2.BufferGeometry();
-    const sideMaterial = new THREE2.MeshBasicMaterial({ color: 2383731, transparent: true, opacity: 0.5, depthWrite: false, side: THREE2.DoubleSide });
+    const sideMaterial = new THREE2.MeshBasicMaterial({ color: look?.sideColor ?? 2383731, transparent: true, opacity: look?.sideOpacity ?? 0.5, depthWrite: false, side: THREE2.DoubleSide });
     const waterSide = new THREE2.Mesh(sideGeometry, sideMaterial);
-    waterSide.name = "shallow-water-boundary-curtain";
+    waterSide.name = `shallow-${kind}-boundary-curtain`;
     waterSide.renderOrder = 3;
     scene.add(waterSide);
     function sampleBed() {
@@ -44749,7 +44756,7 @@ void main() {
     function refresh() {
       const refreshStart = performance.now();
       buildPresentation();
-      const pos = [], ind = [], sidePos = [], sideInd = [];
+      const pos = [], colors = [], ind = [], sidePos = [], sideInd = [];
       let vi = 0, sideVi = 0;
       const samples = /* @__PURE__ */ new Map(), sample = (x, z) => {
         const key = x.toFixed(6) + "," + z.toFixed(6);
@@ -44790,6 +44797,16 @@ void main() {
         const base = vi;
         for (const p of verts) {
           pos.push(p.x, p.y, p.z);
+          if (look?.depthAccents) {
+            const rs = renderSample(p.x, p.z), flow = { depth: 0, u: 0, v: 0 };
+            flowInto(p.x, p.z, flow);
+            const depth = Math.max(0, rs.depth), speed = Math.hypot(flow.u, flow.v);
+            const edge = 1 - THREE2.MathUtils.smoothstep(depth, 0.025, 0.28), moving = THREE2.MathUtils.smoothstep(speed, 0.08, 0.8);
+            const heat = THREE2.MathUtils.clamp(edge * 0.82 + moving * 0.28, 0, 1);
+            const cold = new THREE2.Color(look.deepColor ?? 2491136), hot = new THREE2.Color(look.hotColor ?? 16747032);
+            cold.lerp(hot, heat);
+            colors.push(cold.r, cold.g, cold.b);
+          }
           vi++;
         }
         for (let j = 1; j + 1 < verts.length; j++) ind.push(base, base + j + 1, base + j);
@@ -44809,6 +44826,7 @@ void main() {
         sideVi += 4;
       }
       geometry.setAttribute("position", new THREE2.Float32BufferAttribute(pos, 3));
+      if (look?.depthAccents) geometry.setAttribute("color", new THREE2.Float32BufferAttribute(colors, 3));
       geometry.setIndex(ind);
       geometry.computeBoundingSphere();
       surface.visible = enabled;
@@ -44833,7 +44851,9 @@ void main() {
         const dt = Math.min(acc, stableDt());
         minDt = Math.min(minDt, dt);
         maxDt = Math.max(maxDt, dt);
-        for (const s of sources) addWater(s.rate * dt, s.x, s.z);
+        for (const s of sources) if (s.remaining == null || s.remaining > 0) addWater(s.rate * dt, s.x, s.z);
+        for (const s of sources) if (s.remaining != null) s.remaining = Math.max(0, s.remaining - dt);
+        sources = sources.filter((s) => s.remaining == null || s.remaining > 0);
         solve(dt);
         acc -= dt;
       }
@@ -44858,7 +44878,7 @@ void main() {
       refresh();
       return enabled;
     }
-    function setSource({ x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0, rate = sources[0]?.rate ?? 0 } = {}) {
+    function setSource({ x = 0, z = 0, rate = 0.9 } = {}) {
       sources = [{ x, z, rate: Math.max(0, rate) }];
       return { ...sources[0] };
     }
@@ -44866,7 +44886,12 @@ void main() {
       sources = a.map((s) => ({ x: s.x ?? 0, z: s.z ?? 0, rate: Math.max(0, s.rate ?? 0) }));
       return sources.map((s) => ({ ...s }));
     }
-    function inject(q = 1, x = sources[0]?.x ?? 0, z = sources[0]?.z ?? 0) {
+    function addTimedSource({ x = 0, z = 0, rate = 0.9, duration = 3 } = {}) {
+      const source = { x, z, rate: Math.max(0, rate), remaining: Math.max(0, duration) };
+      sources.push(source);
+      return { ...source };
+    }
+    function inject(q = 1, x = 0, z = 0) {
       return addWater(q, x, z);
     }
     function fillRegion({ x = 0, z = 0, radius = 1, amount = 1 } = {}) {
@@ -44987,6 +45012,12 @@ void main() {
     function surfaceHeight(x, z) {
       return surfaceY(x, z);
     }
+    function forEachWetCell(fn) {
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = idx(x, z);
+        if (valid(k) && h[k] > DRY) fn({ ix: x, iz: z, x: wx(x), z: wz(z), depth: h[k], surface: bed[k] + h[k] });
+      }
+    }
     function captureDiagnostic() {
       const wetCells = [];
       for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
@@ -45014,12 +45045,12 @@ void main() {
         maxDepth = Math.max(maxDepth, h[k]);
         maxSpeed = Math.max(maxSpeed, Math.hypot(hu[k], hv[k]) / h[k]);
       }
-      return { kind: "shallow-water", independent: true, enabled, grid: [N, N], cellSize: DX, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, viscosity: { level: viscosityLevel, max: 26, drag: 0.22 * Math.pow(2, (viscosityLevel - 1) / 3) }, water: { injected: totalInjected, volume, maxDepth, maxSpeed, escaped: totalEscaped, dryLoss: totalDryLoss, accounted: volume + totalEscaped + totalDryLoss, balanceError: totalInjected - (volume + totalEscaped + totalDryLoss) }, wetCells: wet, steps, probe: probeFrame, presentation: { ...presentationProbe } };
+      return { kind: `shallow-${kind}`, independent: true, enabled, grid: [N, N], cellSize: DX, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, viscosity: { level: viscosityLevel, max: 26, drag: 0.22 * Math.pow(2, (viscosityLevel - 1) / 3) }, water: { injected: totalInjected, volume, maxDepth, maxSpeed, escaped: totalEscaped, dryLoss: totalDryLoss, accounted: volume + totalEscaped + totalDryLoss, balanceError: totalInjected - (volume + totalEscaped + totalDryLoss) }, wetCells: wet, steps, probe: probeFrame, presentation: { ...presentationProbe } };
     }
     cacheBoundary();
     sampleBed();
     refresh();
-    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, cycleDisplayDensity, setDisplayDensity, cycleWaterLook, cycleViscosity, waterLook: () => applyWaterLook(), surfaceY, flowInto, sampleState, sampleStateInto, surfaceHeight, captureDiagnostic, inspect: inspect2, object: surface, sideObject: waterSide };
+    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, addTimedSource, cycleDisplayDensity, setDisplayDensity, cycleWaterLook, cycleViscosity, waterLook: () => applyWaterLook(), surfaceY, flowInto, sampleState, sampleStateInto, surfaceHeight, forEachWetCell, captureDiagnostic, inspect: inspect2, object: surface, sideObject: waterSide };
   }
 
   // src/runtime/transport-system.js
@@ -45202,7 +45233,8 @@ void main() {
         { id: "raise", text: "\u{1FA8F}", label: "Raise terrain at tapped point", tool: "raise" }
       ] },
       { kind: "choice", label: "Transport tools", items: [
-        { id: "source", text: "\u{1F4A7}", label: "Place transport source at tapped point", tool: "source" }
+        { id: "source", text: "\u{1F4A7}", label: "Place transport source at tapped point", tool: "source" },
+        { id: "lava", text: "\u{1F30B}", label: "Place lava at tapped point", tool: "lava" }
       ] },
       { kind: "controls", items: [
         { id: "science", text: "\u{1F52C}", label: "Toggle Science mode", on: actions.science },
@@ -45570,6 +45602,11 @@ void main() {
   var keyLight = addLight({ name: "Key", kind: "directional", color: 16762237, intensity: 3.4, position: [-12, 20, 10], castShadow: true });
   var fillLight = addLight({ name: "Fill", kind: "directional", color: 8168346, intensity: 0.7, position: [12, 8, -10] });
   lights.syncAll();
+  var lavaGroup = new THREE.Group();
+  lavaGroup.name = "placed-lava";
+  three.scene.add(lavaGroup);
+  var lavaGeometry = new THREE.CylinderGeometry(0.72, 0.88, 0.12, 24);
+  var lavaMaterial = new THREE.MeshStandardMaterial({ color: 16730902, emissive: 16721408, emissiveIntensity: 1.7, roughness: 0.72, metalness: 0 });
   var terrain = createTerrainSystem({ THREE, scene: three.scene });
   var terrainGenesis = createTerrainGenesis({ terrain });
   var terrainGenesisEvidence = null;
@@ -45611,7 +45648,64 @@ void main() {
   var cinnabarAndCinnamon = createCinnabarAndCinnamon();
   var meteorWeather = createMeteorWeatherSystem({ THREE, terrain, meteors, field: cinnabarAndCinnamon });
   var transport = createShallowWaterSystem({ THREE, scene: three.scene, terrain });
-  var bearings = createBearingSystem({ world, components, THREE, scene: three.scene, terrain, locus, impacts, water: transport });
+  var lavaTransport = createShallowWaterSystem({ THREE, scene: three.scene, terrain, kind: "lava", look: { color: 16777215, opacity: 0.82, sideColor: 4917507, sideOpacity: 0.78, depthAccents: true, deepColor: 2491136, hotColor: 16751140 }, initialViscosity: 26 });
+  var steamGroup = new THREE.Group();
+  steamGroup.name = "water-lava-steam";
+  three.scene.add(steamGroup);
+  var steamGeometry = new THREE.SphereGeometry(0.18, 7, 5);
+  var steamMaterial = new THREE.MeshBasicMaterial({ color: 14278104, transparent: true, opacity: 0.14, depthWrite: false });
+  var steamPuffs = [];
+  var steamContactCooldown = /* @__PURE__ */ new Map();
+  function spawnSteam(x, y, z) {
+    const mesh = new THREE.Mesh(steamGeometry, steamMaterial.clone());
+    mesh.position.set(x, y + 0.08, z);
+    const s = 0.9 + Math.random() * 0.8;
+    mesh.scale.set(s * 0.85, s, s * 0.85);
+    steamGroup.add(mesh);
+    steamPuffs.push({ mesh, age: 0, life: 0.9 + Math.random() * 0.65, vy: 0.65 + Math.random() * 0.4 });
+  }
+  function updateSteam(dt) {
+    const now = simNow / 1e3, waterCells = /* @__PURE__ */ new Map();
+    transport.forEachWetCell((c) => waterCells.set(c.ix + "," + c.iz, c));
+    lavaTransport.forEachWetCell((c) => {
+      const key = c.ix + "," + c.iz, w = waterCells.get(key);
+      if (!w) return;
+      const last2 = steamContactCooldown.get(key) ?? -Infinity;
+      if (now - last2 < 0.18) return;
+      steamContactCooldown.set(key, now);
+      spawnSteam(c.x, Math.max(c.surface, w.surface), c.z);
+    });
+    for (let i = steamPuffs.length - 1; i >= 0; i--) {
+      const p = steamPuffs[i];
+      p.age += dt;
+      p.mesh.position.y += p.vy * dt;
+      p.mesh.scale.multiplyScalar(1 + dt * 1.15);
+      p.mesh.material.opacity = 0.14 * Math.pow(Math.max(0, 1 - p.age / p.life), 1.35);
+      if (p.age >= p.life) {
+        steamGroup.remove(p.mesh);
+        p.mesh.material.dispose();
+        steamPuffs.splice(i, 1);
+      }
+    }
+    for (const [key, t] of steamContactCooldown) if (now - t > 2) steamContactCooldown.delete(key);
+  }
+  var bearings = createBearingSystem({ world, components, THREE, scene: three.scene, terrain, locus, impacts, liquids: [transport, lavaTransport] });
+  var nextLavaPopAt = 0;
+  function updateLavaPops() {
+    if (simNow < nextLavaPopAt) return;
+    const wet = [];
+    lavaTransport.forEachWetCell((c2) => wet.push(c2));
+    if (!wet.length) {
+      nextLavaPopAt = simNow + 220;
+      return;
+    }
+    nextLavaPopAt = simNow + 260 + Math.random() * 620;
+    const c = wet[Math.random() * wet.length | 0], n = 1 + (Math.random() * 3 | 0);
+    for (let i = 0; i < n; i++) {
+      const angle = Math.random() * Math.PI * 2, speed = 0.28 + Math.random() * 0.52, lift = 0.65 + Math.random() * 0.8;
+      bearings.spawnOne(new THREE.Vector3(c.x, c.surface + 0.09, c.z), new THREE.Vector3(Math.cos(angle) * speed, lift, Math.sin(angle) * speed));
+    }
+  }
   var extruder = createExtruderSystem({ world, components, THREE, scene: three.scene, terrain, bearings, locus });
   var waterScalar = createTransportSystem({ THREE, scene: three.scene, terrain, supportHeight: (x, z) => transport.surfaceHeight(x, z), name: "water-surface-scalar-field", verticalOffset: 0.018 });
   var cinnabarDome = createCinnabarDomeSystem({ THREE, scene: three.scene, terrain, field: cinnabarAndCinnamon });
@@ -45979,6 +46073,9 @@ void main() {
     }
     bearings.update(Math.min(0.15, simDt));
     transport.update(simNow);
+    lavaTransport.update(simNow);
+    updateSteam(Math.min(0.05, simDt));
+    updateLavaPops();
     if (steps === 32) physicsAccumulator = 0;
     meteorWeather.update(simNow);
     meteors.update(simNow);
@@ -46007,9 +46104,10 @@ void main() {
   }
   requestAnimationFrame(frame);
   var inspect = () => ({ entities: world.alive.size, timeScale, simulationTimeMs: simNow, science: { active: scienceMode, baseline: "S0" }, lighthuggerInterior: lighthuggerInterior.inspect(), lighthuggerExterior: lighthuggerExterior.inspect(), looseMatter: world.query(Transform, Body, Gravity).length, impactBucket: impactBucket + 1, impactMagnitude: impactBuckets[impactBucket], build: globalThis.__CRUCIBLE_BUILD__, pixelRatio: three.renderer.getPixelRatio(), activeCamera: cameras.activeId(), cameras: cameras.inspect().map((c) => ({ ...c, orbit: orbit.inspect(c.id) })), lights: lights.inspect(), terrain: { ...terrain.inspect(), genesis: terrainGenesisEvidence }, water: { visible: water.visible, level: waterLevel }, meteors: { ...meteors.inspect(), weather: meteorWeather.inspect() }, impacts: impacts.inspect(), bearings: bearings.inspect(), extruder: extruder.inspect(), transport: transport.inspect(), waterScalar: waterScalar.inspect(), cinnabarAndCinnamon: cinnabarAndCinnamon.inspect(simNow), cinnabarDome: cinnabarDome.inspect(), cinnabarKite: cinnabarKite.inspect(), cinnabarSpire: cinnabarSpire.inspect(), coupletTrial: coupletTrial.inspect(), continuityStation: { ...continuityStation.inspect(), footprint: footprints.inspect(continuityStation.id), occupants: footprintOccupancy.inspect(continuityStation.id), apertures: apertureSystem.inspect(), lastObservation, lastAnalysis } });
-  var systems = { renderSync, cameras, orbit, lights, transport, waterScalar, lighthuggerInterior, lighthuggerExterior, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
+  var systems = { renderSync, cameras, orbit, lights, transport, lavaTransport, waterScalar, lighthuggerInterior, lighthuggerExterior, meteors, meteorWeather, impacts, bearings, extruder, cinnabarAndCinnamon, cinnabarDome, cinnabarKite, cinnabarSpire, coupletTrial, continuityStation, footprints, footprintOccupancy, apertureSystem, observationAnalysis, spatialProbes, locusLedger, locusDisplay, locusChronograph };
   var entities = { locus, interiorTarget, continuityStation: continuityStation.id, overviewCamera, interiorCamera, skyLight, keyLight, fillLight };
   globalThis.crucible = {
+    lava: { place: (x, z) => lavaTransport.addTimedSource({ x, z, rate: 0.9, duration: 3 }), clear: () => lavaTransport.reset(), inspect: () => lavaTransport.inspect() },
     sea: { show: () => water.visible = true, hide: () => water.visible = false, toggle: () => water.visible = !water.visible, inspect: () => ({ visible: water.visible, level: waterLevel, bottom: waterBottom, radius: waterRadius }) },
     terrain: { reset: () => {
       terrain.loadLandCandidate();
@@ -46018,7 +46116,7 @@ void main() {
       lastImpactTarget = meteors.targetAt();
       return terrain.inspect();
     }, raise: (x, z, options = {}) => terrain.raise({ x, z }, options), carve: (x, z, options = {}) => terrain.excavate({ x, z }, options), inspect: () => terrain.inspect() },
-    transport: { reset: () => transport.reset(), inject: (amount = 1, x, z) => transport.inject(amount, x, z), fillRegion: (options) => transport.fillRegion(options), setSource: (options) => transport.setSource(options), setSources: (sources) => transport.setSources(sources), cycleDisplayDensity: () => transport.cycleDisplayDensity(), setDisplayDensity: (level) => transport.setDisplayDensity(level), inspect: () => transport.inspect() },
+    transport: { reset: () => transport.reset(), inject: (amount = 1, x, z) => transport.inject(amount, x, z), fillRegion: (options) => transport.fillRegion(options), setSource: (options) => transport.setSource(options), setSources: (sources) => transport.setSources(sources), addTimedSource: (options) => transport.addTimedSource(options), cycleDisplayDensity: () => transport.cycleDisplayDensity(), setDisplayDensity: (level) => transport.setDisplayDensity(level), inspect: () => transport.inspect() },
     science: { enter: () => setScienceMode(true), exit: () => setScienceMode(false), toggle: toggleScienceMode, inspect: () => ({ active: scienceMode, baseline: "S0" }) },
     terrainGenesis: { recipes: () => terrainGenesis.recipes(), families: () => terrainGenesis.families(), inspect: () => terrainGenesisEvidence, seed: () => terrainGenesisSeed, showSeed: showTerrainSeed, next: nextTerrain, showAuthored: (index) => {
       terrainGenesisIndex = (index % 4 + 4) % 4;
@@ -46100,12 +46198,15 @@ void main() {
         bearings.spawnBatch(25e3, new THREE.Vector3(p.x, p.y + 0.35, p.z));
       } else if (devUI.tool === "bearing-packet") {
         bearings.spawnBatch(25, new THREE.Vector3(p.x, p.y + 0.35, p.z));
+      } else if (devUI.tool === "lava") {
+        lavaTransport.addTimedSource({ x: p.x, z: p.z, rate: 0.9, duration: 3 });
+        lavaTransport.setEnabled(true);
       } else if (devUI.tool === "source" || devUI.tool === "source-thick") {
-        transport.reset();
-        const source = { x: p.x, z: p.z, rate: devUI.tool === "source-thick" ? 2.7 : 0.9 };
-        transport.setSource(source);
+        transport.addTimedSource({ x: p.x, z: p.z, rate: devUI.tool === "source-thick" ? 2.7 : 0.9, duration: 3 });
         transport.setEnabled(true);
-      } else callImpact(meteors.targetAt(p.x, p.z));
+      } else if (devUI.tool === "meteor") {
+        callImpact(meteors.targetAt(p.x, p.z));
+      }
     }
   });
   diagnostics.ready();
