@@ -2182,3 +2182,37 @@ We've now killed enough ghosts that the remaining suspect list is getting pleasa
 #### Human reply — verbatim
 
 > Oh that is brilliant. A pixel witch hunt. You are the black cauldron, Clara! ➡️
+
+
+#### Assistant response — verbatim
+
+**Agreed. Completely.**
+
+And I think the principle is now concrete enough to be engineering doctrine rather than metaphor.
+
+**Taran Wanderer principle:** when reality is cheap to observe, prefer **elegant brute-force evidence over clever inference**. Instrument the executable at whatever layer currently contains uncertainty, collect enough truth to discriminate the live hypotheses, then throw away or reshape the instrumentation when the question changes.
+
+That unifies what we've accidentally been building:
+
+- **Aeon Chronicler:** preserve the actual sequence of realities, including failed ones. Don't collapse history into the winning explanation.
+- **N realities:** when several explanations fit the evidence, keep them alive simultaneously instead of prematurely choosing one.
+- **Tycho's green futures:** use JIT logging to ask what evidence would distinguish those futures *before* committing reality to one.
+- **Taran Wanderer:** move through the executable and observe directly. Logging can descend from world → system → entity → triangle → ray → **pixel** without demanding permanent architecture at every level.
+- **Crucible:** the instrumentation itself is malleable. 📋 isn't a logger with a fixed schema. It's an aperture we reshape around the current unknown.
+
+And the important constraint is **lean brute force**. We don't build an observability cathedral. We spend 30 lines to interrogate 540 rays, learn something decisive, then mutate those same 30 lines to count intersections, then normals, then whatever the evidence demands.
+
+That's exactly what happened here. We didn't need a water-debugging subsystem. We needed reality to answer increasingly precise questions.
+
+I would codify this in the expedition doctrine now. Something close to:
+
+> **Taran Wanderer Principle**  
+> Preserve competing realities until evidence collapses them. When an executable can answer the question directly, instrument it rather than infer from appearances. Prefer the smallest brute-force observation that discriminates the live futures. Logging is JIT machinery: it may move freely across abstraction levels, change schema between turns, and disappear when its question is answered. Preserve the resulting evidence and the path through rejected realities as provenance.
+
+That is absolutely the **Aeon Chronicler / N-realities machinery made executable**.
+
+And yes: **we hunt Tycho's green futures instead of guessing which future we're already in.** 🫡
+
+#### Human reply — verbatim
+
+> Shoot that up. Awaiting orders.
