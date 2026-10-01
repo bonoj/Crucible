@@ -13,14 +13,21 @@
 
 /* Runtime status sits beneath the Crucible mark; controls remain operation-only. */
 #dev-status{position:fixed;z-index:10;left:max(.7rem,env(safe-area-inset-left));top:calc(max(.7rem,env(safe-area-inset-top)) + 2.35rem);padding:.42rem .6rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bcc;font:11px/1.2 ui-monospace,monospace;letter-spacing:.02em;pointer-events:none}body.inside-lighthugger #dev-status{display:none}#debug-tools .dev-control[aria-label^="Call meteor"]{font-size:calc(1rem * var(--meteor-scale,1))}
+
+/* Disposable Aeon aperture. Intentionally separate from ordinary DevUI. */
+#aeon-tools{position:fixed;z-index:12;right:max(.6rem,env(safe-area-inset-right));bottom:calc(max(.6rem,env(safe-area-inset-bottom)) + 6.1rem);display:flex;gap:.28rem;padding:.28rem;border:1px solid #d1a36b66;border-radius:.5rem;background:#17120fee;font:12px/1 ui-monospace,monospace}#aeon-tools button{width:2.65rem;height:2.65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font-size:1.15rem}body.inside-lighthugger #aeon-tools{display:none}
+
+#aeon-tools{position:fixed;z-index:12;right:.6rem;bottom:6.7rem;display:flex;padding:.28rem;border:1px solid #d1a36b;border-radius:.5rem;background:#17120f}#aeon-tools button{width:2.65rem;height:2.65rem;background:#2b211b;color:#ead9bb;font-size:1.15rem}
 </style></head>
 <body><main id="world" aria-label="Crucible world. Drag to orbit; pinch or use the mouse wheel to change distance."></main>
 <aside id="mark"><b>⚗️ CRUCIBLE</b></aside>
 <aside id="dev-status" aria-label="Runtime status"></aside>
+<aside id="aeon-tools" aria-label="Disposable Aeon forensic controls"></aside>
+<aside id="aeon-tools" aria-label="Disposable Aeon forensic controls"></aside>
 <aside id="debug-tools" aria-label="Construction controls"></aside>
 <button id="exit-lighthugger" type="button" hidden aria-label="Return to the Terrordrome">↖ RETURN</button>
 <pre id="diagnostics" role="alert" hidden></pre>
-<script>globalThis.__CRUCIBLE_BUILD__="53dce6604eec0ecb7165a743ba4b644e3f532e7c";</script>
+<script>globalThis.__CRUCIBLE_BUILD__="272d51d28ff2325dd4f0289faac0bd98da16aecb";</script>
 <script>(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -42476,13 +42483,14 @@ void main() {
       return THREE2.MathUtils.lerp(THREE2.MathUtils.lerp(A, B, tx), THREE2.MathUtils.lerp(C, D, tx), tz);
     }
     function groundHeight(x, z) {
-      const terrainY = bearingTerrainHeight(x, z);
-      return insideApparatus(x, z) ? Math.max(terrainY, APPARATUS_TOP) : terrainY;
+      const terrainY2 = bearingTerrainHeight(x, z);
+      return insideApparatus(x, z) ? Math.max(terrainY2, APPARATUS_TOP) : terrainY2;
     }
+    const supportY = groundHeight, terrainY = terrainHeight, exactSupportY = groundHeightExact;
     function worldBedHeight(x, z) {
       if (!insideApparatus(x, z)) return -Infinity;
-      const terrainY = terrainHeight(x, z);
-      return Number.isFinite(terrainY) ? terrainY : APPARATUS_BOTTOM;
+      const terrainY2 = terrainHeight(x, z);
+      return Number.isFinite(terrainY2) ? terrainY2 : APPARATUS_BOTTOM;
     }
     function raise(center, { radius = 3.2, height = 2.2 } = {}) {
       const r = Math.max(0.3, radius), h = Math.max(0.04, height), ix0 = Math.max(1, Math.floor((center.x - r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) - 1), ix1 = Math.min(NX - 2, Math.ceil((center.x + r - MIN.x) / (MAX.x - MIN.x) * (NX - 1)) + 1), iz0 = Math.max(1, Math.floor((center.z - r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) - 1), iz1 = Math.min(NZ - 2, Math.ceil((center.z + r - MIN.z) / (MAX.z - MIN.z) * (NZ - 1)) + 1);
@@ -42632,7 +42640,7 @@ void main() {
     }
     rebuild();
     rebuildSupport();
-    return { mesh, apparatus, field, rebuild, impact, excavate, raise, lower, snapshot, restore, reset, loadLandCandidate, rebuildAll, groundHeight, groundHeightExact, worldBedHeight, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, materialBoundary, collideSphere, collideBearingState, segmentApparatusHit, belowPlinthOcclusion, occludeBelowPlinth, landCandidate: () => ({ ...LAND_CANDIDATE_A }), inspect: () => ({ grid: [NX, NY, NZ], volume: { min: [MIN.x, MIN.y, MIN.z], max: [MAX.x, MAX.y, MAX.z], spacing: [(MAX.x - MIN.x) / (NX - 1), (MAX.y - MIN.y) / (NY - 1), (MAX.z - MIN.z) / (NZ - 1)] }, chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
+    return { mesh, apparatus, field, rebuild, impact, excavate, raise, lower, snapshot, restore, reset, loadLandCandidate, rebuildAll, supportY, terrainY, exactSupportY, groundHeight, groundHeightExact, worldBedHeight, bearingTerrainHeight, terrainHeight, insideMaterial, insideApparatus, materialBoundary, collideSphere, collideBearingState, segmentApparatusHit, belowPlinthOcclusion, occludeBelowPlinth, landCandidate: () => ({ ...LAND_CANDIDATE_A }), inspect: () => ({ grid: [NX, NY, NZ], volume: { min: [MIN.x, MIN.y, MIN.z], max: [MAX.x, MAX.y, MAX.z], spacing: [(MAX.x - MIN.x) / (NX - 1), (MAX.y - MIN.y) / (NY - 1), (MAX.z - MIN.z) / (NZ - 1)] }, chunks: [CX, CZ], triangles: chunks.reduce((n, c) => n + c.triangles, 0), seed, apparatus: { radius: APPARATUS_RADIUS, top: APPARATUS_TOP, bottom: APPARATUS_BOTTOM }, materialApothem: MATERIAL_APOTHEM }) };
   }
 
   // src/runtime/meteor-system.js
@@ -43307,6 +43315,28 @@ void main() {
     const arrow = new THREE2.Mesh(new THREE2.ShapeGeometry(arrowShape), new THREE2.MeshBasicMaterial({ color: 16777215, transparent: true, opacity: 0.98, depthWrite: false, side: THREE2.DoubleSide }));
     arrow.position.z = 4e-3;
     stowButton.add(arrow);
+    const logButton = new THREE2.Mesh(new THREE2.PlaneGeometry(buttonW, buttonH), controlMat.clone());
+    logButton.name = "locus-log-export";
+    logButton.position.set(0, innerH * 0.5 - pad - buttonH * 1.5 - 0.045, 4e-3);
+    bay.add(logButton);
+    const logRim = new THREE2.LineSegments(new THREE2.EdgesGeometry(new THREE2.PlaneGeometry(buttonW, buttonH)), new THREE2.LineBasicMaterial({ color: 14678527, transparent: true, opacity: 0.48, depthWrite: false }));
+    logRim.position.z = 2e-3;
+    logButton.add(logRim);
+    const logCanvas = document.createElement("canvas");
+    logCanvas.width = 192;
+    logCanvas.height = 96;
+    const lctx = logCanvas.getContext("2d");
+    lctx.clearRect(0, 0, 192, 96);
+    lctx.fillStyle = "rgba(255,255,255,.98)";
+    lctx.font = "bold 34px monospace";
+    lctx.textAlign = "center";
+    lctx.textBaseline = "middle";
+    lctx.fillText("LOG", 96, 48);
+    const logTexture = new THREE2.CanvasTexture(logCanvas);
+    logTexture.colorSpace = THREE2.SRGBColorSpace;
+    const logLabel = new THREE2.Mesh(new THREE2.PlaneGeometry(buttonW * 0.72, buttonH * 0.72), new THREE2.MeshBasicMaterial({ map: logTexture, transparent: true, depthWrite: false, side: THREE2.DoubleSide }));
+    logLabel.position.z = 4e-3;
+    logButton.add(logLabel);
     let cinnabarPacked2 = false, cinnabarPacking = false;
     function setCinnabarPacked2(packed, packing2 = false) {
       cinnabarPacked2 = !!packed;
@@ -43406,7 +43436,7 @@ void main() {
       texture.needsUpdate = true;
     }
     draw(null);
-    return { update: draw, toggle, setOpen, setCinnabarPacked: setCinnabarPacked2, stowButton, updatePresentation, containsObject(object) {
+    return { update: draw, toggle, setOpen, setCinnabarPacked: setCinnabarPacked2, stowButton, logButton, updatePresentation, containsObject(object) {
       for (let o = object; o; o = o.parent) if (o === root) return true;
       return false;
     }, inspect() {
@@ -43466,7 +43496,8 @@ void main() {
     const bx = new Float32Array(maxBearings), by = new Float32Array(maxBearings), bz = new Float32Array(maxBearings);
     const bvx = new Float32Array(maxBearings), bvy = new Float32Array(maxBearings), bvz = new Float32Array(maxBearings);
     let count = 0;
-    const pile = new Uint16Array(PG * PG), dummy = new THREE2.Object3D();
+    const pile = new Uint16Array(PG * PG), slopeStamp = new Uint32Array(PG * PG), slopeX = new Float32Array(PG * PG), slopeZ = new Float32Array(PG * PG), dummy = new THREE2.Object3D();
+    let slopeFrame = 1;
     const geometry = new THREE2.IcosahedronGeometry(BALL_R, 0), material = new THREE2.MeshStandardMaterial({ color: 13095120, metalness: 0.82, roughness: 0.24 });
     const mesh = new THREE2.InstancedMesh(geometry, material, Math.min(maxBearings, MAX_RENDERED));
     mesh.instanceMatrix.setUsage(THREE2.DynamicDrawUsage);
@@ -43503,19 +43534,26 @@ void main() {
       bvz[i] = velocity?.z ?? 0;
       return 1;
     }
-    const contact = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 };
+    const contact = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 }, waterSample = { depth: 0, surface: 0, u: 0, v: 0 };
+    const probe = { updateMs: 0, count: 0, rendered: 0, renderStride: 1 };
     function update(dt) {
+      const updateStart = performance.now();
       dt = Math.min(0.15, Math.max(1e-3, dt));
       pile.fill(0);
-      projection.fill(0);
+      slopeFrame++;
+      if (slopeFrame === 0) {
+        slopeStamp.fill(0);
+        slopeFrame = 1;
+      }
       const g = -8.5, renderStride = count > 5e5 ? 8 : count > 25e4 ? 5 : count > 1e5 ? 3 : count > 5e4 ? 2 : 1;
       let rendered = 0;
       for (let i = 0; i < count; i++) {
-        const ws = water2?.sampleState?.(bx[i], bz[i]);
-        let submerged = 0;
-        if (ws && ws.depth > 0) {
-          const t = THREE2.MathUtils.clamp((ws.surface - (by[i] - BALL_R)) / (BALL_R * 2), 0, 1);
+        const waterY = water2?.surfaceY?.(bx[i], bz[i]) ?? NaN;
+        let submerged = 0, ws = null;
+        if (Number.isFinite(waterY) && by[i] - BALL_R < waterY) {
+          const t = THREE2.MathUtils.clamp((waterY - (by[i] - BALL_R)) / (BALL_R * 2), 0, 1);
           submerged = t * t * (3 - 2 * t);
+          if (submerged > 0 && water2.flowInto?.(bx[i], bz[i], waterSample)) ws = waterSample;
         }
         bvy[i] += g * dt;
         if (submerged > 0) {
@@ -43546,21 +43584,25 @@ void main() {
         bvx[i] = contact.vx;
         bvy[i] = contact.vy;
         bvz[i] = contact.vz;
-        const gh = terrain2.groundHeight(bx[i], bz[i]);
+        const gh = (terrain2.supportY ?? terrain2.groundHeight)(bx[i], bz[i]);
         if (Number.isFinite(gh)) {
-          const stack = Math.min(28, pile[pileIndex(bx[i], bz[i])]++) * BALL_R * 0.34, floor = gh + BALL_R + stack;
+          const pi = pileIndex(bx[i], bz[i]), stack = Math.min(28, pile[pi]++) * BALL_R * 0.34, floor = gh + BALL_R + stack;
           if (by[i] < floor) {
             by[i] = floor;
             bvy[i] = Math.abs(bvy[i]) * 0.13;
             bvx[i] *= 0.82;
             bvz[i] *= 0.82;
-            const eps = 0.7, hx = terrain2.groundHeight(bx[i] + eps, bz[i]) - terrain2.groundHeight(bx[i] - eps, bz[i]), hz = terrain2.groundHeight(bx[i], bz[i] + eps) - terrain2.groundHeight(bx[i], bz[i] - eps);
+            if (slopeStamp[pi] !== slopeFrame) {
+              const eps = 0.7;
+              slopeX[pi] = (terrain2.supportY ?? terrain2.groundHeight)(bx[i] + eps, bz[i]) - (terrain2.supportY ?? terrain2.groundHeight)(bx[i] - eps, bz[i]);
+              slopeZ[pi] = (terrain2.supportY ?? terrain2.groundHeight)(bx[i], bz[i] + eps) - (terrain2.supportY ?? terrain2.groundHeight)(bx[i], bz[i] - eps);
+              slopeStamp[pi] = slopeFrame;
+            }
+            const hx = slopeX[pi], hz = slopeZ[pi];
             if (Number.isFinite(hx)) bvx[i] -= hx * 0.08;
             if (Number.isFinite(hz)) bvz[i] -= hz * 0.08;
           }
         }
-        const qx = Math.floor((bx[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID), qz = Math.floor((bz[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID);
-        if (qx >= 0 && qx < PROJECTION_GRID && qz >= 0 && qz < PROJECTION_GRID) projection[qx + PROJECTION_GRID * qz]++;
         if (i % renderStride === 0 && rendered < MAX_RENDERED) {
           dummy.position.set(bx[i], by[i], bz[i]);
           dummy.rotation.set(0, 0, 0);
@@ -43571,6 +43613,10 @@ void main() {
       }
       mesh.count = rendered;
       mesh.instanceMatrix.needsUpdate = true;
+      probe.updateMs = performance.now() - updateStart;
+      probe.count = count;
+      probe.rendered = rendered;
+      probe.renderStride = renderStride;
     }
     function applyField(center, { radius = 4.2, strength = 2.1, lift = 0.1 } = {}) {
       if (!center || !Number.isFinite(center.x) || !Number.isFinite(center.z)) return;
@@ -43599,6 +43645,11 @@ void main() {
       }
     }
     function sampleDensity(x, z, radius = 0) {
+      projection.fill(0);
+      for (let i = 0; i < count; i++) {
+        const qx = Math.floor((bx[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID), qz = Math.floor((bz[i] - PROJECTION_MIN) / PROJECTION_SPAN * PROJECTION_GRID);
+        if (qx >= 0 && qx < PROJECTION_GRID && qz >= 0 && qz < PROJECTION_GRID) projection[qx + PROJECTION_GRID * qz]++;
+      }
       const cell = PROJECTION_SPAN / PROJECTION_GRID, r = Math.max(0, radius), minX = Math.max(0, Math.floor((x - r - PROJECTION_MIN) / cell)), maxX = Math.min(PROJECTION_GRID - 1, Math.floor((x + r - PROJECTION_MIN) / cell)), minZ = Math.max(0, Math.floor((z - r - PROJECTION_MIN) / cell)), maxZ = Math.min(PROJECTION_GRID - 1, Math.floor((z + r - PROJECTION_MIN) / cell));
       let grains = 0, cells = 0;
       for (let iz = minZ; iz <= maxZ; iz++) for (let ix = minX; ix <= maxX; ix++) {
@@ -43632,7 +43683,7 @@ void main() {
       return count;
     }
     const unsubscribe = impacts2?.subscribe(applyImpact);
-    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, snapshot, clear, restore, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count, waterCoupling: !!water2, relativeDensity: BEARING_RELATIVE_DENSITY }) };
+    return { entity, mesh, spawnBatch, spawnOne, update, applyField, applyImpact, sampleDensity, snapshot, clear, restore, dispose: () => unsubscribe?.(), inspect: () => ({ kind: "foundry-bearing-batch", count, maxBearings, radius: BALL_R, rendered: mesh.count, waterCoupling: !!water2, relativeDensity: BEARING_RELATIVE_DENSITY, probe: { ...probe } }) };
   }
 
   // src/runtime/impact-system.js
@@ -44412,18 +44463,66 @@ void main() {
         wallNear[k] = b.inside && b.distance <= DX * 1.5 ? 1 : 0;
       }
     }
-    let enabled = false, lastNow = null, acc = 0, steps = 0, probeFrame = { substeps: 0, minDt: 0, maxDt: 0, remainingAcc: 0, solveMs: 0 }, totalInjected = 0, totalEscaped = 0, totalDryLoss = 0, displayDensity = 25;
-    let sources = [{ x: 0, z: 0, rate: 0.9 }];
+    let enabled = false, lastNow = null, acc = 0, steps = 0, probeFrame = { substeps: 0, minDt: 0, maxDt: 0, remainingAcc: 0, solveMs: 0 }, presentationProbe = { refreshMs: 0, vertices: 0, triangles: 0, sideTriangles: 0 }, totalInjected = 0, totalEscaped = 0, totalDryLoss = 0, displayDensity = 25, lastRefresh = 0;
+    const presentationEta = new Float32Array(K), presentationSupport = new Uint8Array(K);
+    let sources = [{ x: 0, z: 0, rate: 0.9 }], viscosityLevel = 1;
     const geometry = new THREE2.BufferGeometry();
-    const material = new THREE2.MeshStandardMaterial({ color: 3248050, transparent: true, opacity: 0.72, roughness: 0.18, metalness: 0, depthWrite: false, side: THREE2.DoubleSide });
+    const material = new THREE2.MeshBasicMaterial({ color: 3248050, transparent: true, opacity: 0.72, depthWrite: false, side: THREE2.DoubleSide });
     const surface = new THREE2.Mesh(geometry, material);
     surface.name = "shallow-water-free-surface";
     surface.renderOrder = 4;
     scene.add(surface);
+    const waterLooks = [
+      ["A", 465181, 0.1],
+      ["B", 1522501, 0.18],
+      ["C", 3235689, 0.25],
+      ["D", 1527129, 0.35],
+      ["E", 2381157, 0.45],
+      ["F", 1523018, 0.6],
+      ["G", 1059376, 0.78],
+      ["H", 465696, 0.92],
+      ["I", 7902362, 0.12],
+      ["J", 3900048, 0.22],
+      ["K", 3697501, 0.32],
+      ["L", 1532778, 0.42],
+      ["M", 5402488, 0.52],
+      ["N", 2653329, 0.62],
+      ["O", 6845534, 0.72],
+      ["P", 2701370, 0.85],
+      ["Q", 12044744, 0.08],
+      ["R", 2789800, 0.15],
+      ["S", 729640, 0.25],
+      ["T", 5464651, 0.4],
+      ["U", 10205367, 0.6],
+      ["V", 2377037, 0.7],
+      ["W", 865336, 0.88],
+      ["X", 5683396, 0.3],
+      ["Y", 5858666, 0.5],
+      ["Z", 1120539, 0.95]
+    ];
+    let waterLookIndex = 11;
+    function applyWaterLook() {
+      const [letter, color, opacity] = waterLooks[waterLookIndex];
+      material.color.setHex(color);
+      material.opacity = opacity;
+      material.needsUpdate = true;
+      return { letter, color: "#" + color.toString(16).padStart(6, "0"), opacity };
+    }
+    function cycleWaterLook() {
+      waterLookIndex = (waterLookIndex + 1) % waterLooks.length;
+      return applyWaterLook();
+    }
+    applyWaterLook();
+    const sideGeometry = new THREE2.BufferGeometry();
+    const sideMaterial = new THREE2.MeshBasicMaterial({ color: 2383731, transparent: true, opacity: 0.5, depthWrite: false, side: THREE2.DoubleSide });
+    const waterSide = new THREE2.Mesh(sideGeometry, sideMaterial);
+    waterSide.name = "shallow-water-boundary-curtain";
+    waterSide.renderOrder = 3;
+    scene.add(waterSide);
     function sampleBed() {
       for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
-        const k = idx(x, z);
-        bed[k] = terrain2.materialBoundary(wx(x), wz(z)).inside ? terrain2.groundHeight(wx(x), wz(z)) : -Infinity;
+        const k = idx(x, z), px2 = wx(x), pz2 = wz(z);
+        bed[k] = terrain2.materialBoundary(px2, pz2).inside ? terrain2.groundHeightExact(px2, pz2) : -Infinity;
       }
     }
     const valid = (k) => Number.isFinite(bed[k]);
@@ -44444,11 +44543,11 @@ void main() {
       const uL = h[kL] > DRY ? hu[kL] / h[kL] : 0, vL = h[kL] > DRY ? hv[kL] / h[kL] : 0;
       const uR = h[kR] > DRY ? hu[kR] / h[kR] : 0, vR = h[kR] > DRY ? hv[kR] / h[kR] : 0;
       const a = Math.max(Math.abs(uL) + Math.sqrt(G * HL), Math.abs(uR) + Math.sqrt(G * HR));
-      return [
+      return { flux: [
         0.5 * (HL * uL + HR * uR) - 0.5 * a * (HR - HL),
         0.5 * (HL * uL * uL + 0.5 * G * HL * HL + HR * uR * uR + 0.5 * G * HR * HR) - 0.5 * a * (HR * uR - HL * uL),
         0.5 * (HL * uL * vL + HR * uR * vR) - 0.5 * a * (HR * vR - HL * vL)
-      ];
+      ], pressureL: 0.5 * G * (h[kL] * h[kL] - HL * HL), pressureR: 0.5 * G * (h[kR] * h[kR] - HR * HR) };
     }
     function fluxZ(kD, kU) {
       const bD = bed[kD], bU = bed[kU], etaD = bD + h[kD], etaU = bU + h[kU], bs = Math.max(bD, bU);
@@ -44456,11 +44555,11 @@ void main() {
       const uD = h[kD] > DRY ? hu[kD] / h[kD] : 0, vD = h[kD] > DRY ? hv[kD] / h[kD] : 0;
       const uU = h[kU] > DRY ? hu[kU] / h[kU] : 0, vU = h[kU] > DRY ? hv[kU] / h[kU] : 0;
       const a = Math.max(Math.abs(vD) + Math.sqrt(G * HD), Math.abs(vU) + Math.sqrt(G * HU));
-      return [
+      return { flux: [
         0.5 * (HD * vD + HU * vU) - 0.5 * a * (HU - HD),
         0.5 * (HD * uD * vD + HU * uU * vU) - 0.5 * a * (HU * uU - HD * uD),
         0.5 * (HD * vD * vD + 0.5 * G * HD * HD + HU * vU * vU + 0.5 * G * HU * HU) - 0.5 * a * (HU * vU - HD * vD)
-      ];
+      ], pressureD: 0.5 * G * (h[kD] * h[kD] - HD * HD), pressureU: 0.5 * G * (h[kU] * h[kU] - HU * HU) };
     }
     function stableDt() {
       let s = 0;
@@ -44478,32 +44577,24 @@ void main() {
       for (let z = 0; z < N; z++) for (let x = 0; x < N - 1; x++) {
         const L = idx(x, z), R = idx(x + 1, z);
         if (!valid(L) || !valid(R)) continue;
-        const f = fluxX(L, R);
+        const q = fluxX(L, R), f = q.flux;
         nh[L] -= scale * f[0];
-        nhu[L] -= scale * f[1];
+        nhu[L] -= scale * (f[1] + q.pressureL);
         nhv[L] -= scale * f[2];
         nh[R] += scale * f[0];
-        nhu[R] += scale * f[1];
+        nhu[R] += scale * (f[1] + q.pressureR);
         nhv[R] += scale * f[2];
       }
       for (let z = 0; z < N - 1; z++) for (let x = 0; x < N; x++) {
         const D = idx(x, z), U = idx(x, z + 1);
         if (!valid(D) || !valid(U)) continue;
-        const f = fluxZ(D, U);
+        const q = fluxZ(D, U), f = q.flux;
         nh[D] -= scale * f[0];
         nhu[D] -= scale * f[1];
-        nhv[D] -= scale * f[2];
+        nhv[D] -= scale * (f[2] + q.pressureD);
         nh[U] += scale * f[0];
         nhu[U] += scale * f[1];
-        nhv[U] += scale * f[2];
-      }
-      for (let z = 1; z < N - 1; z++) for (let x = 1; x < N - 1; x++) {
-        const k = idx(x, z);
-        if (!valid(k) || nh[k] <= DRY) continue;
-        const xp = idx(x + 1, z), xm = idx(x - 1, z), zp = idx(x, z + 1), zm = idx(x, z - 1), bk = bed[k];
-        const dbx = ((valid(xp) ? bed[xp] : bk) - (valid(xm) ? bed[xm] : bk)) / (2 * DX), dbz = ((valid(zp) ? bed[zp] : bk) - (valid(zm) ? bed[zm] : bk)) / (2 * DX);
-        nhu[k] -= dt * G * nh[k] * dbx;
-        nhv[k] -= dt * G * nh[k] * dbz;
+        nhv[U] += scale * (f[2] + q.pressureU);
       }
       for (let k = 0; k < K; k++) {
         if (!valid(k)) {
@@ -44514,7 +44605,7 @@ void main() {
         if (h[k] <= DRY) {
           h[k] = hu[k] = hv[k] = 0;
         } else {
-          const damp2 = Math.exp(-0.22 * dt);
+          const drag = 0.22 * Math.pow(2, (viscosityLevel - 1) / 3), damp2 = Math.exp(-drag * dt);
           hu[k] = nhu[k] * damp2;
           hv[k] = nhv[k] * damp2;
           const sp = Math.hypot(hu[k] / h[k], hv[k] / h[k]), max = 12;
@@ -44537,20 +44628,43 @@ void main() {
       }
       steps++;
     }
-    const SURFACE_SUBDIV = 2, SURFACE_STEP = DX / SURFACE_SUBDIV, SURFACE_MIN = MIN + DX * 0.5, SURFACE_MAX = MIN + SIZE - DX * 0.5;
+    const SURFACE_SUBDIV = 1, SURFACE_STEP = DX / SURFACE_SUBDIV, SURFACE_MIN = MIN + DX * 0.5, SURFACE_MAX = MIN + SIZE - DX * 0.5;
+    function buildPresentation() {
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        let sum = 0, w = 0, count = 0;
+        for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+          const ix = x + dx, iz = z + dz;
+          if (ix < 0 || iz < 0 || ix >= N || iz >= N) continue;
+          const k2 = idx(ix, iz);
+          if (!valid(k2) || h[k2] <= DRY) continue;
+          const q = dx === 0 && dz === 0 ? 4 : dx === 0 || dz === 0 ? 2 : 1;
+          sum += (bed[k2] + h[k2]) * q;
+          w += q;
+          count++;
+        }
+        const k = idx(x, z);
+        presentationEta[k] = w ? sum / w : valid(k) ? bed[k] + h[k] : 0;
+        presentationSupport[k] = count;
+      }
+    }
     function renderSample(x, z) {
       const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz), fx = gx - x0, fz = gz - z0;
       if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return { depth: 0, surface: NaN };
       const cells = [[x0, z0, (1 - fx) * (1 - fz)], [x0 + 1, z0, fx * (1 - fz)], [x0, z0 + 1, (1 - fx) * fz], [x0 + 1, z0 + 1, fx * fz]];
-      let depth = 0, eta = 0, w = 0;
+      let depth = 0, eta = 0, smooth = 0, w = 0, support = 0;
       for (const [ix, iz, q] of cells) {
         const k = idx(ix, iz);
         if (!valid(k) || h[k] <= DRY) continue;
         depth += h[k] * q;
         eta += (bed[k] + h[k]) * q;
+        smooth += presentationEta[k] * q;
+        support += presentationSupport[k] * q;
         w += q;
       }
-      return { depth, surface: w > 1e-8 ? eta / w : NaN };
+      if (w <= 1e-8) return { depth, surface: NaN };
+      const raw = eta / w, sm = smooth / w;
+      const blend = 0.72 * THREE2.MathUtils.smoothstep(support / w, 3, 7);
+      return { depth, surface: THREE2.MathUtils.lerp(raw, sm, blend) };
     }
     function supported(x, z) {
       return terrain2.materialBoundary(x, z).inside;
@@ -44602,9 +44716,41 @@ void main() {
       }
       return out;
     }
+    const terrainClearance = (p) => p.y - terrain2.groundHeightExact(p.x, p.z);
+    function terrainBoundary(a, b) {
+      let lo = { ...a }, hi = { ...b }, loClear = terrainClearance(lo);
+      if (loClear >= 0 === terrainClearance(hi) >= 0) return loClear >= 0 ? hi : lo;
+      if (loClear < 0) {
+        const q = lo;
+        lo = hi;
+        hi = q;
+        loClear = terrainClearance(lo);
+      }
+      for (let i = 0; i < 8; i++) {
+        const m = { x: (lo.x + hi.x) * 0.5, z: (lo.z + hi.z) * 0.5, y: (lo.y + hi.y) * 0.5, depth: (lo.depth + hi.depth) * 0.5 };
+        if (terrainClearance(m) >= 0) lo = m;
+        else hi = m;
+      }
+      return lo;
+    }
+    function clipTerrain(poly) {
+      const out = [];
+      if (!poly.length) return out;
+      let a = poly.at(-1), ain = terrainClearance(a) >= 0;
+      for (const b of poly) {
+        const bin = terrainClearance(b) >= 0;
+        if (ain !== bin) out.push(terrainBoundary(a, b));
+        if (bin) out.push(b);
+        a = b;
+        ain = bin;
+      }
+      return out;
+    }
     function refresh() {
-      const pos = [], ind = [];
-      let vi = 0;
+      const refreshStart = performance.now();
+      buildPresentation();
+      const pos = [], ind = [], sidePos = [], sideInd = [];
+      let vi = 0, sideVi = 0;
       const samples = /* @__PURE__ */ new Map(), sample = (x, z) => {
         const key = x.toFixed(6) + "," + z.toFixed(6);
         if (samples.has(key)) return samples.get(key);
@@ -44612,30 +44758,65 @@ void main() {
         samples.set(key, p);
         return p;
       };
+      const sideEdges = /* @__PURE__ */ new Map();
+      const edgeKey = (a, b) => {
+        const ak = a.x.toFixed(6) + "," + a.z.toFixed(6), bk = b.x.toFixed(6) + "," + b.z.toFixed(6);
+        return ak < bk ? ak + "|" + bk : bk + "|" + ak;
+      };
+      const onMaterialEdge = (p) => Math.abs(terrain2.materialBoundary(p.x, p.z).distance) < SURFACE_STEP * 0.08;
+      const rememberSideEdges = (poly) => {
+        for (let i = 0; i < poly.length; i++) {
+          const a = poly[i], b = poly[(i + 1) % poly.length];
+          if (!onMaterialEdge(a) || !onMaterialEdge(b)) continue;
+          const key = edgeKey(a, b);
+          if (sideEdges.has(key)) sideEdges.delete(key);
+          else sideEdges.set(key, [a, b]);
+        }
+      };
       const emit = (poly) => {
         if (poly.length < 3) return;
-        const base = vi;
+        const verts = [];
         for (const p of poly) {
-          if (!Number.isFinite(p.y)) {
-            const r = renderSample(p.x, p.z);
-            p.y = r.surface;
-          }
-          if (!Number.isFinite(p.y)) return;
-          pos.push(p.x, p.y + 8e-3, p.z);
+          let y = p.y;
+          if (!Number.isFinite(y)) y = renderSample(p.x, p.z).surface;
+          if (!Number.isFinite(y)) return;
+          verts.push({ x: p.x, y, z: p.z });
+        }
+        const maxSpan = SURFACE_STEP * 1.5, maxSpan2 = maxSpan * maxSpan;
+        for (let i = 0; i < verts.length; i++) for (let j = i + 1; j < verts.length; j++) {
+          const dx = verts[i].x - verts[j].x, dz = verts[i].z - verts[j].z;
+          if (dx * dx + dz * dz > maxSpan2) return;
+        }
+        const base = vi;
+        for (const p of verts) {
+          pos.push(p.x, p.y, p.z);
           vi++;
         }
-        for (let j = 1; j + 1 < poly.length; j++) ind.push(base, base + j, base + j + 1);
+        for (let j = 1; j + 1 < verts.length; j++) ind.push(base, base + j + 1, base + j);
+        rememberSideEdges(verts);
       };
       for (let z = SURFACE_MIN; z < SURFACE_MAX - 1e-6; z += SURFACE_STEP) for (let x = SURFACE_MIN; x < SURFACE_MAX - 1e-6; x += SURFACE_STEP) {
-        const x1 = Math.min(SURFACE_MAX, x + SURFACE_STEP), z1 = Math.min(SURFACE_MAX, z + SURFACE_STEP), a = sample(x, z), b = sample(x1, z), c = sample(x1, z1), d = sample(x, z1);
-        emit(clipSupport(clipWet([a, b, c])));
-        emit(clipSupport(clipWet([a, c, d])));
+        const x1 = Math.min(SURFACE_MAX, x + SURFACE_STEP), z1 = Math.min(SURFACE_MAX, z + SURFACE_STEP), a = sample(x, z), b = sample(x1, z), cc = sample(x1, z1), d = sample(x, z1);
+        emit(clipTerrain(clipSupport(clipWet([a, b, cc]))));
+        emit(clipTerrain(clipSupport(clipWet([a, cc, d]))));
+      }
+      for (const [a, b] of sideEdges.values()) {
+        const ba = terrain2.groundHeight(a.x, a.z), bb = terrain2.groundHeight(b.x, b.z);
+        if (!Number.isFinite(ba) || !Number.isFinite(bb)) continue;
+        const base = sideVi;
+        sidePos.push(a.x, ba, a.z, a.x, a.y, a.z, b.x, b.y, b.z, b.x, bb, b.z);
+        sideInd.push(base, base + 1, base + 2, base, base + 2, base + 3);
+        sideVi += 4;
       }
       geometry.setAttribute("position", new THREE2.Float32BufferAttribute(pos, 3));
       geometry.setIndex(ind);
-      if (pos.length) geometry.computeVertexNormals();
       geometry.computeBoundingSphere();
       surface.visible = enabled;
+      sideGeometry.setAttribute("position", new THREE2.Float32BufferAttribute(sidePos, 3));
+      sideGeometry.setIndex(sideInd);
+      sideGeometry.computeBoundingSphere();
+      waterSide.visible = enabled && sidePos.length > 0;
+      presentationProbe = { refreshMs: performance.now() - refreshStart, vertices: pos.length / 3, triangles: ind.length / 3, sideTriangles: sideInd.length / 3 };
     }
     function update(now) {
       if (!enabled) {
@@ -44657,7 +44838,10 @@ void main() {
         acc -= dt;
       }
       probeFrame = { substeps: guard, minDt: Number.isFinite(minDt) ? minDt : 0, maxDt, remainingAcc: acc, solveMs: performance.now() - probeStart };
-      refresh();
+      if (now - lastRefresh >= 33) {
+        refresh();
+        lastRefresh = now;
+      }
     }
     function reset() {
       h.fill(0);
@@ -44694,6 +44878,10 @@ void main() {
       totalInjected += amount;
       return amount;
     }
+    function cycleViscosity() {
+      viscosityLevel = viscosityLevel >= 26 ? 1 : viscosityLevel + 1;
+      return { level: viscosityLevel, drag: 0.22 * Math.pow(2, (viscosityLevel - 1) / 3) };
+    }
     function cycleDisplayDensity() {
       displayDensity = displayDensity >= 25 ? 1 : displayDensity + 1;
       refresh();
@@ -44704,24 +44892,119 @@ void main() {
       refresh();
       return inspect2().display;
     }
-    function sampleState(x, z) {
-      const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz), fx = gx - x0, fz = gz - z0;
-      if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return null;
-      const cells = [[x0, z0, (1 - fx) * (1 - fz)], [x0 + 1, z0, fx * (1 - fz)], [x0, z0 + 1, (1 - fx) * fz], [x0 + 1, z0 + 1, fx * fz]];
-      let depth = 0, eta = 0, u = 0, v = 0, w = 0;
-      for (const [ix, iz, q] of cells) {
-        const k = idx(ix, iz);
-        if (!valid(k) || h[k] <= DRY) continue;
-        depth += h[k] * q;
-        eta += (bed[k] + h[k]) * q;
-        u += hu[k] / h[k] * q;
-        v += hv[k] / h[k] * q;
+    function surfaceY(x, z) {
+      const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz);
+      if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return NaN;
+      const fx = gx - x0, fz = gz - z0;
+      let eta = 0, w = 0, k, q, hh;
+      k = idx(x0, z0);
+      q = (1 - fx) * (1 - fz);
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        eta += (bed[k] + hh) * q;
         w += q;
       }
-      return w > 1e-6 ? { depth: depth / w, surface: eta / w, u: u / w, v: v / w } : null;
+      k = idx(x0 + 1, z0);
+      q = fx * (1 - fz);
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        eta += (bed[k] + hh) * q;
+        w += q;
+      }
+      k = idx(x0, z0 + 1);
+      q = (1 - fx) * fz;
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        eta += (bed[k] + hh) * q;
+        w += q;
+      }
+      k = idx(x0 + 1, z0 + 1);
+      q = fx * fz;
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        eta += (bed[k] + hh) * q;
+        w += q;
+      }
+      return w > 1e-6 ? eta / w : NaN;
+    }
+    function flowInto(x, z, out) {
+      const gx = (x - MIN) / DX - 0.5, gz = (z - MIN) / DX - 0.5, x0 = Math.floor(gx), z0 = Math.floor(gz);
+      if (x0 < 0 || z0 < 0 || x0 >= N - 1 || z0 >= N - 1) return false;
+      const fx = gx - x0, fz = gz - z0;
+      let depth = 0, u = 0, v = 0, w = 0, k, q, hh;
+      k = idx(x0, z0);
+      q = (1 - fx) * (1 - fz);
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        depth += hh * q;
+        u += hu[k] / hh * q;
+        v += hv[k] / hh * q;
+        w += q;
+      }
+      k = idx(x0 + 1, z0);
+      q = fx * (1 - fz);
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        depth += hh * q;
+        u += hu[k] / hh * q;
+        v += hv[k] / hh * q;
+        w += q;
+      }
+      k = idx(x0, z0 + 1);
+      q = (1 - fx) * fz;
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        depth += hh * q;
+        u += hu[k] / hh * q;
+        v += hv[k] / hh * q;
+        w += q;
+      }
+      k = idx(x0 + 1, z0 + 1);
+      q = fx * fz;
+      hh = h[k];
+      if (valid(k) && hh > DRY) {
+        depth += hh * q;
+        u += hu[k] / hh * q;
+        v += hv[k] / hh * q;
+        w += q;
+      }
+      if (w <= 1e-6) return false;
+      out.depth = depth / w;
+      out.u = u / w;
+      out.v = v / w;
+      return true;
+    }
+    function sampleStateInto(x, z, out) {
+      const surface2 = surfaceY(x, z);
+      if (!Number.isFinite(surface2) || !flowInto(x, z, out)) return false;
+      out.surface = surface2;
+      return true;
+    }
+    function sampleState(x, z) {
+      const out = { depth: 0, surface: 0, u: 0, v: 0 };
+      return sampleStateInto(x, z, out) ? out : null;
     }
     function surfaceHeight(x, z) {
-      return sampleState(x, z)?.surface ?? NaN;
+      return surfaceY(x, z);
+    }
+    function captureDiagnostic() {
+      const wetCells = [];
+      for (let z = 0; z < N; z++) for (let x = 0; x < N; x++) {
+        const k = idx(x, z);
+        if (h[k] <= DRY || !valid(k)) continue;
+        const px2 = wx(x), pz2 = wz(z), exactBed = terrain2.groundHeightExact(px2, pz2);
+        wetCells.push({ ix: x, iz: z, x: px2, z: pz2, bed: bed[k], exactBed, bedError: Number.isFinite(exactBed) ? bed[k] - exactBed : null, h: h[k], eta: bed[k] + h[k], hu: hu[k], hv: hv[k] });
+      }
+      const p = geometry.getAttribute("position"), index = geometry.getIndex(), vertices = p ? Array.from(p.array) : [], indices = index ? Array.from(index.array) : [];
+      const triangles = [];
+      for (let i = 0; i < indices.length; i += 3) {
+        const ia = indices[i], ib = indices[i + 1], ic = indices[i + 2], a = ia * 3, b = ib * 3, c = ic * 3;
+        const ax = vertices[a], ay = vertices[a + 1], az = vertices[a + 2], bx = vertices[b], by = vertices[b + 1], bz = vertices[b + 2], cx = vertices[c], cy = vertices[c + 1], cz = vertices[c + 2];
+        const abx = bx - ax, aby = by - ay, abz = bz - az, acx = cx - ax, acy = cy - ay, acz = cz - az, nx = aby * acz - abz * acy, ny = abz * acx - abx * acz, nz = abx * acy - aby * acx;
+        const ea = terrain2.groundHeightExact(ax, az), eb = terrain2.groundHeightExact(bx, bz), ec = terrain2.groundHeightExact(cx, cz);
+        triangles.push({ i: i / 3, indices: [ia, ib, ic], a: [ax, ay, az], b: [bx, by, bz], c: [cx, cy, cz], exactTerrain: [ea, eb, ec], clearance: [ay - ea, by - eb, cy - ec], normal: [nx, ny, nz], spanXZ: Math.max(Math.hypot(ax - bx, az - bz), Math.hypot(bx - cx, bz - cz), Math.hypot(cx - ax, cz - az)), y: [Math.min(ay, by, cy), Math.max(ay, by, cy)] });
+      }
+      return { kind: "crucible-water-diagnostic", version: 1, grid: { n: N, size: SIZE, dx: DX, min: MIN, dry: DRY }, solver: { enabled, steps, sources: sources.map((s) => ({ ...s })), wetCells }, surface: { vertices, indices, triangles }, inspect: inspect2() };
     }
     function inspect2() {
       let volume = 0, wet = 0, maxDepth = 0, maxSpeed = 0;
@@ -44731,12 +45014,12 @@ void main() {
         maxDepth = Math.max(maxDepth, h[k]);
         maxSpeed = Math.max(maxSpeed, Math.hypot(hu[k], hv[k]) / h[k]);
       }
-      return { kind: "shallow-water", independent: true, enabled, grid: [N, N], cellSize: DX, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, water: { injected: totalInjected, volume, maxDepth, maxSpeed, escaped: totalEscaped, dryLoss: totalDryLoss, accounted: volume + totalEscaped + totalDryLoss, balanceError: totalInjected - (volume + totalEscaped + totalDryLoss) }, wetCells: wet, steps, probe: probeFrame };
+      return { kind: "shallow-water", independent: true, enabled, grid: [N, N], cellSize: DX, sources: sources.map((s) => ({ ...s })), display: { density: displayDensity, level: displayDensity, max: 25 }, viscosity: { level: viscosityLevel, max: 26, drag: 0.22 * Math.pow(2, (viscosityLevel - 1) / 3) }, water: { injected: totalInjected, volume, maxDepth, maxSpeed, escaped: totalEscaped, dryLoss: totalDryLoss, accounted: volume + totalEscaped + totalDryLoss, balanceError: totalInjected - (volume + totalEscaped + totalDryLoss) }, wetCells: wet, steps, probe: probeFrame, presentation: { ...presentationProbe } };
     }
     cacheBoundary();
     sampleBed();
     refresh();
-    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, cycleDisplayDensity, setDisplayDensity, sampleState, surfaceHeight, inspect: inspect2, object: surface };
+    return { update, setEnabled, reset, inject, fillRegion, setSource, setSources, cycleDisplayDensity, setDisplayDensity, cycleWaterLook, cycleViscosity, waterLook: () => applyWaterLook(), surfaceY, flowInto, sampleState, sampleStateInto, surfaceHeight, captureDiagnostic, inspect: inspect2, object: surface, sideObject: waterSide };
   }
 
   // src/runtime/transport-system.js
@@ -44912,27 +45195,24 @@ void main() {
     const groups = [
       { kind: "choice", label: "Spatial tools", items: [{ id: "meteor", text: "\u2604\uFE0F", label: "Call meteor at tapped point", tool: "meteor", cycle: actions.meteorMagnitude }] },
       { kind: "choice", label: "Bearing controls", items: [
-        { id: "bearings-many", text: "\u2022\u2022", label: "Spawn 25 thousand bearings at tapped point", tool: "bearings-many" },
-        { id: "bearings-packet", text: "\u2022", label: "Spawn 25 bearings at tapped point", tool: "bearing-packet" }
+        { id: "bearings", text: "\u26AB\uFE0F", label: "Spawn 25 bearings at tapped point; tap again for 25 thousand", tool: "bearing-packet", cycle: actions.bearingMagnitude }
       ] },
       { kind: "choice", label: "Terrain tools", items: [
         { id: "carve", text: "\u26CF\uFE0F", label: "Carve terrain at tapped point", tool: "carve" },
         { id: "raise", text: "\u{1FA8F}", label: "Raise terrain at tapped point", tool: "raise" }
       ] },
       { kind: "choice", label: "Transport tools", items: [
-        { id: "source", text: "\u{1F4A7}", label: "Place transport source at tapped point", tool: "source" },
-        { id: "source-thick", text: "\u{1FA78}", label: "Place thicker transport source at tapped point", tool: "source-thick" }
+        { id: "source", text: "\u{1F4A7}", label: "Place transport source at tapped point", tool: "source" }
       ] },
       { kind: "controls", items: [
         { id: "science", text: "\u{1F52C}", label: "Toggle Science mode", on: actions.science },
-        { id: "terrain-next", text: "NEXT", label: "Next deterministic terrain", on: actions.terrainNext },
-        { id: "log", text: "LOG", label: "Export locus observation log", on: actions.exportLog },
-        { id: "time", text: "1\xD7", label: "Simulation speed 1 times", on: actions.timeScale },
-        { id: "save", text: "SAVE", label: "Save terrain state", on: actions.terrainEvidence },
-        { id: "refresh", text: "\u21BB", label: "Refresh", on: actions.refresh }
+        { id: "terrain-next", text: "\u26F0\uFE0F", label: "Next deterministic terrain", on: actions.terrainNext },
+        { id: "time", text: "\u231B\uFE0F", label: "Simulation speed 1 times", on: actions.timeScale },
+        { id: "save", text: "\u{1F4CB}", label: "Capture current water diagnostic evidence", on: actions.terrainEvidence },
+        { id: "refresh", text: "\u{1F504}", label: "Refresh", on: actions.refresh }
       ] }
     ];
-    let tool = "meteor", fps = "\u2026", meteorMagnitude = 1;
+    let tool = "meteor", fps = "\u2026", meteorMagnitude = 1, bearingMagnitude = 0;
     const nodes = /* @__PURE__ */ new Map();
     mount2.replaceChildren();
     if (statusMount) {
@@ -44956,11 +45236,22 @@ void main() {
       b.addEventListener("click", () => {
         if (item.tool) {
           if (item.tool === tool && item.cycle) {
-            meteorMagnitude = (meteorMagnitude + 1) % 4;
-            item.cycle(meteorMagnitude);
-            syncMeteor();
+            if (item.id === "meteor") {
+              meteorMagnitude = (meteorMagnitude + 1) % 4;
+              item.cycle(meteorMagnitude);
+              syncMeteor();
+            } else if (item.id === "bearings") {
+              bearingMagnitude = bearingMagnitude ? 0 : 1;
+              item.cycle(bearingMagnitude);
+              syncBearings();
+            }
           } else {
             tool = item.tool;
+            if (item.id === "bearings") {
+              bearingMagnitude = 0;
+              item.cycle?.(bearingMagnitude);
+              syncBearings();
+            }
             syncTools();
             actions.tool?.(tool);
           }
@@ -44995,6 +45286,13 @@ void main() {
       n.style.setProperty("--meteor-scale", String(1 + meteorMagnitude * 0.08));
       n.setAttribute("aria-label", `Call meteor magnitude ${meteorMagnitude + 1} at tapped point`);
     }
+    function syncBearings() {
+      const n = nodes.get("bearings");
+      if (!n) return;
+      n.textContent = bearingMagnitude ? "\u26AB\uFE0F\u26AB\uFE0F\n\u26AB\uFE0F\u26AB\uFE0F" : "\u26AB\uFE0F";
+      n.style.whiteSpace = "pre-line";
+      n.setAttribute("aria-label", bearingMagnitude ? "Spawn 25 thousand bearings at tapped point" : "Spawn 25 bearings at tapped point");
+    }
     function setPressed(id, value) {
       const n = nodes.get(id);
       n?.classList.toggle("active", !!value);
@@ -45014,6 +45312,7 @@ void main() {
     }
     syncTools();
     syncMeteor();
+    syncBearings();
     syncStatus();
     return { get tool() {
       return tool;
@@ -45394,7 +45693,7 @@ void main() {
       waterScalar.setEnabled(false);
       lastImpactTarget = meteors.targetAt();
     }
-    devUI?.setText("terrain-next", "NEXT", `Next deterministic terrain after seed ${terrainGenesisSeed}`);
+    devUI?.setText("terrain-next", "\u26F0\uFE0F", `Next deterministic terrain after seed ${terrainGenesisSeed}`);
     return terrainGenesisEvidence;
   }
   function nextTerrain() {
@@ -45460,7 +45759,7 @@ void main() {
       }
     }
   }
-  var timeScales = [1, 4, 8];
+  var timeScales = [1, 8];
   var timeScaleIndex = 0;
   var timeScale = 1;
   var simNow = 0;
@@ -45472,28 +45771,163 @@ void main() {
   function cycleTimeScale() {
     timeScaleIndex = (timeScaleIndex + 1) % timeScales.length;
     timeScale = timeScales[timeScaleIndex];
-    devUI?.setText("time", `${timeScale}\xD7`, `Simulation speed ${timeScale} times`);
+    devUI?.setText("time", timeScale === 1 ? "\u231B\uFE0F" : "\u23F3\uFE0F", `Simulation speed ${timeScale} times`);
     devUI?.setPressed("time", timeScale !== 1);
   }
-  function captureTerrain() {
-    const f = terrain.field, meta = terrain.inspect();
-    let min = Infinity, max = -Infinity, solid = 0, empty = 0, surface = 0;
-    for (const v of f) {
-      min = Math.min(min, v);
-      max = Math.max(max, v);
-      if (v > 0) solid++;
-      else empty++;
-      if (Math.abs(v) < 0.1) surface++;
+  function captureAeonForensics() {
+    const cam = components.CameraView.get(cameras.activeId())?.camera;
+    if (!cam) return;
+    cam.updateMatrixWorld(true);
+    terrain.mesh.updateMatrixWorld(true);
+    transport.object.updateMatrixWorld(true);
+    transport.sideObject.updateMatrixWorld(true);
+    const renderer = three.renderer, scene = three.scene, gl = renderer.getContext(), sz = new THREE.Vector2();
+    renderer.getDrawingBufferSize(sz);
+    const W = sz.x | 0, H = sz.y | 0;
+    const read = () => {
+      const a2 = new Uint8Array(W * H * 4);
+      gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, a2);
+      return a2;
+    }, vis = [...scene.children].map((o) => [o, o.visible]), mat = transport.object.material;
+    const snap = () => {
+      renderer.render(scene, cam);
+      return read();
+    }, full = snap(), only = (o) => {
+      for (const [x] of vis) x.visible = x === o || x.isLight;
+    };
+    only(transport.object);
+    const waterOnly = snap();
+    transport.object.material = new THREE.MeshStandardMaterial({ color: mat.color, transparent: false, opacity: 1, roughness: mat.roughness, metalness: mat.metalness, depthWrite: true, side: THREE.DoubleSide });
+    const waterOpaqueStandard = snap();
+    transport.object.material.dispose();
+    transport.object.material = new THREE.MeshStandardMaterial({ color: mat.color, transparent: true, opacity: mat.opacity, roughness: mat.roughness, metalness: mat.metalness, depthWrite: true, side: THREE.DoubleSide });
+    const waterTransparentDepthWrite = snap();
+    transport.object.material.dispose();
+    transport.object.material = new THREE.MeshBasicMaterial({ color: mat.color, transparent: true, opacity: mat.opacity, depthWrite: false, side: THREE.DoubleSide });
+    const waterUnlit = snap();
+    transport.object.material.dispose();
+    transport.object.material = mat;
+    for (const [o, v] of vis) o.visible = v;
+    transport.sideObject.visible = false;
+    const noCurtain = snap();
+    only(transport.sideObject);
+    transport.sideObject.visible = true;
+    const curtainOnly = snap();
+    for (const [o, v] of vis) o.visible = v;
+    renderer.render(scene, cam);
+    const candidates = [], base = [49, 143, 178], ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+    let scanned = 0;
+    const waterBox = new THREE.Box3().setFromObject(transport.object), corners = [];
+    for (const x of [waterBox.min.x, waterBox.max.x]) for (const y of [waterBox.min.y, waterBox.max.y]) for (const z of [waterBox.min.z, waterBox.max.z]) {
+      const v = new THREE.Vector3(x, y, z).project(cam);
+      corners.push(v);
     }
-    const cam = components.CameraView.get(cameras.activeId())?.camera, e = { kind: "crucible-terrain-density", version: 1, build: globalThis.__CRUCIBLE_BUILD__, capturedAt: (/* @__PURE__ */ new Date()).toISOString(), terrain: meta, summary: { samples: f.length, min, max, solid, empty, nearSurface: surface }, view: cam ? { position: cam.position.toArray(), quaternion: cam.quaternion.toArray() } : null, interaction: { tool: devUI?.tool ?? null, meteorMagnitude: impactBuckets[impactBucket] }, density: [...f] }, a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(e)], { type: "application/json" }));
-    a.download = `crucible-terrain-${Date.now()}.json`;
+    const sx = corners.map((v) => (v.x * 0.5 + 0.5) * W), sy = corners.map((v) => (v.y * 0.5 + 0.5) * H), minX = Math.max(0, Math.floor(Math.min(...sx)) - 2), maxX = Math.min(W - 1, Math.ceil(Math.max(...sx)) + 2), minY = Math.max(0, Math.floor(Math.min(...sy)) - 2), maxY = Math.min(H - 1, Math.ceil(Math.max(...sy)) + 2);
+    for (let y = minY; y <= maxY; y += 2) for (let x = minX; x <= maxX; x += 2) {
+      const p2 = (y * W + x) * 4;
+      ndc.set((x + 0.5) / W * 2 - 1, (y + 0.5) / H * 2 - 1);
+      ray.setFromCamera(ndc, cam);
+      if (!ray.intersectObject(transport.object, true)[0]) continue;
+      scanned++;
+      const score = Math.hypot(full[p2] - base[0], full[p2 + 1] - base[1], full[p2 + 2] - base[2]);
+      const q = { x, y, score, full: Array.from(full.slice(p2, p2 + 4)), waterOnly: Array.from(waterOnly.slice(p2, p2 + 4)), waterOpaqueStandard: Array.from(waterOpaqueStandard.slice(p2, p2 + 4)), waterTransparentDepthWrite: Array.from(waterTransparentDepthWrite.slice(p2, p2 + 4)), waterUnlit: Array.from(waterUnlit.slice(p2, p2 + 4)), noCurtain: Array.from(noCurtain.slice(p2, p2 + 4)), curtainOnly: Array.from(curtainOnly.slice(p2, p2 + 4)) };
+      candidates.push(q);
+    }
+    candidates.sort((a2, b) => b.score - a2.score);
+    candidates.length = Math.min(128, candidates.length);
+    for (const q of candidates) {
+      ndc.set((q.x + 0.5) / W * 2 - 1, (q.y + 0.5) / H * 2 - 1);
+      ray.setFromCamera(ndc, cam);
+      const wh = ray.intersectObject(transport.object, true)[0], sh = ray.intersectObject(transport.sideObject, true), th = ray.intersectObject(terrain.mesh, true)[0];
+      q.water = wh ? { distance: wh.distance, point: wh.point.toArray(), face: wh.faceIndex, normal: wh.face?.normal?.toArray?.() } : null;
+      q.curtain = sh.slice(0, 8).map((h) => ({ distance: h.distance, face: h.faceIndex, point: h.point.toArray() }));
+      q.terrain = th ? { distance: th.distance, point: th.point.toArray(), face: th.faceIndex } : null;
+    }
+    const g = transport.object.geometry, p = g.getAttribute("position"), ix = g.getIndex(), n = g.getAttribute("normal"), triangles = [];
+    if (p && ix) for (let i = 0; i < ix.count; i += 3) {
+      const ids = [ix.getX(i), ix.getX(i + 1), ix.getX(i + 2)], v = ids.map((k) => new THREE.Vector3().fromBufferAttribute(p, k)), edges = [v[0].distanceTo(v[1]), v[1].distanceTo(v[2]), v[2].distanceTo(v[0])], area2 = v[1].clone().sub(v[0]).cross(v[2].clone().sub(v[0])).length() / 2;
+      triangles.push({ face: i / 3, indices: ids, vertices: v.map((x) => x.toArray()), area: area2, edges, aspect: Math.max(...edges) / Math.max(1e-9, Math.min(...edges)), vertexNormals: n ? ids.map((k) => [n.getX(k), n.getY(k), n.getZ(k)]) : null });
+    }
+    const out = { kind: "aeon-water-forensics", version: 1, build: globalThis.__CRUCIBLE_BUILD__, capturedAt: (/* @__PURE__ */ new Date()).toISOString(), framebuffer: { width: W, height: H, stride: 2, scanned, candidateRule: "128 pixels farthest from nominal water RGB among ray-confirmed water coverage", nominalWaterRGB: base }, counterfactuals: ["full", "waterOnly", "waterOpaqueStandard", "waterTransparentDepthWrite", "waterUnlit", "noCurtain", "curtainOnly"], candidates, triangles, water: transport.captureDiagnostic(), terrain: terrain.inspect() };
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(out)], { type: "application/json" }));
+    a.download = "crucible-aeon-forensics-" + Date.now() + ".json";
     a.click();
-    return e.summary;
+    setTimeout(() => URL.revokeObjectURL(a.href), 1e3);
   }
-  devUI = createDevUI({ mount: document.querySelector("#debug-tools"), statusMount: document.querySelector("#dev-status"), build: globalThis.__CRUCIBLE_BUILD__, actions: { meteorMagnitude: setImpactBucket, science: () => toggleScienceMode(), terrainNext: nextTerrain, terrainEvidence: captureTerrain, exportLog: () => locusLedger.download(), timeScale: cycleTimeScale, refresh: () => location.reload() } });
+  function captureWaterDiagnostic() {
+    const cam = components.CameraView.get(cameras.activeId())?.camera;
+    const depthProbe = { kind: "camera-ray-depth-discrimination", version: 1, grid: [30, 18], epsilon: 2e-3, counts: { sampled: 0, waterHit: 0, waterFirst: 0, terrainFirst: 0, noTerrain: 0, tie: 0 }, multiplicity: {}, samples: { waterFirst: [], terrainFirst: [], noTerrain: [], tie: [] } };
+    if (cam) {
+      cam.updateMatrixWorld(true);
+      terrain.mesh.updateMatrixWorld(true);
+      transport.object.updateMatrixWorld(true);
+      const raycaster2 = new THREE.Raycaster(), ndc = new THREE.Vector2(), push = (kind, entry) => {
+        const a2 = depthProbe.samples[kind];
+        if (a2.length < 540) a2.push(entry);
+      };
+      const gl = three.renderer.getContext(), db = new THREE.Vector2();
+      three.renderer.getDrawingBufferSize(db), pixel = new Uint8Array(4);
+      const readPixel = (ix, iy) => {
+        gl.readPixels(Math.min(db.x - 1, Math.max(0, Math.floor((ix + 0.5) * db.x / 30))), Math.min(db.y - 1, Math.max(0, Math.floor((17 - iy + 0.5) * db.y / 18))), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+        return Array.from(pixel);
+      };
+      for (let iy = 0; iy < 18; iy++) for (let ix = 0; ix < 30; ix++) {
+        ndc.set(-1 + 2 * (ix + 0.5) / 30, 1 - 2 * (iy + 0.5) / 18);
+        raycaster2.setFromCamera(ndc, cam);
+        depthProbe.counts.sampled++;
+        const waterHits = raycaster2.intersectObject(transport.object, true), wh = waterHits[0];
+        if (!wh) continue;
+        depthProbe.counts.waterHit++;
+        depthProbe.multiplicity[waterHits.length] = (depthProbe.multiplicity[waterHits.length] || 0) + 1;
+        const th = raycaster2.intersectObject(terrain.mesh, true)[0];
+        const base = { screen: [(ix + 0.5) / 30, (iy + 0.5) / 18], pixelRGBA: readPixel(ix, iy), ndc: [ndc.x, ndc.y], waterDistance: wh.distance, waterPoint: wh.point.toArray(), waterIntersections: waterHits.length, waterDistances: waterHits.slice(0, 16).map((h) => h.distance), waterFaces: waterHits.slice(0, 16).map((h) => h.faceIndex), waterNormals: waterHits.slice(0, 16).map((h) => h.face?.normal?.toArray?.() ?? null), waterFrontFacing: waterHits.slice(0, 16).map((h) => h.face?.normal ? raycaster2.ray.direction.dot(h.face.normal) < 0 : null), terrainDistance: th?.distance ?? null, terrainPoint: th?.point?.toArray?.() ?? null };
+        if (!th) {
+          depthProbe.counts.noTerrain++;
+          push("noTerrain", base);
+          continue;
+        }
+        const delta = wh.distance - th.distance;
+        base.deltaWaterMinusTerrain = delta;
+        if (delta > depthProbe.epsilon) {
+          depthProbe.counts.terrainFirst++;
+          push("terrainFirst", base);
+        } else if (delta < -depthProbe.epsilon) {
+          depthProbe.counts.waterFirst++;
+          push("waterFirst", base);
+        } else {
+          depthProbe.counts.tie++;
+          push("tie", base);
+        }
+      }
+    }
+    const e = { ...transport.captureDiagnostic(), build: globalThis.__CRUCIBLE_BUILD__, capturedAt: (/* @__PURE__ */ new Date()).toISOString(), view: cam ? { position: cam.position.toArray(), quaternion: cam.quaternion.toArray(), fov: cam.fov, aspect: cam.aspect, near: cam.near, far: cam.far } : null, terrain: terrain.inspect(), bearings: bearings.inspect(), depthProbe };
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(e)], { type: "application/json" }));
+    a.download = `crucible-water-diagnostic-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    return { wetCells: e.solver.wetCells.length, triangles: e.surface.triangles.length, depthProbe: depthProbe.counts };
+  }
+  var aeonMount = document.querySelector("#aeon-tools");
+  if (aeonMount) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = "\u{1F409}";
+    b.setAttribute("aria-label", "Aeon forensic capture");
+    b.addEventListener("click", captureAeonForensics);
+    aeonMount.append(b);
+  }
+  devUI = createDevUI({ mount: document.querySelector("#debug-tools"), statusMount: document.querySelector("#dev-status"), build: globalThis.__CRUCIBLE_BUILD__, actions: { meteorMagnitude: setImpactBucket, bearingMagnitude: (i) => devUI?.setTool(i ? "bearings-many" : "bearing-packet"), science: () => toggleScienceMode(), terrainNext: nextTerrain, terrainEvidence: captureWaterDiagnostic, exportLog: () => locusLedger.download(), timeScale: cycleTimeScale, waterLook: () => {
+    const w = transport.cycleWaterLook();
+    devUI?.setText("water-look", w.letter, `Water ${w.letter} ${w.color} opacity ${w.opacity}`);
+  }, waterViscosity: () => {
+    const v = transport.cycleViscosity();
+    devUI?.setText("water-viscosity", String(v.level), `Water viscosity ${v.level} of 26`);
+  }, refresh: () => location.reload() } });
   setImpactBucket(1);
   devUI.setPressed("science", scienceMode);
+  devUI.setTool("meteor");
   setScienceMode(true);
   function frame(now) {
     const realDt = Math.min(0.033, Math.max(0, (now - last) / 1e3));
@@ -45631,6 +46065,11 @@ void main() {
     const lighthuggerHit = raycaster.intersectObject(lighthuggerExterior.object, true)[0];
     if (lighthuggerHit) {
       setLighthuggerInterior(true);
+      return;
+    }
+    const logHit = locusDisplay.inspect().open ? raycaster.intersectObject(locusDisplay.logButton, true)[0] : null;
+    if (logHit) {
+      locusLedger.download();
       return;
     }
     const stowHit = locusDisplay.inspect().open ? raycaster.intersectObject(locusDisplay.stowButton, true)[0] : null;
