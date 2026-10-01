@@ -157,7 +157,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
         if(dx*dx+dz*dz>maxSpan2)return;
       }
       const base=vi;for(const p of verts){pos.push(p.x,p.y,p.z);vi++}
-      for(let j=1;j+1<verts.length;j++)ind.push(base,base+j,base+j+1);
+      for(let j=1;j+1<verts.length;j++)ind.push(base,base+j+1,base+j);
       rememberSideEdges(verts);
     };
     for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
