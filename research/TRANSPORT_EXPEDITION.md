@@ -1873,3 +1873,30 @@ Equally important, the expedition earned a faster experimental method:
 > **Preserve accepted behavior. Falsify one layer at a time. Instrument the executable instead of arguing with pixels. Let temporary tooling mutate as quickly as the question does.**
 
 That method, the UI compression that supported it, and the 📋 evidence aperture are part of the transport expedition result, not incidental cleanup.
+
+
+### Cold handoff after 9157484d — water acquitted; next probe is 3D visibility
+
+**Recorded 2026-09-30 after live human inspection of build `9157484d`.**
+
+Build `9157484d` crossed cleanly through build and Pages publication, but the canyon inspection produced the decisive report:
+
+> “No regression. No solution.”
+
+That result narrows the previous conclusion further.
+
+The authoritative 64×64 shallow-water state remains numerically healthy, exact bathymetry at solver centers agrees with the signed-density terrain to floating-point noise, continuous reconstruction preserves the accepted water behavior, and the terrain veto did not remove the visible cyan canyon artifact. The artifact therefore should not trigger another speculative solver change.
+
+The current handoff hypothesis is that the expedition has been asking a 2D geometric question of a 3D visibility/intersection problem. A scalar `bed(x,z)` or pointwise exact-terrain veto can reject water where terrain is above a proposed water point at the same XZ, but it cannot by itself represent overhangs, vertical canyon faces, undercuts, cave roofs, multiple intersections along a vertical line, or camera-space occlusion through the rendered signed-density surface.
+
+The next probe is deliberately diagnostic and render-side only:
+
+1. preserve `9157484d` water/solver behavior;
+2. determine whether the suspicious cyan surface is actually in front of the rendered canyon surface in camera depth, or is visible because the terrain mesh does not occlude where expected;
+3. if water is geometrically in front, investigate true 3D terrain/water intersection clipping against the density field / water triangles;
+4. if terrain fails to occlude it, investigate terrain meshing/depth/occlusion instead;
+5. do not modify shallow-water physics until executable evidence implicates it.
+
+> **Cold-handoff invariant:** the water solver is acquitted unless new evidence says otherwise. The immediate unknown is 3D visibility/intersection, not hydrostatics.
+
+The malleable 📋 aperture should be reshaped around this discrimination rather than expanded generically.
