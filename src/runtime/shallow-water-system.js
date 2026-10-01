@@ -1,6 +1,6 @@
 // Independent liquid candidate: depth-averaged shallow water over mutable Crucible terrain.
 // This module intentionally imports no scalar-carrier/transport machinery.
-export function createShallowWaterSystem({THREE,scene,terrain}){
+export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=null,initialViscosity=1}){
   const N=64,SIZE=18,DX=SIZE/N,MIN=-SIZE/2,G=9.81,CFL=.32,MAX_DT=.012,DRY=1e-4;
   const K=N*N,idx=(x,z)=>x+N*z,wx=x=>MIN+(x+.5)*DX,wz=z=>MIN+(z+.5)*DX;
   const h=new Float32Array(K),hu=new Float32Array(K),hv=new Float32Array(K),bed=new Float32Array(K);
@@ -8,11 +8,11 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
   function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
   let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},presentationProbe={refreshMs:0,vertices:0,triangles:0,sideTriangles:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25,lastRefresh=0; const presentationEta=new Float32Array(K),presentationSupport=new Uint8Array(K);
-  let sources=[{x:0,z:0,rate:.9}],viscosityLevel=1;
+  let sources=[{x:0,z:0,rate:.9}],viscosityLevel=THREE.MathUtils.clamp(initialViscosity|0,1,26);
 
   const geometry=new THREE.BufferGeometry();
-  const material=new THREE.MeshBasicMaterial({color:0x318fb2,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide});
-  const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
+  const material=new THREE.MeshBasicMaterial({color:look?.color??0x318fb2,transparent:true,opacity:look?.opacity??.72,depthWrite:false,side:THREE.DoubleSide});
+  const surface=new THREE.Mesh(geometry,material);surface.name=`shallow-${kind}-free-surface`;surface.renderOrder=4;scene.add(surface);
   const waterLooks=[
     ["A",0x07191d,.10],["B",0x173b45,.18],["C",0x315f69,.25],["D",0x174d59,.35],["E",0x245565,.45],["F",0x173d4a,.60],["G",0x102a30,.78],["H",0x071b20,.92],
     ["I",0x78949a,.12],["J",0x3b8290,.22],["K",0x386b5d,.32],["L",0x17636a,.42],["M",0x526f78,.52],["N",0x287c91,.62],["O",0x68745e,.72],["P",0x29383a,.85],
@@ -20,12 +20,12 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   ];let waterLookIndex=11;
   function applyWaterLook(){const [letter,color,opacity]=waterLooks[waterLookIndex];material.color.setHex(color);material.opacity=opacity;material.needsUpdate=true;return{letter,color:"#"+color.toString(16).padStart(6,"0"),opacity}}
   function cycleWaterLook(){waterLookIndex=(waterLookIndex+1)%waterLooks.length;return applyWaterLook()}
-  applyWaterLook();
+  if(look){material.color.setHex(look.color??0x318fb2);material.opacity=look.opacity??.72}else applyWaterLook();
   // Cheap cutaway companion: the solver already knows the water column. Render that
   // knowledge only where the finite material octagon exposes its side.
   const sideGeometry=new THREE.BufferGeometry();
-  const sideMaterial=new THREE.MeshBasicMaterial({color:0x245f73,transparent:true,opacity:.5,depthWrite:false,side:THREE.DoubleSide});
-  const waterSide=new THREE.Mesh(sideGeometry,sideMaterial);waterSide.name="shallow-water-boundary-curtain";waterSide.renderOrder=3;scene.add(waterSide);
+  const sideMaterial=new THREE.MeshBasicMaterial({color:look?.sideColor??0x245f73,transparent:true,opacity:look?.sideOpacity??.5,depthWrite:false,side:THREE.DoubleSide});
+  const waterSide=new THREE.Mesh(sideGeometry,sideMaterial);waterSide.name=`shallow-${kind}-boundary-curtain`;waterSide.renderOrder=3;scene.add(waterSide);
 
   function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),px=wx(x),pz=wz(z);bed[k]=terrain.materialBoundary(px,pz).inside?terrain.groundHeightExact(px,pz):-Infinity}}
   const valid=k=>Number.isFinite(bed[k]);
@@ -262,7 +262,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     }
     return{kind:"crucible-water-diagnostic",version:1,grid:{n:N,size:SIZE,dx:DX,min:MIN,dry:DRY},solver:{enabled,steps,sources:sources.map(s=>({...s})),wetCells},surface:{vertices,indices,triangles},inspect:inspect()};
   }
-  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame,presentation:{...presentationProbe}}}
+  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:`shallow-${kind}`,independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame,presentation:{...presentationProbe}}}
   cacheBoundary();sampleBed();refresh();
   return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,addTimedSource,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
