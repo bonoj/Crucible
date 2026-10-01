@@ -271,6 +271,40 @@ The expedition should notice this without turning every useful noun into a forma
 
 A controller that becomes executable software when attention descends into it is adjacent to 🐝, but this expedition does not need to solve situated software in order to succeed.
 
+## Candidate load — Foundry War
+
+A possible game-shaped pressure has appeared without requiring a new substrate to be imagined from scratch.
+
+The earlier Foundry prototype already contains recognizable bones: a bounded workshop-table world, crude autonomous floaters, granular material, foundry machinery, links, defenses, terrain, and spatial logistics. The important observation is chronological: these forms existed before the current semantic-tinkering and multiscale vocabulary. The new ideas are therefore candidates for **developing an existing organism**, not retrospective requirements invented to justify a new game.
+
+Working name: **Foundry War**.
+
+The table can remain home while attention descends into one consequential world at several useful resolutions. Candidate pressures include 4X-scale territory/economy, RTS conflict and logistics, automation/city-building machinery, local tower-defense pressure, deformable-world excavation and construction, material interaction, semantic fabrication, and agent behavior. These are not a genre checklist. The cleaner hypothesis is:
+
+> **There is one consequential world. Genre changes with attention.**
+
+Crucible already contains potentially relevant physical vocabulary: large populations of ball bearings, mutable terrain, hydrodynamic transport, impacts, displacement, wet/dry boundaries, and other expedition-earned machinery. Foundry, Six Cities, Vertical Accretion, Clockchain, 🐉, and 🛠️ provide additional ancestral evidence and handles. None are sacred merely because they exist.
+
+Two useful semantic pressures are **Noita-like material consequence** and **Terraria-like world-as-topology/inventory/construction**, without requiring imitation of either game's implementation or content. A single event might therefore be legible as a strategic resource change at one scale, a logistics failure at another, a construction problem deeper in, and a material interaction at a still deeper resolution.
+
+Ball bearings illustrate the multiscale possibility particularly well:
+
+**resource quantity → logistics stream → individual cargo → granular physical material → perhaps an inspectable assembly**
+
+Water can likewise be watershed/resource, strategic obstacle, throughput/storage, channel/reservoir, and flowing physical material without becoming different water each time.
+
+Clockchain suggests a temporal counterpart to multiscale tinkering: replay/fork one causal history into **N realities**, inspect their divergent consequences, and potentially place several histories on the workshop table at once. 🐉 can use those realities as apertures; 🛠️ can modify what one reveals.
+
+The development pressure should remain experiential:
+
+> **How quickly can this become something we voluntarily keep playing?**
+
+Do not optimize for storefront readiness, genre completeness, or feature count. Play; notice desire; make that desire executable; play again. Delight earns machinery. Existing machinery that does not improve the game is disposable.
+
+A useful shorthand for the approach is **Jurassic Parking it with 🐉**: establish a consequential habitat, manufacture variations cheaply, observe what becomes interesting, and preserve what executable play earns rather than designing the complete ecology in advance.
+
+The semantic tinkerer may eventually become both the development method and a player-facing capability. That possibility should be earned rather than assumed.
+
 ## First executable pressure
 
 Begin **miniature**.
@@ -374,6 +408,16 @@ This produced a stronger provisional invariant: **preserve continuity of consequ
 It also exposed a reflexive property of the expedition: the semantic tinkerer is not operating on a finished workbench. The collaboration is semantic-tinkering the tinker's workbench itself. The expedition should therefore accept a deliberately messy frontier of candidate operations and let executable pressure decide which instruments and vocabulary survive.
 
 No transition vocabulary has yet been earned by executable evidence.
+
+### Opening — Foundry War appears as a candidate load
+
+An image of the earlier Foundry prototype made the ancestry concrete: the workshop-table world already had crude floaters, machinery, loose granular material, defenses, links, and spatial logistics. This predates the current multiscale semantic-tinkering theory.
+
+The collaboration proposed **Foundry War** as a possible game-shaped pressure where one causal world can present different genre-like interactions as attention changes scale, with Clockchain supporting replayed/forked realities and 🐉 turning those realities into playable counterfactual observation.
+
+The governing product criterion is not “can this be packaged quickly?” but **would we already love to play it ourselves?** Commercial release remains downstream of sustained voluntary play.
+
+No Foundry War implementation has yet been opened by this expedition.
 
 ## Finish line
 
