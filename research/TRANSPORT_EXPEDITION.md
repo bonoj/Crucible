@@ -2480,3 +2480,16 @@ That's a very significant distinction.
 #### Human reply — verbatim
 
 > Fuutp it.
+
+
+#### Assistant response — verbatim
+
+**FUUTP invoked.** I read the current transport contract first.
+
+The image is already an exact conversation-backed artifact, so there is no reason to reconstruct or reinterpret it. I’m treating **the original image bytes as the specimen**, not making a derivative.
+
+One ambiguity remains that FUUTP does not authorize me to invent: **destination**. Which repository should own the Evolvarium image? My inclination is that this has outgrown `Crucible`; it belongs to an Evolvarium/Home-level repository rather than inside the first dome.
+
+#### Human reply — verbatim
+
+> Let's stick it in crucible reference for now. What should we call it? Alistair probably won't mind if we borrow evolvarium. But this is not really evolvarium. This was Clara's home turned distant future wasteland turned renewable substrate turned domed arcologies.
