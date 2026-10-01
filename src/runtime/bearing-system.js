@@ -24,14 +24,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     return 1;
   }
   const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
-  const probe={updateMs:0,waterMs:0,terrainMs:0,stackMs:0,projectionMs:0,renderPrepMs:0,count:0,rendered:0,renderStride:1};
+  const probe={updateMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
-    const updateStart=performance.now(),probePhase=(probe.phase??0)%5;let waterMs=0,terrainMs=0,stackMs=0,projectionMs=0,renderPrepMs=0;
+    const updateStart=performance.now();
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterActive=water?.hasWater?.()??false;let rendered=0;
     for(let i=0;i<count;i++){
-      // Evaluate material forces before integration. The waterline cuts a sphere, so
-      // submerged volume is the spherical-cap fraction t^2(3-2t), not linear height.
-      const waterStart=probePhase===0?performance.now():0,ws=waterActive?water.sampleState(bx[i],bz[i]):null;if(probePhase===0)waterMs+=performance.now()-waterStart;
+      const ws=waterActive?water.sampleState(bx[i],bz[i]):null;
       let submerged=0;
       if(ws&&ws.depth>0){
         const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
@@ -39,8 +37,6 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
       }
       bvy[i]+=g*dt;
       if(submerged>0){
-        // Archimedes: buoyant acceleration = |g| * displaced-volume fraction / relative density.
-        // At full submersion density < water therefore produces a genuine upward net force.
         bvy[i]+=(-g)*(submerged/BEARING_RELATIVE_DENSITY)*dt;
         const verticalDamp=Math.exp(-3.2*submerged*dt),horizontalDamp=Math.exp(-1.15*submerged*dt);
         bvy[i]*=verticalDamp;bvx[i]*=horizontalDamp;bvz[i]*=horizontalDamp;
@@ -48,12 +44,12 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
         bvx[i]+=((ws.u??0)-bvx[i])*follow;bvz[i]+=((ws.v??0)-bvz[i])*follow;
       }
       bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
-      const terrainStart=probePhase===1?performance.now():0;contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);if(probePhase===1)terrainMs+=performance.now()-terrainStart;bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
-      const stackStart=probePhase===2?performance.now():0,gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]);slopeZ[pi]=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}if(probePhase===2)stackMs+=performance.now()-stackStart;
-      if((i%renderStride)===0&&rendered<MAX_RENDERED){const renderStart=probePhase===4?performance.now():0;dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);if(probePhase===4)renderPrepMs+=performance.now()-renderStart;}
+      contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
+      const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]);slopeZ[pi]=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
+      if((i%renderStride)===0&&rendered<MAX_RENDERED){dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
-    probe.updateMs=performance.now()-updateStart;if(probePhase===0)probe.waterMs=waterMs;if(probePhase===1)probe.terrainMs=terrainMs;if(probePhase===2)probe.stackMs=stackMs;if(probePhase===3)probe.projectionMs=0;if(probePhase===4)probe.renderPrepMs=renderPrepMs;probe.phase=probePhase+1;probe.count=count;probe.rendered=rendered;probe.renderStride=renderStride;
+    probe.updateMs=performance.now()-updateStart;probe.count=count;probe.rendered=rendered;probe.renderStride=renderStride;
   }
   function applyField(center,{radius=4.2,strength=2.1,lift=.10}={}){
     if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.z))return;
