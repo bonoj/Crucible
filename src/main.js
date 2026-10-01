@@ -84,7 +84,7 @@ const meteors=createMeteorSystem({world,components,THREE,scene:three.scene,terra
 const cinnabarAndCinnamon=createCinnabarAndCinnamon();
 const meteorWeather=createMeteorWeatherSystem({THREE,terrain,meteors,field:cinnabarAndCinnamon});
 const transport=createShallowWaterSystem({THREE,scene:three.scene,terrain});
-const lavaTransport=createShallowWaterSystem({THREE,scene:three.scene,terrain,kind:"lava",look:{color:0xff3b08,opacity:.92,sideColor:0x8f1200,sideOpacity:.88},initialViscosity:26});
+const lavaTransport=createShallowWaterSystem({THREE,scene:three.scene,terrain,kind:"lava",look:{color:0xffffff,opacity:.82,sideColor:0x4b0903,sideOpacity:.78,depthAccents:true,deepColor:0x260300,hotColor:0xff9a24},initialViscosity:26});
 const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts,water:transport});
 const extruder=createExtruderSystem({world,components,THREE,scene:three.scene,terrain,bearings,locus});
 // Scalar carrier remains an independent representation. Its only binding is the solved water support surface:
