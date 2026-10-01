@@ -2104,3 +2104,32 @@ In that mode:
 - ordinary summarized expedition prose may resume after the finish line, but the verbatim field record remains as provenance.
 
 The purpose is not chat archival for its own sake. It is to preserve the actual sequence by which executable evidence changed the human-model team's beliefs, including wrong turns and falsified hypotheses.
+
+
+#### Assistant response — verbatim
+
+**No: the diagnostic patch should not be causing ongoing frame drops.** I checked the implementation. The 540-ray terrain/water intersection sweep exists **inside \`captureWaterDiagnostic()\` only**. It runs when you tap 📋; it is not in the frame loop. So it can hitch briefly on capture, but it cannot explain sustained lower FPS.
+
+And **yes, your second hypothesis is now extremely interesting.** The water free surface is:
+
+\`transparent: true\`, \`opacity: .72\`, \`depthWrite: false\`, \`DoubleSide\`
+
+with \`renderOrder = 4\`.
+
+So if several reconstructed water triangles overlap in camera space, **their alpha compounds**. A single layer is translucent blue; two layers become much more saturated; three/four layers rapidly approach opaque cyan. With \`depthWrite:false\`, one water triangle doesn't prevent another water triangle behind it from contributing. That is exactly capable of producing a conspicuously cyan region.
+
+Which also changes how I interpret our ray probe: it found the **nearest water intersection**. It did *not* ask how many water triangles the ray subsequently crosses. So \`waterFirst: 78\` established that the cyan isn't terrain bleeding through, but it absolutely did **not** establish “one legitimate shallow shelf.” There could be a stack of water surfaces along those rays.
+
+Your meteor experiment makes this even more compelling. New ordinary shallow concavities don't turn cyan. The peculiar original rightward structure does. That is compatible with **overlapping/folded reconstructed surface geometry producing repeated translucent coverage**, not simply “shallow = cyan.”
+
+So I withdraw the shelf conclusion as premature.
+
+**Next diagnostic is almost embarrassingly small:** for each ray through water, don't take \`[0]\`. Count **all intersections with the water surface**, record their distances and triangle/face indices, and histogram \`1 hit / 2 hits / 3 hits / 4+ hits\`. Then correlate multiplicity with the cyan region.
+
+If the cyan rays say something like \`6, 8, 12\` water intersections while normal blue says \`1\`, we've caught the bastard. 😂
+
+And that probe remains 📋-only, so no frame-tax. **No geometry changes yet.**
+
+#### Human reply — verbatim
+
+> ➡️
