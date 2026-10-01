@@ -6,6 +6,48 @@ This is not a backlog, roadmap, task list, or statement of current behavior. A d
 
 When a direction becomes an actual investigation, follow Crucible's ordinary discipline: **observe → build → experience → record**. Let executable evidence and the destination's local authority determine what survives. `SEMANTIC_SURFACE.md` remains the authority for present-tense executable truths.
 
+## Compressed forward handles
+
+These are deliberately denser than ordinary directions. Each is a handle for a possibility that can be recovered without turning it into a project, architecture, or docket item.
+
+### 🐉 Reality aperture
+
+When several realities plausibly explain what Crucible is showing, construct the smallest executable observation that lets reality discriminate among them. Preserve competing realities long enough to test them. The aperture itself is malleable and may become an object of investigation when its assumptions fail.
+
+Transport earned this handle through Aeon: a convincing diagnosis survived until executable counterfactuals exposed both a real-but-noncausal defect and defects in the observing instrument itself.
+
+**Question:** can Crucible keep manufacturing the dimension of observation required by the uncertainty in front of it?
+
+### 🧬 Semantic reflow
+
+Enter unfamiliar domains without deciding their canonical application or representation in advance. Let pressure from the material cause useful tools, views, spatializations, perturbables, controls, and derived representations to precipitate.
+
+The interesting test is not whether a model can build a dashboard. It is whether an unfamiliar dataset, corpus, field, or problem can make the missing instrument discoverable through interaction.
+
+**Question:** can material pressure help build the representation required to think with it?
+
+### 🐝 Situated software
+
+Explore the possibility that bounded physical systems need not receive every future behavior as preauthored software. A device or swarm could expose inspectable capability, state, authority, safety boundaries, and a repository edge; situated need could then cause small new behaviors or organizations to be constructed, tested against reality, and left behind when earned.
+
+This is not currently an edge-robotics program or an OTA architecture. The provocative inversion is enough to preserve:
+
+**intent arrives; software precipitates locally.**
+
+Reflow matters as much as extension: changed bodies, sensors, connectivity, failures, or group composition may change the useful organization without requiring a predeclared application for every configuration.
+
+**Question:** can bounded physical capability acquire and reorganize software in response to situated need?
+
+### Shared pressure
+
+🐉 concerns **observation**. 🧬 concerns **representation**. 🐝 concerns **action**.
+
+Do not force these into one framework. Their common pressure is currently enough:
+
+**keep truth inspectable, authority bounded, and the machinery between intention and consequence malleable. Preserve what reality earns; let temporary machinery disappear.**
+
+The glyphs are compression handles, not categories. 🧬 and 🐝 have not yet earned the executable density of 🐉 and may disappear if fieldwork does not support them.
+
 ## Scientific workbench
 
 Can Crucible become a configurable field laboratory for applied physical science: not primarily to push a domain frontier itself, but to let a scientist and a model rapidly construct the small faithful world and instruments they need to reason about a physical problem?
