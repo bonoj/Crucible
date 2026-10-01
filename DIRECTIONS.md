@@ -67,9 +67,13 @@ The point is not to rebuild Blender, an animation suite, or an entity editor aro
 
 ECS is attractive because the semantic entity need not collapse into its current mesh. Body, geometry, material, appendages, rig, constraints, pose, animation, and behavior can become distinct only when use earns those distinctions. Surviving alternatives preserve lineage; rejected realities should die cheaply.
 
+The same entity may also remain coherent across orders of magnitude. A drone may be a cube at one scale, a ten-polygon body at another, a hundred-polygon articulated machine closer in, and eventually expose an executable automation system on its own surface. This is more than graphical LOD: **resolution can follow attention without changing semantic identity**. *Inpainting* can increase consequential resolution inside an earned boundary; *outpainting* can extend consequential context around it. A useful round trip should allow a deep change to survive compaction and become visible again at the coarser scale where its consequence matters.
+
 🐉 manufactures observations that discriminate among plausible realities. 🛠️ turns the same basic move toward fabrication: manufacture consequential possibilities cheaply enough that human judgment can shape what survives.
 
-**Question:** can a small semantic tinkering loop let a human and model accrete useful geometry, rigging, IK, animation, and entity vocabulary through executable selection rather than requiring the human to specify or operate the underlying tooling directly?
+The active investigation is [research/SEMANTIC_TINKERER_EXPEDITION.md](./research/SEMANTIC_TINKERER_EXPEDITION.md).
+
+**Question:** can a small semantic tinkering loop let a human and model accrete useful geometry, rigging, IK, animation, behavior, and multiscale entity vocabulary through executable selection rather than requiring the human to specify or operate the underlying tooling directly?
 
 ### 🧬 Semantic reflow
 
