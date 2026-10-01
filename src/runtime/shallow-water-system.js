@@ -7,7 +7,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const nh=new Float32Array(K),nhu=new Float32Array(K),nhv=new Float32Array(K);
   const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
   function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
-  let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25;
+  let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25,lastRefresh=0; const presentationEta=new Float32Array(K),presentationSupport=new Uint8Array(K);
   let sources=[{x:0,z:0,rate:.9}];
 
   const geometry=new THREE.BufferGeometry();
@@ -86,25 +86,30 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   // Presentation reconstruction is deliberately finer than the solver grid.
   // Solver cells are measurements/state; they are not render polygons.
   const SURFACE_SUBDIV=2,SURFACE_STEP=DX/SURFACE_SUBDIV,SURFACE_MIN=MIN+DX*.5,SURFACE_MAX=MIN+SIZE-DX*.5;
+  function buildPresentation(){
+    for(let z=0;z<N;z++)for(let x=0;x<N;x++){
+      let sum=0,w=0,count=0;
+      for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){
+        const ix=x+dx,iz=z+dz;if(ix<0||iz<0||ix>=N||iz>=N)continue;
+        const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;
+        const q=(dx===0&&dz===0)?4:(dx===0||dz===0)?2:1;
+        sum+=(bed[k]+h[k])*q;w+=q;count++;
+      }
+      const k=idx(x,z);presentationEta[k]=w?sum/w:(valid(k)?bed[k]+h[k]:0);presentationSupport[k]=count;
+    }
+  }
   function renderSample(x,z){
     const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz),fx=gx-x0,fz=gz-z0;
     if(x0<0||z0<0||x0>=N-1||z0>=N-1)return{depth:0,surface:NaN};
     const cells=[[x0,z0,(1-fx)*(1-fz)],[x0+1,z0,fx*(1-fz)],[x0,z0+1,(1-fx)*fz],[x0+1,z0+1,fx*fz]];
-    let depth=0,eta=0,w=0;
-    for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
+    let depth=0,eta=0,smooth=0,w=0,support=0;
+    for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;smooth+=presentationEta[k]*q;support+=presentationSupport[k]*q;w+=q}
     if(w<=1e-8)return{depth,surface:NaN};
-    // Presentation only: suppress cell-scale eta spikes without changing solver state
-    // or wet/support/terrain clipping. A small separable-looking neighborhood average
-    // gives the rendered skin macroscopic continuity through narrow canyons.
-    let smoothEta=0,smoothW=0;
-    for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){
-      const ix=Math.round(gx)+dx,iz=Math.round(gz)+dz;if(ix<0||iz<0||ix>=N||iz>=N)continue;
-      const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;
-      const q=(dx===0&&dz===0)?4:(dx===0||dz===0)?2:1;
-      smoothEta+=(bed[k]+h[k])*q;smoothW+=q;
-    }
-    const raw=eta/w,smooth=smoothW?smoothEta/smoothW:raw;
-    return{depth,surface:THREE.MathUtils.lerp(raw,smooth,.72)};
+    const raw=eta/w,sm=smooth/w;
+    // Interior gets the calm presentation skin; smoothing fades aggressively at
+    // sparse wet boundaries so isolated shoreline vertices cannot form tents.
+    const blend=.72*THREE.MathUtils.smoothstep(support/w,3,7);
+    return{depth,surface:THREE.MathUtils.lerp(raw,sm,blend)};
   }
   function supported(x,z){return terrain.materialBoundary(x,z).inside}
   function supportBoundary(a,b){
@@ -145,6 +150,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     for(const b of poly){const bin=terrainClearance(b)>=0;if(ain!==bin)out.push(terrainBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
   }
   function refresh(){
+    buildPresentation();
     const pos=[],ind=[],sidePos=[],sideInd=[];let vi=0,sideVi=0;
     const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
     const sideEdges=new Map();
@@ -180,8 +186,8 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
       const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
       const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
-    geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);if(pos.length)geometry.computeVertexNormals();geometry.computeBoundingSphere();surface.visible=enabled;
-    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);if(sidePos.length)sideGeometry.computeVertexNormals();sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
+    geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);geometry.computeBoundingSphere();surface.visible=enabled;
+    sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
   }
   function update(now){
     if(!enabled){lastNow=now;return}if(lastNow==null)lastNow=now;
@@ -193,7 +199,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     probeFrame={substeps:guard,minDt:Number.isFinite(minDt)?minDt:0,maxDt,remainingAcc:acc,solveMs:performance.now()-probeStart};
     // The frozen-surface probe showed reconstruction is not the dominant frame cost.
     // Restore live presentation while solver cadence instrumentation remains isolated above.
-    refresh();
+    if(now-lastRefresh>=33){refresh();lastRefresh=now;}
   }
   function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
