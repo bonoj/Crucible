@@ -93,7 +93,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   }
   // Presentation reconstruction is deliberately finer than the solver grid.
   // Solver cells are measurements/state; they are not render polygons.
-  const SURFACE_SUBDIV=2,SURFACE_STEP=DX/SURFACE_SUBDIV,SURFACE_MIN=MIN+DX*.5,SURFACE_MAX=MIN+SIZE-DX*.5;
+  const SURFACE_SUBDIV=1,SURFACE_STEP=DX/SURFACE_SUBDIV,SURFACE_MIN=MIN+DX*.5,SURFACE_MAX=MIN+SIZE-DX*.5;
   function buildPresentation(){
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){
       let sum=0,w=0,count=0;
