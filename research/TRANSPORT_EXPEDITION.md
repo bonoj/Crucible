@@ -3150,3 +3150,23 @@ That's a very real debugging win even though our dragon remains irritatingly ali
 #### Human reply — verbatim
 
 > Excellent. Let's continue.
+
+
+#### Assistant response — verbatim
+
+🐉 **Cortical array rebuilt.**
+
+Commit **`e0aec427` — Correct Aeon water counterfactual aperture**
+
+Two surgical changes:
+
+- isolated water renders now retain the actual scene lights;
+- candidate pixels are admitted only when an exact camera ray **actually intersects the water mesh**, rather than trusting framebuffer alpha.
+
+Everything else stays fixed, including the corrected upward winding from `d29cf139`. So the next 🐉 capture gives us a properly controlled comparison without another production-water hypothesis sneaking in.
+
+**Same patient. Better electrodes. Fire when deployed.** 🔥🐉
+
+#### Human reply — verbatim
+
+> 🐉 crashed the crucible!
