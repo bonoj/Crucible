@@ -4,7 +4,8 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const bx=new Float32Array(maxBearings),by=new Float32Array(maxBearings),bz=new Float32Array(maxBearings);
   const bvx=new Float32Array(maxBearings),bvy=new Float32Array(maxBearings),bvz=new Float32Array(maxBearings);
   let count=0;
-  const pile=new Uint16Array(PG*PG),dummy=new THREE.Object3D();
+  const pile=new Uint16Array(PG*PG),slopeStamp=new Uint32Array(PG*PG),slopeX=new Float32Array(PG*PG),slopeZ=new Float32Array(PG*PG),dummy=new THREE.Object3D();
+  let slopeFrame=1;
   const geometry=new THREE.IcosahedronGeometry(BALL_R,0),material=new THREE.MeshStandardMaterial({color:0xc7d0d0,metalness:.82,roughness:.24});
   const mesh=new THREE.InstancedMesh(geometry,material,Math.min(maxBearings,MAX_RENDERED));mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.frustumCulled=false;mesh.count=0;scene.add(mesh);
   const entity=world.entity();
@@ -26,7 +27,7 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const probe={updateMs:0,waterMs:0,terrainMs:0,stackMs:0,projectionMs:0,renderPrepMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now(),probePhase=(probe.phase??0)%5;let waterMs=0,terrainMs=0,stackMs=0,projectionMs=0,renderPrepMs=0;
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       // Evaluate material forces before integration. The waterline cuts a sphere, so
       // submerged volume is the spherical-cap fraction t^2(3-2t), not linear height.
@@ -48,7 +49,7 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
       }
       bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
       const terrainStart=probePhase===1?performance.now():0;contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);if(probePhase===1)terrainMs+=performance.now()-terrainStart;bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
-      const stackStart=probePhase===2?performance.now():0,gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}if(probePhase===2)stackMs+=performance.now()-stackStart;
+      const stackStart=probePhase===2?performance.now():0,gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]);slopeZ[pi]=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}if(probePhase===2)stackMs+=performance.now()-stackStart;
       const projectionStart=probePhase===3?performance.now():0,qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;if(probePhase===3)projectionMs+=performance.now()-projectionStart;
       if((i%renderStride)===0&&rendered<MAX_RENDERED){const renderStart=probePhase===4?performance.now():0;dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);if(probePhase===4)renderPrepMs+=performance.now()-renderStart;}
     }
