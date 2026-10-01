@@ -67,6 +67,8 @@ Onboard the human through the executable first. Give them the live Crucible, exp
 
 Treat ordinary implementation work as yours to carry: inspect the existing machinery, make routine engineering decisions, build candidates, execute and diagnose what you can, preserve successful behavior, and stop for the human when a genuine human boundary is reached, especially perceptual judgment, device-specific field evidence, or deliberate stable promotion.
 
+Fast model-operated mechanics do not make this a model-alone process. The human in the loop is part of the experimental apparatus and can materially determine quality: supplying perceptual and device evidence, challenging a false framing, contributing domain or systems insight, choosing what consequence matters, and deciding when a result is good enough to accept. Minimize mechanical burden on the human; do not minimize or erase human cognition. When a human intervention materially changes an expedition's trajectory, preserve that fact in the research record rather than compressing it into generic "human field evidence."
+
 Keep the central discipline intact: **observe → build → experience → record**. Do not replace executable investigation with speculative classification. Do not grant the orbital station knowledge, perception, memory, agency, or attention merely because those capabilities seem useful. Behavior earns architecture.
 
 ## Current authority
