@@ -1725,3 +1725,151 @@ For the current expedition, the conclusion is narrow:
 > **Do not make shallow water absorb surface hydrology merely because both concern water. Preserve the successful water-body machinery. Let hydrology earn its own representation when the world demands it.**
 
 > **Pre-GitHub archaeology is evidence of recurring machinery, not authority over the present design.**
+
+
+---
+
+## Water thrash — representation seam, UI compression, and malleable JIT evidence
+
+**Recorded 2026-09-30 before closing the transport expedition.**
+
+This crossing was not a straight implementation pass. It was a deliberate thrash against a stubborn cyan water surface that survived multiple renderer and solver hypotheses. The useful result is not only the eventual localization of the failure; it is the method that made the localization cheap.
+
+### Starting evidence
+
+The accepted shallow-water representation had already earned substantial behavior:
+
+- it flowed and filled irregular basins;
+- a continuous reconstructed top surface removed the solver-grid look;
+- the shared-seam side closure made filling water read as a volume;
+- bearings consumed solver state directly and exhibited buoyancy, current drag, route-following transport, jams, slow settling, and stranded deposits;
+- the human observed that the suspicious cyan surface behaved exactly like the rest of the water surface, with no separate or glitchy physics.
+
+The remaining defect was visually persistent: bright cyan horizontal regions could appear through or across terrain, strongly biased toward the right side in some views. They could appear as separate exposed windows with a terrain-independent horizontal connection. The phenomenon predated the continuous reconstruction and was present in the original shallow-water cell-quad renderer.
+
+That ancestry immediately constrained the search. Current-only clipping, side-curtain, and reconstruction machinery could not be the original cause.
+
+### Falsification sequence
+
+Several plausible explanations were attacked one at a time.
+
+**Boundary curtain isolation.** The side curtain was temporarily hidden. The cyan remained unchanged. The side curtain was exonerated and restored.
+
+**Surface topology cleanup.** Surface emission was made atomic and guarded against abnormal local spans. This established a useful mesh invariant but did not remove the cyan. Historical evidence later showed that current reconstruction topology could not be the root cause anyway.
+
+**Water-side regression.** A terrain-height substitution had accidentally suppressed useful side closure. That change was reverted. The human confirmed:
+
+> “The waterside is good.”
+
+This mattered methodologically: the expedition stopped treating every nearby water representation as suspect and preserved accepted behavior while continuing the search.
+
+**Transparency / depth-write probe.** The free surface was made opaque with depth writing enabled. The result became opaque black and bright opaque cyan rather than eliminating the two-region phenomenon. Transparency and ordinary depth-write interaction were therefore falsified as the cause. The accepted material was restored.
+
+**Hydrostatic pressure treatment.** Inspection found that hydrostatic interface reconstruction and a separate centered bed-pressure source were both present. The solver was changed to matched interface pressure correction to test whether slope pressure was being double-counted. The human reported:
+
+> “No change.”
+
+The pressure hypothesis was falsified as an explanation for the cyan surface. The change did not disturb the established bearing/water behavior.
+
+**Exact bathymetry at solver centers.** Diagnostics then showed that shallow water was sampling the derived bearing-support surface through `groundHeight()`, while visible terrain had a more exact signed-density-derived surface through `groundHeightExact()`. Some wet solver cells were demonstrably below the exact visible terrain. Shallow-water bathymetry was therefore switched to `groundHeightExact()`.
+
+Again the human reported no visible change to the suspicious surface and added:
+
+> “bb hydrostatics remain solid. Or fluid 😂.”
+
+The bathymetry correction succeeded numerically but did not cross the visual seam.
+
+### Malleable JIT logging
+
+The decisive methodological improvement was to stop deploying speculative visual patches and instead reshape an existing control into a temporary evidence aperture.
+
+The old terrain-density **SAVE** control was no longer valuable enough to justify permanent toolbar ownership. Its control became **📋**, a malleable diagnostic capture whose payload can change with the active question.
+
+For the water crossing, 📋 captured a frozen numerical crime scene:
+
+- build SHA and timestamp;
+- solver grid metadata and step count;
+- every wet cell with `x`, `z`, `bed`, `h`, `eta`, `hu`, and `hv`;
+- later, exact terrain height and bed error at every wet cell;
+- rendered surface vertices and indices;
+- expanded triangle coordinates, winding/normal, XZ span, and Y range;
+- later, exact terrain height and water/terrain clearance at each rendered triangle vertex;
+- camera pose;
+- terrain metadata.
+
+The tool was intentionally disposable and question-shaped. It did not become a generalized telemetry framework before the evidence demanded one.
+
+> **Logging became malleable JIT tooling: reshape the aperture around the current unknown, capture one executable crime scene, inspect it, then reshape again if necessary.**
+
+This materially changed the velocity of the expedition. The first capture cleared giant rogue triangles and exposed real free-surface discontinuities. Later captures separated solver truth from presentation truth.
+
+### The numerical crossing
+
+After switching shallow-water bathymetry to `groundHeightExact()`, the final diagnostic produced the key separation.
+
+At authoritative solver cell centers, water bed and exact terrain now agreed to floating-point noise. The maximum bed error was on the order of `10^-8`. The solver was no longer using the wrong scalar floor at its samples.
+
+Yet thousands of rendered surface-triangle vertices still lay below the exact terrain surface, with penetrations on the order of tenths of a world unit and worst cases approaching a full unit in earlier captures.
+
+The remaining failure therefore lives **between** solver samples.
+
+The shallow-water solver knows a scalar bed height at each XZ cell center. Continuous water reconstruction interpolates valid water state between those centers. But the signed-density terrain can rise sharply between them. Two wet samples can therefore have an intervening terrain ridge that the 2D water state does not encode:
+
+```
+wet sample  • ~~~~~~~~~ • wet sample
+                /\
+              terrain
+```
+
+The reconstructed water is not hallucinating arbitrary geometry. It is faithfully bridging valid water samples through solid terrain that exists between those samples.
+
+This explains the accumulated evidence:
+
+- the cyan behaves like ordinary water because it **is** ordinary authoritative water;
+- bearings exhibit no separate glitch physics because they consume the same valid shallow-water state;
+- renderer rewrites did not remove it because the underlying samples remained valid;
+- exact bathymetry at cell centers did not remove it because the missing fact exists between cell centers;
+- disconnected visible cyan windows can belong to one continuous reconstructed water body passing behind/through terrain;
+- the visible terrain can appear irrelevant to the cyan because the surface reconstruction has not yet asked whether its proposed interpolated point is inside solid terrain.
+
+The earned distinction is:
+
+> **Water physics truth and water visibility truth are not identical representations.**
+
+The shallow-water solver remains a cheap authoritative carrier for depth and horizontal momentum. The visible continuous surface must additionally respect the higher-resolution terrain truth while reconstructing between those samples.
+
+The next crossing is consequently narrow: clip or terminate reconstructed water against exact terrain during surface reconstruction. Do not increase solver resolution merely to solve a presentation/topology seam. Do not disturb buoyancy, flow, material transport, or the accepted shared-seam side closure.
+
+### Lightning UI cleanup during the thrash
+
+The diagnostic work also exposed how quickly the developer interaction surface can be reshaped without turning UI novelty into architecture.
+
+The global toolbar was compressed into the established tap-tool grammar:
+
+- **NEXT → ⛰️** for deterministic terrain advance;
+- the malleable diagnostic aperture **SAVE → 📋**;
+- simulation time **1× / 8× → ⌛️ / ⏳️**, with 4× removed for now;
+- the two bearing controls collapsed into one cycling control: **⚫️ → a 2×2 grid of ⚫️**;
+- refresh **↻ → 🔄**;
+- a fossil that reset ⛰️ back to the literal text `NEXT` after advancing terrain was found and removed.
+
+At the same time, **LOG was removed from the global Crucible toolbar and moved onto Clara's orbital-station UI below the Cinnabar pause/hide control**. Its semantic ownership did not change: it still exports the orbital/locus observation ledger. The relocation made the distinction explicit:
+
+- **orbital-station LOG** belongs to Clara's persistent observation/continuity machinery;
+- **📋** belongs to Crucible's current engineering question and is free to mutate.
+
+No new interaction grammar was invented. Existing controls were compressed, relocated, or given more accurate ownership.
+
+> **Semantic ownership should determine where evidence controls live. Global developer UI should remain small enough to reshape at experimental speed.**
+
+### What the thrash earned
+
+The cyan investigation did not reveal a broken fluid solver. It revealed a seam between two successful representations.
+
+The shallow-water state remains useful and physically consequential. The continuous surface remains useful and visually superior to cell quads. The signed-density terrain remains richer than either water representation. The defect appears where a continuous visible water surface is reconstructed without consulting that richer terrain between water samples.
+
+Equally important, the expedition earned a faster experimental method:
+
+> **Preserve accepted behavior. Falsify one layer at a time. Instrument the executable instead of arguing with pixels. Let temporary tooling mutate as quickly as the question does.**
+
+That method, the UI compression that supported it, and the 📋 evidence aperture are part of the transport expedition result, not incidental cleanup.
