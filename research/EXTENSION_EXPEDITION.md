@@ -268,3 +268,59 @@ The next demonstrated scaling seam is high-count ball bearings. The useful field
 - 100k bearings: heavy regime, retained as a stress aperture.
 
 Do not reopen water presentation unless future material interactions or broader device evidence make it consequential again.
+
+
+## Extension Turn 2 — Zip spatial fields, charge only for consequence
+
+High-count regression archaeology recovered an accepted ancestral control: **100,000 dry bearings at 60 FPS** on the target Android device. A later diagnostic apparatus had itself become a major observer effect: per-bearing microtimers reduced that regime to roughly 30 FPS. Removing them restored the 60 FPS class and established a second rule:
+
+> **Instrumentation inside a hot population loop is part of the experiment. Measure its observer effect or keep it out.**
+
+The remaining question was water coupling. Several temporary realities were tested and rejected, including global water-active gating, dry-neighborhood rejection, allocation removal, and a wet-footprint bounding box. They either failed to improve the experienced consequence or introduced machinery disproportionate to the physical vocabulary.
+
+The surviving seam was simpler.
+
+Terrain and water already represented spatial truths over world columns. Bearings did not need subsystem knowledge; they needed those truths at their current `(x,z)`.
+
+The accepted vocabulary is:
+
+- terrain `supportY(x,z)` — cheap physical support scalar;
+- terrain `terrainY(x,z)` — mutable terrain scalar;
+- terrain `exactSupportY(x,z)` — precision support scalar;
+- water `surfaceY(x,z)` — cheap liquid free-surface scalar;
+- water `flowInto(x,z,out)` — richer local depth/velocity, requested only after a bearing intersects the liquid surface.
+
+Bearings now compose consequence:
+
+1. read spatial scalar fields;
+2. determine contact/intersection from their own position and radius;
+3. request richer material state only when interaction has actually been earned.
+
+Temporary global wet-footprint coupling machinery was removed.
+
+**Accepted candidate:** `272d51d28ff2325dd4f0289faac0bd98da16aecb`
+
+### Human field result
+
+On the same target Android device:
+
+- **100k dry bearings: 60 FPS**
+- **100k bearings + spatially irrelevant water: 60 FPS**
+- **100k bearings materially interacting with water: ~50 FPS**
+- buoyancy/bobbing/current behavior remained correct and delightful.
+
+The important result is not zero cost. It is that **cost now follows material participation**. Merely having another active system in the world no longer taxes the entire bearing population through rich cross-system queries.
+
+### Crossing
+
+The extension expedition accepts:
+
+> **Systems expose spatial truths. Consumers compose consequences.**
+
+and:
+
+> **Cheap field first. Rich interaction only after contact is established.**
+
+This is the current zip pattern. It does not imply a generalized material framework, registry, or universal height abstraction. Distinct scalar meanings remain distinct. Other consumers may migrate onto these names when doing so clarifies an already-earned semantic relationship; no flag-day rewrite is required.
+
+The high-count bearing/water performance seam is crossed. Do not continue optimizing it without new experienced evidence.
