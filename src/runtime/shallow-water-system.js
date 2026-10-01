@@ -8,7 +8,7 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
   function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
   let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},presentationProbe={refreshMs:0,vertices:0,triangles:0,sideTriangles:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25,lastRefresh=0; const presentationEta=new Float32Array(K),presentationSupport=new Uint8Array(K);
-  let sources=[{x:0,z:0,rate:.9}],viscosityLevel=THREE.MathUtils.clamp(initialViscosity|0,1,26);
+  let sources=[],viscosityLevel=THREE.MathUtils.clamp(initialViscosity|0,1,26);
 
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshBasicMaterial({color:look?.color??0x318fb2,vertexColors:!!look?.depthAccents,transparent:true,opacity:look?.opacity??.72,depthWrite:false,side:THREE.DoubleSide});
@@ -224,10 +224,10 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   }
   function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
-  function setSource({x=sources[0]?.x??0,z=sources[0]?.z??0,rate=sources[0]?.rate??0}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
+  function setSource({x=0,z=0,rate=.9}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
   function setSources(a=[]){sources=a.map(s=>({x:s.x??0,z:s.z??0,rate:Math.max(0,s.rate??0)}));return sources.map(s=>({...s}))}
   function addTimedSource({x=0,z=0,rate=.9,duration=3}={}){const source={x,z,rate:Math.max(0,rate),remaining:Math.max(0,duration)};sources.push(source);return{...source}}
-  function inject(q=1,x=sources[0]?.x??0,z=sources[0]?.z??0){return addWater(q,x,z)}
+  function inject(q=1,x=0,z=0){return addWater(q,x,z)}
   function fillRegion({x=0,z=0,radius=1,amount=1}={}){const cells=[];for(let iz=0;iz<N;iz++)for(let ix=0;ix<N;ix++)if(Math.hypot(wx(ix)-x,wz(iz)-z)<=radius&&valid(idx(ix,iz)))cells.push(idx(ix,iz));if(!cells.length)return 0;const dh=amount/(cells.length*DX*DX);for(const k of cells)h[k]+=dh;totalInjected+=amount;return amount}
   function cycleViscosity(){viscosityLevel=viscosityLevel>=26?1:viscosityLevel+1;return{level:viscosityLevel,drag:.22*Math.pow(2,(viscosityLevel-1)/3)}}
   function cycleDisplayDensity(){displayDensity=displayDensity>=25?1:displayDensity+1;refresh();return inspect().display}
