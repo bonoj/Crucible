@@ -136,7 +136,29 @@ function spawnMatter(x,y,z){const id=world.entity(),mesh=new THREE.Mesh(sphereGe
 function physics(dt){for(const id of world.query(Transform,Body,Gravity)){const t=Transform.get(id),b=Body.get(id),g=Gravity.get(id);t.velocity.y+=g.acceleration*dt;t.position.addScaledVector(t.velocity,dt);if(Support.has(id)){terrain.collideSphere(t.position,t.velocity,b.radius,b.restitution,b.drag);const h=terrain.groundHeight(t.position.x,t.position.z);if(Number.isFinite(h)&&t.position.y-b.radius<h){t.position.y=h+b.radius;if(t.velocity.y<0)t.velocity.y=-t.velocity.y*b.restitution;t.velocity.x*=b.drag;t.velocity.z*=b.drag;if(Math.abs(t.velocity.y)<.08)t.velocity.y=0;}}}}
 
 const timeScales=[1,8];let timeScaleIndex=0,timeScale=1,simNow=0,physicsAccumulator=0;const physicsStep=1/120;let last=performance.now(),fpsWindowStart=last,fpsFrames=0;
-function cycleTimeScale(){timeScaleIndex=(timeScaleIndex+1)%timeScales.length;timeScale=timeScales[timeScaleIndex];devUI?.setText("time",timeScale===1?"⌛️":"⏳️",`Simulation speed ${timeScale} times`);devUI?.setPressed("time",timeScale!==1)}function captureWaterDiagnostic(){const cam=components.CameraView.get(cameras.activeId())?.camera,e={...transport.captureDiagnostic(),build:globalThis.__CRUCIBLE_BUILD__,capturedAt:new Date().toISOString(),view:cam?{position:cam.position.toArray(),quaternion:cam.quaternion.toArray()}:null,terrain:terrain.inspect()},a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(e)],{type:"application/json"}));a.download=`crucible-water-diagnostic-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);return{wetCells:e.solver.wetCells.length,triangles:e.surface.triangles.length}}
+function cycleTimeScale(){timeScaleIndex=(timeScaleIndex+1)%timeScales.length;timeScale=timeScales[timeScaleIndex];devUI?.setText("time",timeScale===1?"⌛️":"⏳️",`Simulation speed ${timeScale} times`);devUI?.setPressed("time",timeScale!==1)}
+function captureWaterDiagnostic(){
+ const cam=components.CameraView.get(cameras.activeId())?.camera;
+ const depthProbe={kind:"camera-ray-depth-discrimination",version:1,grid:[30,18],epsilon:.002,counts:{sampled:0,waterHit:0,waterFirst:0,terrainFirst:0,noTerrain:0,tie:0},samples:{waterFirst:[],terrainFirst:[],noTerrain:[],tie:[]}};
+ if(cam){
+   cam.updateMatrixWorld(true);terrain.mesh.updateMatrixWorld(true);transport.object.updateMatrixWorld(true);
+   const raycaster=new THREE.Raycaster(),ndc=new THREE.Vector2(),push=(kind,entry)=>{const a=depthProbe.samples[kind];if(a.length<32)a.push(entry)};
+   for(let iy=0;iy<18;iy++)for(let ix=0;ix<30;ix++){
+     ndc.set(-1+2*(ix+.5)/30,1-2*(iy+.5)/18);raycaster.setFromCamera(ndc,cam);depthProbe.counts.sampled++;
+     const wh=raycaster.intersectObject(transport.object,true)[0];if(!wh)continue;depthProbe.counts.waterHit++;
+     const th=raycaster.intersectObject(terrain.mesh,true)[0];
+     const base={screen:[(ix+.5)/30,(iy+.5)/18],ndc:[ndc.x,ndc.y],waterDistance:wh.distance,waterPoint:wh.point.toArray(),terrainDistance:th?.distance??null,terrainPoint:th?.point?.toArray?.()??null};
+     if(!th){depthProbe.counts.noTerrain++;push("noTerrain",base);continue}
+     const delta=wh.distance-th.distance;base.deltaWaterMinusTerrain=delta;
+     if(delta>depthProbe.epsilon){depthProbe.counts.terrainFirst++;push("terrainFirst",base)}
+     else if(delta<-depthProbe.epsilon){depthProbe.counts.waterFirst++;push("waterFirst",base)}
+     else{depthProbe.counts.tie++;push("tie",base)}
+   }
+ }
+ const e={...transport.captureDiagnostic(),build:globalThis.__CRUCIBLE_BUILD__,capturedAt:new Date().toISOString(),view:cam?{position:cam.position.toArray(),quaternion:cam.quaternion.toArray(),fov:cam.fov,aspect:cam.aspect,near:cam.near,far:cam.far}:null,terrain:terrain.inspect(),depthProbe};
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(e)],{type:"application/json"}));a.download=`crucible-water-diagnostic-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);
+ return{wetCells:e.solver.wetCells.length,triangles:e.surface.triangles.length,depthProbe:depthProbe.counts}
+}
 devUI=createDevUI({mount:document.querySelector("#debug-tools"),statusMount:document.querySelector("#dev-status"),build:globalThis.__CRUCIBLE_BUILD__,actions:{meteorMagnitude:setImpactBucket,bearingMagnitude:i=>devUI?.setTool(i?"bearings-many":"bearing-packet"),science:()=>toggleScienceMode(),terrainNext:nextTerrain,terrainEvidence:captureWaterDiagnostic,exportLog:()=>locusLedger.download(),timeScale:cycleTimeScale,refresh:()=>location.reload()}});setImpactBucket(1);devUI.setPressed("science",scienceMode);devUI.setTool("meteor");
 setScienceMode(true);
 function frame(now){const realDt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;const fieldScale=cinnabarAndCinnamon.consumeFastForward(cinnabarAndCinnamon.update(simNow));const simDt=realDt*timeScale*fieldScale;simNow+=simDt*1000;physicsAccumulator+=simDt;fpsFrames++;if(now-fpsWindowStart>=500){devUI.setFps(Math.round(fpsFrames*1000/(now-fpsWindowStart)));fpsWindowStart=now;fpsFrames=0;}extruder.update(simNow);const fieldNow=cinnabarAndCinnamon.update(simNow);if(!scienceMode){cinnabarDome.update(fieldNow);cinnabarKite.update(fieldNow);cinnabarSpire.update(fieldNow);coupletTrial.update(fieldNow,simDt);}if(cinnabarPackY!==cinnabarPackTarget){cinnabarPackElapsed=Math.min(cinnabarPackDuration,cinnabarPackElapsed+realDt);const packT=cinnabarPackElapsed/cinnabarPackDuration,packEase=packT*packT*(3-2*packT);cinnabarPackY=THREE.MathUtils.lerp(cinnabarPackFrom,cinnabarPackTarget,packEase);if(packT>=1)cinnabarPackY=cinnabarPackTarget;}cinnabarLayer.position.y=cinnabarPackDepth*cinnabarPackY;locusDisplay?.setCinnabarPacked?.(cinnabarPackY>=.999,cinnabarPackY>0.001&&cinnabarPackY<.999);let steps=0;while(physicsAccumulator>=physicsStep&&steps<32){physics(physicsStep);physicsAccumulator-=physicsStep;steps++;}
