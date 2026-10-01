@@ -16,7 +16,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   // Cheap cutaway companion: the solver already knows the water column. Render that
   // knowledge only where the finite material octagon exposes its side.
   const sideGeometry=new THREE.BufferGeometry();
-  const sideMaterial=new THREE.MeshStandardMaterial({color:0x2b7894,transparent:true,opacity:.42,roughness:.22,metalness:0,depthWrite:false,side:THREE.DoubleSide});
+  const sideMaterial=new THREE.MeshBasicMaterial({color:0x245f73,transparent:true,opacity:.5,depthWrite:false,side:THREE.DoubleSide});
   const waterSide=new THREE.Mesh(sideGeometry,sideMaterial);waterSide.name="shallow-water-boundary-curtain";waterSide.renderOrder=3;scene.add(waterSide);
 
   function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),px=wx(x),pz=wz(z);bed[k]=terrain.materialBoundary(px,pz).inside?terrain.groundHeightExact(px,pz):-Infinity}}
@@ -92,7 +92,19 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const cells=[[x0,z0,(1-fx)*(1-fz)],[x0+1,z0,fx*(1-fz)],[x0,z0+1,(1-fx)*fz],[x0+1,z0+1,fx*fz]];
     let depth=0,eta=0,w=0;
     for(const[ix,iz,q]of cells){const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;depth+=h[k]*q;eta+=(bed[k]+h[k])*q;w+=q}
-    return{depth,surface:w>1e-8?eta/w:NaN};
+    if(w<=1e-8)return{depth,surface:NaN};
+    // Presentation only: suppress cell-scale eta spikes without changing solver state
+    // or wet/support/terrain clipping. A small separable-looking neighborhood average
+    // gives the rendered skin macroscopic continuity through narrow canyons.
+    let smoothEta=0,smoothW=0;
+    for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){
+      const ix=Math.round(gx)+dx,iz=Math.round(gz)+dz;if(ix<0||iz<0||ix>=N||iz>=N)continue;
+      const k=idx(ix,iz);if(!valid(k)||h[k]<=DRY)continue;
+      const q=(dx===0&&dz===0)?4:(dx===0||dz===0)?2:1;
+      smoothEta+=(bed[k]+h[k])*q;smoothW+=q;
+    }
+    const raw=eta/w,smooth=smoothW?smoothEta/smoothW:raw;
+    return{depth,surface:THREE.MathUtils.lerp(raw,smooth,.72)};
   }
   function supported(x,z){return terrain.materialBoundary(x,z).inside}
   function supportBoundary(a,b){
