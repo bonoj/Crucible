@@ -195,3 +195,76 @@ Update it when a session earns a durable change in:
 - the collaboration or instrumentation method itself.
 
 Do not interrupt a hot executable loop merely to narrate it. Git carries exact implementation chronology. This record carries the consequential crossings.
+
+
+## Extension Turn 1 — Delete invisible water work
+
+The first extension candidate did not introduce a new renderer, GPU path, cache, buffer architecture, or solver approximation.
+
+Inspection of the measured presentation path showed that visible water was being reconstructed at `SURFACE_SUBDIV=2`: each already-authoritative 64×64 solver cell was subdivided again for presentation before clipping, terrain sampling, and geometry generation.
+
+The candidate changed only that presentation subdivision to `1`.
+
+Hydrostatics, solver resolution, material coupling, accepted water material/look, and presentation cadence were left unchanged.
+
+**Candidate:** `18fb5d29dc3330a5b4e53dde47b22e3cdf42240a`
+
+### Human field result
+
+On the target Android device:
+
+- water remained visually fantastic;
+- massive water volume held approximately **60 FPS**;
+- hundreds and low thousands of ball bearings barely affected that result;
+- approximately **25,000 bearings** reduced the observed frame rate to roughly **30 FPS**;
+- the 100,000-bearing regime remained substantially heavier and was captured separately.
+
+This moved the active performance frontier away from water and toward high-count bearing load.
+
+### Captured water evidence
+
+A massive-water diagnostic after the change reported:
+
+- wet cells: **1,102**;
+- water volume: **83.37**;
+- solver: **~0.8 ms / 3 substeps**;
+- presentation rebuild: **~22 ms**;
+- presentation geometry: **7,616 vertices / 2,728 surface triangles / 328 side triangles**.
+
+A lighter active-water capture reported:
+
+- wet cells: **644**;
+- water volume: **37.17**;
+- solver: **~0.4 ms / 2 substeps**;
+- presentation rebuild: **~16.1 ms**;
+- presentation geometry: **4,451 vertices / 1,597 surface triangles / 170 side triangles**.
+
+An Aeon capture between those states reported:
+
+- wet cells: **694**;
+- water volume: **41.29**;
+- solver: **~0.2 ms / 1 substep** at capture;
+- presentation rebuild: **~17 ms**;
+- presentation geometry: **4,778 vertices / 1,710 surface triangles / 186 side triangles**.
+
+The presentation timer still reports nontrivial synchronous rebuild work. It is not currently sufficient reason to continue optimizing water: target-device frame behavior is now excellent at substantially greater water volume than the earlier failing regime.
+
+### Crossing
+
+The previous loaded capture, before this change, had approximately 873 wet cells and ~58.9 water volume while the world ran around 12–15 FPS. Its presentation reconstruction generated ~22.5k vertices and measured near 50 ms.
+
+The new candidate carries **more water and more wet cells at an observed 60 FPS**, while preserving the accepted appearance.
+
+The extension expedition therefore accepts this rule:
+
+> **Do not optimize a surviving diagnostic number after the experienced consequence has crossed the target.**
+
+Water performance is crossed for now.
+
+The next demonstrated scaling seam is high-count ball bearings. The useful field ladder is now roughly:
+
+- hundreds to low thousands: little perceptible frame impact against the 60 FPS water world;
+- ~25k bearings: ~30 FPS;
+- 100k bearings: heavy regime, retained as a stress aperture.
+
+Do not reopen water presentation unless future material interactions or broader device evidence make it consequential again.
