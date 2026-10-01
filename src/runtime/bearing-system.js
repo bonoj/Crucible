@@ -27,13 +27,14 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const probe={updateMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now();
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterBounds=water?.couplingBounds?.()??null;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
-      const nearWater=waterBounds&&bx[i]>=waterBounds.minX&&bx[i]<=waterBounds.maxX&&bz[i]>=waterBounds.minZ&&bz[i]<=waterBounds.maxZ,ws=nearWater&&water.sampleStateInto?.(bx[i],bz[i],waterSample)?waterSample:null;
-      let submerged=0;
-      if(ws&&ws.depth>0){
-        const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
+      const waterY=water?.surfaceY?.(bx[i],bz[i])??NaN;
+      let submerged=0,ws=null;
+      if(Number.isFinite(waterY)&&by[i]-BALL_R<waterY){
+        const t=THREE.MathUtils.clamp((waterY-(by[i]-BALL_R))/(BALL_R*2),0,1);
         submerged=t*t*(3-2*t);
+        if(submerged>0&&water.flowInto?.(bx[i],bz[i],waterSample))ws=waterSample;
       }
       bvy[i]+=g*dt;
       if(submerged>0){
@@ -45,7 +46,7 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
       }
       bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
       contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
-      const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]);slopeZ[pi]=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
+      const gh=(terrain.supportY??terrain.groundHeight)(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=(terrain.supportY??terrain.groundHeight)(bx[i]+eps,bz[i])-(terrain.supportY??terrain.groundHeight)(bx[i]-eps,bz[i]);slopeZ[pi]=(terrain.supportY??terrain.groundHeight)(bx[i],bz[i]+eps)-(terrain.supportY??terrain.groundHeight)(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
       if((i%renderStride)===0&&rendered<MAX_RENDERED){dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
