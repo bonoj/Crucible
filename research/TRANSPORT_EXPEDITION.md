@@ -2133,3 +2133,23 @@ And that probe remains 📋-only, so no frame-tax. **No geometry changes yet.**
 #### Human reply — verbatim
 
 > ➡️
+
+
+#### Assistant response — verbatim
+
+Probe evolved and the turn is logged. 🫡
+
+**Candidate:** \`3abd81ae\`  
+Open multiplicity candidate: https://bonoj.github.io/Crucible/preview/?build=3abd81ae
+
+Build is green; Pages has assembled the exact candidate and deployment is finishing.
+
+📋 now records **every water-surface intersection along each sampled camera ray**, including multiplicity, distances, and face indices. Still capture-only; **zero ongoing frame tax**.
+
+Reproduce cyan → tap 📋 → send JSON.
+
+If normal water gives ~1–2 intersections while cyan gives a pile, we have our smoking gun. 🔬💧💧💧
+
+#### Human reply — verbatim
+
+> [Uploaded \`crucible-water-diagnostic-1790820154261.json\` with no additional text.]
