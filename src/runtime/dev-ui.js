@@ -13,6 +13,7 @@ export function createDevUI({mount,statusMount,build,actions}){
     ]},
     {kind:"choice",label:"Transport tools",items:[
       {id:"source",text:"💧",label:"Place transport source at tapped point",tool:"source"},
+      {id:"lava",text:"🌋",label:"Place lava at tapped point",tool:"lava"},
     ]},
     {kind:"controls",items:[
       {id:"science",text:"🔬",label:"Toggle Science mode",on:actions.science},
