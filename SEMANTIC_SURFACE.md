@@ -244,6 +244,17 @@ Controls that select a persistent interaction mode use the existing `.active` st
 The present terrain/transport point instruments are shell-defined and mutually selected through the shared `data-terrain-tool` grammar: `⛏️` carve, `🪏` raise, `💧` source, and `🩸` thicker source. The existing meteor apparatus remains separate rather than being duplicated as another point-tool button.
 
 
+
+## Shallow water has a cheap presentation and tuning vocabulary
+
+Crucible's current shallow-water candidate separates depth-averaged solver state from its rendered presentation skin. The free surface and exposed boundary curtain use unlit transparent materials; terrain visible through the surface therefore supplies much of the apparent visual depth without requiring the water itself to participate in scene lighting.
+
+The accepted presentation baseline is the auditioned **L** look: surface color `#17636a` at **0.42 opacity**. The boundary curtain remains independently darker and more opaque. The A-Z appearance ladder remains latent in the water system as cheap experimental vocabulary rather than visible UI, spanning deliberately broad combinations of hue and approximately 0.08 to 0.95 opacity.
+
+Momentum damping is likewise an explicit cheap tuning seam. The accepted baseline is **viscosity level 1**, which preserves the pre-audition damping coefficient of `0.22`. The explored 1-26 ladder increases damping exponentially; level 26 is intentionally far slower than ordinary water. These levels are phenomenological controls over momentum damping, not claims of calibrated physical viscosity.
+
+Appearance and damping are independent. They can be varied without changing terrain, wet/dry support, hydrostatic reconstruction, or each other. The audition controls are not part of the standing Crucible UI; they were temporary instruments used to expose this vocabulary.
+
 ### Legacy sea volume
 
 The existing bounded sea volume remains provisional executable world vocabulary while fluid representation is unresolved. It does not require a dedicated control-bar affordance, but its state should remain semantically reachable for inspection and deliberate use.
