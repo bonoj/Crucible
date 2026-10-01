@@ -27,9 +27,9 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const probe={updateMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now();
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterActive=water?.hasWater?.()??false;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterBounds=water?.couplingBounds?.()??null;let rendered=0;
     for(let i=0;i<count;i++){
-      const ws=waterActive&&water.sampleStateInto?.(bx[i],bz[i],waterSample)?waterSample:null;
+      const nearWater=waterBounds&&bx[i]>=waterBounds.minX&&bx[i]<=waterBounds.maxX&&bz[i]>=waterBounds.minZ&&bz[i]<=waterBounds.maxZ,ws=nearWater&&water.sampleStateInto?.(bx[i],bz[i],waterSample)?waterSample:null;
       let submerged=0;
       if(ws&&ws.depth>0){
         const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
