@@ -134,6 +134,64 @@ If a deep modification matters at the larger scale, that consequence should surv
 
 This implies that compaction is not merely polygon reduction. Detailed machinery may compact into effective state, parameters, capacities, faults, history, or other earned summaries.
 
+## Movement between scales is material too
+
+The endpoints do not exhaust the experiment.
+
+If one semantic entity can remain coherent across radically different consequential resolutions, then the **movement between those resolutions is itself tinkering material**. Do not reduce this prematurely to a conventional LOD swap.
+
+A boring linear interpolation should remain available whenever it works. It is useful precisely because it does not require ceremony. But candidate movements already include:
+
+- **lerp / morph** — interpolate geometry or other state where correspondence is meaningful;
+- **accretion** — grow additional structure onto the coarse representation;
+- **resolution** — ambiguous forms separate or sharpen as attention demands distinctions;
+- **unpacking** — nested or latent structure unfolds, telescopes, hinges, inflates, deploys, or otherwise reveals itself;
+- **reconfiguration** — persistent parts change relationships and assemble into a new-scale representation;
+- **explosion / assembly** — components separate so their relationships become traversable, then become the next locus;
+- **portal / crossing** — multiple resolutions remain perceptible while the observer crosses between them;
+- **semantic zoom** — camera motion, geometry, behavior, controls, labels, and simulation resolve together;
+- **cut with continuity** — an instantaneous representational change is acceptable when identity and state correspondence remain legible;
+- **causal transition** — impact, opening, grabbing, failure, repair, or another event causes the scale crossing;
+- **impossible transition** — presentation may violate ordinary Euclidean scaling when semantic and causal continuity remain useful;
+- **Arboghasting** — preserve semantic continuity while allowing an exuberantly improbable coming-apart and reconstitution whose geometry need not pretend it literally occupied the prior volume;
+- **something unnamed** — this list is evidence of possibility, not a menu the system must implement.
+
+These movements may combine. A surface might begin by interpolating, arboghast into an exploded configuration, reconfigure around the observer, and then unpack one panel into an executable locus.
+
+Different kinds of resolution may also move at different rates. Geometry could refine while physics remains coarse; articulation could become active later; internal simulation could wake only when needed; an annotation could become a control and then a world. Do not encode these as mandatory scalar axes merely because they are easy to name.
+
+A useful invariant candidate is:
+
+> **Preserve continuity of consequence. Make continuity of appearance optional.**
+
+The deeper question is not whether two meshes correspond. It is:
+
+> **What must remain true for this encounter to remain recognizably about the same entity as its resolution changes?**
+
+That answer may differ by entity and may itself have to be earned.
+
+A particularly useful tinkering operation may therefore be:
+
+> **Give me N ways to descend into this thing.**
+
+The alternatives could be transitions rather than assets. Human selection could earn transition vocabulary exactly as body, appendage, rig, or behavior vocabulary is earned.
+
+## The workbench is also malleable
+
+This expedition is intentionally a **vomitorium** at the opening frontier.
+
+We are not only semantic-tinkering entities on a finished workbench. We are semantic-tinkering **the tinker's workbench itself**.
+
+If an interaction pattern, transition, representation, control, inspector, generation mechanism, scale crossing, provenance view, or new semantic handle becomes useful, the apparatus may change to admit it. Temporary machinery can be invented for one crossing and discarded after it teaches us something.
+
+This makes reflexivity part of the experiment:
+
+**entity pressure → missing operation becomes visible → temporary instrument precipitates → instrument changes what can be noticed or made → repeated usefulness may earn durable workbench vocabulary**
+
+Do not clean this frontier into a product taxonomy too early. Candidate ideas should be cheap to deposit here even when contradictory, overlapping, badly named, or only half understood. Executable crossings can later decide what deserves compression into `DIRECTIONS.md`, present-tense truth in `SEMANTIC_SURFACE.md`, reusable substrate, or oblivion.
+
+The workbench should therefore have no protected conceptual center beyond Crucible's ordinary truth and authority boundaries. Even the current generate/discriminate/retain loop is a hypothesis that the expedition may reshape.
+
 ## Geometry is only one resolution axis
 
 More detail must not silently mean more triangles.
@@ -306,6 +364,16 @@ The strongest example was a drone that may be a cube at one scale, a low-poly bo
 This reframed detail from graphical LOD into potentially independent consequential resolutions and produced the working handles **inpainting**, **outpainting**, and **resolution follows attention, not ontology**.
 
 No executable multiscale round trip has yet been demonstrated.
+
+### Opening — transitions become tinkering material
+
+The collaboration noticed that multiscale coherence does not imply a conventional LOD swap. Linear interpolation is an obvious baseline, but candidate movements include morphing, accretion, resolution, unpacking, reconfiguration, explosion/assembly, portals, semantic zoom, causal transitions, impossible transitions, cuts with continuity, and **Arboghasting**.
+
+This produced a stronger provisional invariant: **preserve continuity of consequence; make continuity of appearance optional**.
+
+It also exposed a reflexive property of the expedition: the semantic tinkerer is not operating on a finished workbench. The collaboration is semantic-tinkering the tinker's workbench itself. The expedition should therefore accept a deliberately messy frontier of candidate operations and let executable pressure decide which instruments and vocabulary survive.
+
+No transition vocabulary has yet been earned by executable evidence.
 
 ## Finish line
 
