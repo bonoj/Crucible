@@ -110,7 +110,7 @@ function toggleScienceMode(){return setScienceMode(!scienceMode)}
 function showTerrainSeed(seed){
   terrainGenesisSeed=seed|0;
   if(scienceMode){bearings.clear();terrainGenesisEvidence=terrainGenesis.runSeed(terrainGenesisSeed);transport.reset();transport.setEnabled(false);waterScalar.reset();waterScalar.setEnabled(false);lastImpactTarget=meteors.targetAt();}
-  devUI?.setText("terrain-next","NEXT",`Next deterministic terrain after seed ${terrainGenesisSeed}`);
+  devUI?.setText("terrain-next","⛰️",`Next deterministic terrain after seed ${terrainGenesisSeed}`);
   return terrainGenesisEvidence;
 }
 function nextTerrain(){return showTerrainSeed(terrainGenesisSeed+1)}
