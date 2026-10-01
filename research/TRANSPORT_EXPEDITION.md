@@ -1900,3 +1900,98 @@ The next probe is deliberately diagnostic and render-side only:
 > **Cold-handoff invariant:** the water solver is acquitted unless new evidence says otherwise. The immediate unknown is 3D visibility/intersection, not hydrostatics.
 
 The malleable 📋 aperture should be reshaped around this discrimination rather than expanded generically.
+
+
+### Turn-for-turn continuation protocol
+
+From this point to the finish line, the water/visibility crossing is recorded turn for turn. Assistant responses are preserved verbatim, followed by the human reply verbatim. Subsequent turns should continue this pattern rather than retrospectively compressing the exchange.
+
+#### Handoff packet received by cold assistant — verbatim
+
+> Your last turn in Crucible.
+>
+> We are live. 9157484d is built and Pages-published green.
+> This is the cleanest possible crossing candidate:
+> 64×64 shallow-water state stays authoritative → continuous reconstruction interpolates it → exact signed-density terrain vetoes impossible visible water between samples.
+> No physics sacrificed to make the picture behave.
+> Take her through the canyon. ⛰️💧⚫️
+>
+> My response:
+>
+> No regression. No solution. Thoughts?
+
+#### Cold assistant analysis — verbatim
+
+Yep. And this diagnostic changes my diagnosis.
+
+The **water simulation is not the problem**. It is behaving almost absurdly well: 315 wet cells, ~18.328 volume from ~18.337 injected, zero escaped, zero dry loss, ~0.0097 balance error, max speed ~2.05, and the sampled bed agrees with exact terrain down around floating-point noise.
+
+And your screenshot is more revealing than another round of tweaking the veto. The cyan patch is still a perfectly ordinary piece of the reconstructed water surface. What we've been calling a "terrain veto" has apparently been operating on the **wrong geometric question**.
+
+We asked:
+
+> At this water-surface point, is the exact terrain above the water?
+
+That can prevent water from being drawn *inside solid terrain at that XZ coordinate*. But the artifact in the screenshot isn't necessarily water occupying solid terrain. It looks like we're seeing a legitimate water surface **through/around an opening in the rendered canyon geometry**. In other words, that cyan can be completely legal according to the height-field test and still visually appear to punch through the canyon wall.
+
+There is a stronger clue in the diagnostic: Crucible's terrain is a **3D signed-density volume**, 60×44×60, with 27,590 rendered triangles. The shallow-water solver, meanwhile, has a single bed elevation per XZ cell. Those are fundamentally different representations. A 2.5D `bed(x,z)` cannot describe an overhang, vertical canyon face, cave roof, undercut, or multiple terrain intersections at one XZ.
+
+So I think we've finally found the category error:
+
+**We have been trying to repair a 3D visibility/intersection problem with increasingly exact 2D hydrostatic information.**
+
+Which explains the whole thrash beautifully:
+
+- Hydrostatics never cared when you mutilated the terrain around the artifact.
+- Exact bed sampling checked out.
+- Continuous reconstruction didn't solve it.
+- Exact signed-density clipping at surface samples didn't solve it.
+- And none of those changes damaged the water, because the water was never wrong.
+
+I would **stop touching the solver now**. Preserve 9157484d as evidence. The next experiment should be brutally diagnostic and render-side only: determine whether that cyan patch is genuinely in front of the canyon surface in camera depth, or merely visible because the terrain mesh does not occlude it where our mental model says it should.
+
+If it's the former, we need **3D terrain/water intersection clipping**, probably against the density field along the actual water triangles rather than `bed(x,z)`. If it's the latter, we've discovered a terrain meshing/occlusion artifact masquerading as bad water.
+
+Either way, I think the 64×64 water has earned acquittal. 😂
+
+And importantly: **no more speculative fixes until we discriminate those two cases.** Our JIT logging apparatus is now good enough to ask exactly that question.
+
+#### Human reply — verbatim
+
+> Excellent. You have the con. Awaiting orders. Also, add a note of the handoff in the expedition since this is a cold handoff.
+
+#### Assistant response — verbatim
+
+Con accepted. 🫡
+
+Cold handoff is now recorded in `research/TRANSPORT_EXPEDITION.md` at commit `cac86ee3`. It preserves `9157484d` as the clean water baseline and explicitly acquits the solver pending contrary evidence.
+
+### Orders
+
+**No water changes. No terrain changes. One diagnostic crossing.**
+
+I want 📋 reshaped to answer exactly this:
+
+> **At the pixels where cyan appears wrong, what does the camera ray encounter first: water or terrain?**
+
+That is stronger than another world-space point test. We need camera-space evidence.
+
+The smallest useful probe is a **depth discrimination mode**:
+
+1. Render terrain depth.
+2. Render water depth independently.
+3. For visible water fragments, classify:
+   - **water nearer than terrain** → genuine 3D intersection/geometry problem;
+   - **terrain nearer than water** but cyan nevertheless visible → depth/material/render-order problem;
+   - **no terrain intersection on that ray** → terrain mesh/topology/opening problem.
+4. Have 📋 export aggregate counts plus a small sample of offending screen/world coordinates. No giant telemetry framework.
+
+Crucially, **don't fix anything in this crossing**. The finish line is merely getting one canyon run that tells us which of those three worlds we inhabit.
+
+Once we know that, I expect the next move to become almost embarrassingly obvious.
+
+**Docket: reshape 📋 → camera-ray/depth probe → build candidate → you take her through the canyon → evidence decides.** ⛰️🔬💧
+
+#### Human reply — verbatim
+
+> In fact. Extend your handoff note with verbatim what you received, my response, and your analysis just now. Let's treat this exactly turn for turn to the finish line. Your responses are logged verbatim and then my reply is appended below! 🫡
