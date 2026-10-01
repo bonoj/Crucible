@@ -8,6 +8,20 @@ Crucible is a real-time Three.js world for discovering what becomes possible whe
 
 It began with Foundry's deformable terrain and systems vocabulary, then became its own experiment: meteors reshape the world, granular matter moves through it, autonomous machinery leaves consequences behind, and an orbital station observes only what its deliberately limited aperture can actually recover.
 
+
+
+### Taran Wanderer principle
+
+Preserve competing realities until evidence collapses them. When an executable can answer the question directly, instrument it rather than infer from appearances. Prefer the smallest brute-force observation that discriminates the live futures. Logging is JIT machinery: it may move freely across abstraction levels, change schema between turns, and disappear when its question is answered. Preserve the resulting evidence and the path through rejected realities as provenance.
+
+In practice:
+
+- **Aeon Chronicler:** preserve the actual sequence of realities, including failed ones. Do not collapse history into only the winning explanation.
+- **N realities:** when several explanations fit the evidence, keep them alive until observation distinguishes them.
+- **Tycho's green futures:** shape the next logging aperture around evidence that can discriminate the live futures before committing to one.
+- **Taran Wanderer:** let observation descend or ascend freely across world, system, entity, geometry, ray, pixel, or other useful levels.
+- **Lean brute force:** do not build an observability cathedral. Add the smallest direct instrumentation that can answer the current question, then reshape or remove it when the question changes.
+
 ## Enter the Crucible
 
 **[Open the live executable](https://bonoj.github.io/Crucible/)**
