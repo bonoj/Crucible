@@ -24,7 +24,7 @@ The central uplift is impact morphology, not additional terrain resolution. It d
 
 ## Simulation time can accelerate without accelerating the interface
 
-Crucible has a simulation-time bucket with **1×, 4×, and 8×** rates. It defaults to 1×.
+Crucible has a simulation-time bucket with **1× and 8×** rates. It defaults to 1×.
 
 Simulation time governs autonomous world processes whose passage defines Terrordrome experience: orbital-station motion and attitude, meteor-weather scheduling, meteor trajectories and impact timing, aperture sampling cadence, and therefore locus-ledger accumulation.
 
@@ -188,6 +188,20 @@ The extruder is an ordinary world process. It does not query the orbital station
 
 Its excavation and yield behavior are specific authored machinery. They do not establish generalized resource extraction, production economics, planning, goals, or agency.
 
+## Aeon is a disposable counterfactual observation aperture
+
+Crucible retains a 🐉 Aeon forensic control outside the ordinary construction-tool grammar. Aeon is research instrumentation, not world capability and not an orbital-station aperture.
+
+The current water aperture can render controlled counterfactual views of the same scene and inspect camera rays against the live water geometry. Its development established an important instrumentation rule: an isolated render must preserve dependencies relevant to the hypothesis being tested. An earlier “water only” intervention accidentally hid scene lights and therefore produced a coherent but false lighting diagnosis; framebuffer alpha likewise proved unsuitable as a proxy for water coverage. The corrected aperture preserves lights and admits sampled pixels through exact ray-confirmed water intersection.
+
+The investigation also found and corrected a genuine free-surface winding defect: reconstructed water triangles had faced downward. Correcting the winding restored upward geometric normals but did **not** remove the visible color pathology, demonstrating that a real defect need not be the causal defect under investigation.
+
+Controlled material counterfactuals subsequently showed the lit transparent water surface could become dark/brown while an unlit rendering of the same ray-confirmed geometry retained the expected water color. The production surface was therefore moved to an unlit material without changing hydrostatic state. Aeon remains available because its useful vocabulary is the ability to reshape a small observation around competing executable realities, not the permanence of any one diagnostic schema.
+
+## Pages publication is serialized
+
+Crucible's GitHub Pages workflow serializes publication through one shared concurrency group with cancellation disabled. This was introduced after overlapping publication activity was followed by a deployment that remained in a blank server-side state until timeout. Serialization is an operational guard against overlapping stable/preview publication; it is not evidence that every Pages-side deployment failure originates in repository code.
+
 ## Engineering Watchlist
 
 This is a small watchlist, not a refactor docket. Entries belong here when a concrete implementation characteristic may become consequential with scale or new behavior but executable evidence has not yet justified broader machinery. Presence here does not declare technical debt or authorize speculative cleanup. Remove or revise an entry when the code changes.
@@ -241,19 +255,29 @@ Before adding a control, inspect the current shell for existing symbols, orderin
 
 Controls that select a persistent interaction mode use the existing `.active` state convention. Compact glyph controls carry their explanatory name through `aria-label`; visible prose is not required when the surrounding control surface already uses glyph grammar.
 
-The present terrain/transport point instruments are shell-defined and mutually selected through the shared `data-terrain-tool` grammar: `⛏️` carve, `🪏` raise, `💧` source, and `🩸` thicker source. The existing meteor apparatus remains separate rather than being duplicated as another point-tool button.
+The present visible terrain/transport point instruments are mutually selected through the shared tool grammar: `⛏️` carve, `🪏` raise, and `💧` source. The former visible `🩸` thicker-source affordance has been stowed; source-rate variation remains runtime vocabulary rather than standing UI. The existing meteor apparatus remains separate rather than being duplicated as another point-tool button.
 
 
 
-## Shallow water has a cheap presentation and tuning vocabulary
+## Shallow water is independent solver state with a reconstructed presentation skin
 
-Crucible's current shallow-water candidate separates depth-averaged solver state from its rendered presentation skin. The free surface and exposed boundary curtain use unlit transparent materials; terrain visible through the surface therefore supplies much of the apparent visual depth without requiring the water itself to participate in scene lighting.
+Crucible's current liquid candidate is a **64 × 64 depth-averaged shallow-water solver** over an 18 × 18 world-unit field. It owns water depth and Cartesian momentum independently of the older scalar transport machinery. Bed elevation is resampled from mutable exact terrain, and interface fluxes use hydrostatic reconstruction against the higher neighboring bed so lake-at-rest balance is not represented as a separate centered bed-slope force.
 
-The accepted presentation baseline is the auditioned **L** look: surface color `#17636a` at **0.42 opacity**. The boundary curtain remains independently darker and more opaque. The A-Z appearance ladder remains latent in the water system as cheap experimental vocabulary rather than visible UI, spanning deliberately broad combinations of hue and approximately 0.08 to 0.95 opacity.
+The finite material octagon is a geometric slip boundary. Near its edge, outward momentum is projected away using the actual nearest boundary-plane normal. Water injection is volumetric solver input; the visible surface is not the authoritative water state.
 
-Momentum damping is likewise an explicit cheap tuning seam. The accepted baseline is **viscosity level 1**, which preserves the pre-audition damping coefficient of `0.22`. The explored 1-26 ladder increases damping exponentially; level 26 is intentionally far slower than ordinary water. These levels are phenomenological controls over momentum damping, not claims of calibrated physical viscosity.
+The solver and presentation intentionally have different spatial vocabularies. Solver cells are measurements/state, not render polygons. The visible free surface is reconstructed at twice the solver sampling density, clipped independently against wet/dry support, the material boundary, and exact terrain height. This allows sub-cell terrain ridges to occlude reconstructed water without requiring the hydrodynamic grid itself to resolve every visible ridge.
 
-Appearance and damping are independent. They can be varied without changing terrain, wet/dry support, hydrostatic reconstruction, or each other. The audition controls are not part of the standing Crucible UI; they were temporary instruments used to expose this vocabulary.
+The presentation skin applies a small weighted neighborhood reconstruction to water elevation. That smoothing is computed once per solver cell per presentation rebuild, then sampled by the finer surface reconstruction. Smoothing fades toward sparse wet boundaries so shoreline vertices remain closer to raw reconstructed elevation instead of forming isolated raised facets. Presentation geometry currently rebuilds at approximately **30 Hz** while the solver continues on its own stability-limited substeps.
+
+The free surface and exposed material-boundary curtain use unlit transparent materials with depth writing disabled. The surface therefore does not depend on Crucible's scene lights or generated vertex normals. The accepted presentation baseline is the auditioned **L** look: surface color `#17636a` at **0.42 opacity**. The boundary curtain is independently `#245f73` at **0.50 opacity** and represents exposed water column only along the finite material boundary; it is not a second hydrodynamic surface.
+
+The A-Z appearance ladder remains latent in the water system as cheap experimental vocabulary rather than visible UI. It spans deliberately broad hue choices and approximately 0.08 to 0.95 opacity. Appearance can therefore be reopened without rebuilding a material experiment.
+
+Momentum damping is likewise an explicit cheap tuning seam. The accepted baseline is **viscosity level 1**, preserving the pre-audition damping coefficient of `0.22`. The explored 1-26 ladder increases damping exponentially; level 26 is intentionally far slower than ordinary water. These levels are phenomenological momentum-damping controls, not calibrated physical viscosity. Appearance and damping are independent of one another and of the hydrostatic reconstruction. Their audition buttons were temporary instruments and are not part of the standing Crucible UI.
+
+The water system exposes diagnostic state including wet-cell count, volume accounting, maximum depth and speed, solver step count, stability timestep range, accumulated simulation debt, and measured solver time. A downloadable water diagnostic can additionally preserve wet solver cells and the reconstructed surface triangles against exact terrain. These are research apertures, not additional simulation state.
+
+Current mobile field observation remains that frame rate tends toward roughly **15–20 FPS as the wetted world becomes large**. A briefly observed ~34 FPS state occurred with substantially less water coverage and is not a valid before/after benchmark for the later presentation changes. The dominant scaling cause has not yet been established; solver work, reconstruction work, and transparent screen coverage remain distinguishable hypotheses rather than a settled diagnosis.
 
 ### Legacy sea volume
 
