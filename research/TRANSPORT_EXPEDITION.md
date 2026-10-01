@@ -2580,3 +2580,18 @@ Then FUUTP has earned native binary transport. 🧬
 #### Human reply — verbatim
 
 > And we have its ancestry anyways. Where were we? Let's catch up in transport expedition.
+
+
+#### Assistant response — verbatim
+
+Correct. **It isn't there.**
+
+I just checked `Crucible/reference`; only `FOUNDRY_DONOR.html` exists.
+
+I stopped the promotion when FUUTP's identity gate proved that the available image-reading path had re-encoded Clara's Home instead of transporting the original bytes. So `CLARAS_HOME_ARCOLOGIES.png` was **never committed**.
+
+That's the unfinished T4 crossing—not a Pages delay. We should finish that transport rather than leave the reference implied to exist.
+
+#### Human reply — verbatim
+
+> Yes, let's finish.
