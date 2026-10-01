@@ -114,6 +114,24 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=supported(a.x,a.z);
     for(const b of poly){const bin=supported(b.x,b.z);if(ain!==bin)out.push(supportBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
   }
+  // Visibility is finer than hydrodynamic state: a ridge can exist between two
+  // valid wet solver samples. Clip reconstructed surface polygons against the exact
+  // terrain surface instead of forcing the shallow-water grid to represent that ridge.
+  const terrainClearance=p=>p.y-terrain.groundHeightExact(p.x,p.z);
+  function terrainBoundary(a,b){
+    let lo={...a},hi={...b},loClear=terrainClearance(lo);
+    if((loClear>=0)===(terrainClearance(hi)>=0))return loClear>=0?hi:lo;
+    if(loClear<0){const q=lo;lo=hi;hi=q;loClear=terrainClearance(lo)}
+    for(let i=0;i<8;i++){
+      const m={x:(lo.x+hi.x)*.5,z:(lo.z+hi.z)*.5,y:(lo.y+hi.y)*.5,depth:(lo.depth+hi.depth)*.5};
+      if(terrainClearance(m)>=0)lo=m;else hi=m;
+    }
+    return lo;
+  }
+  function clipTerrain(poly){
+    const out=[];if(!poly.length)return out;let a=poly.at(-1),ain=terrainClearance(a)>=0;
+    for(const b of poly){const bin=terrainClearance(b)>=0;if(ain!==bin)out.push(terrainBoundary(a,b));if(bin)out.push(b);a=b;ain=bin}return out;
+  }
   function refresh(){
     const pos=[],ind=[],sidePos=[],sideInd=[];let vi=0,sideVi=0;
     const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
@@ -144,7 +162,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     };
     for(let z=SURFACE_MIN;z<SURFACE_MAX-1e-6;z+=SURFACE_STEP)for(let x=SURFACE_MIN;x<SURFACE_MAX-1e-6;x+=SURFACE_STEP){
       const x1=Math.min(SURFACE_MAX,x+SURFACE_STEP),z1=Math.min(SURFACE_MAX,z+SURFACE_STEP),a=sample(x,z),b=sample(x1,z),cc=sample(x1,z1),d=sample(x,z1);
-      emit(clipSupport(clipWet([a,b,cc])));emit(clipSupport(clipWet([a,cc,d])));
+      emit(clipTerrain(clipSupport(clipWet([a,b,cc]))));emit(clipTerrain(clipSupport(clipWet([a,cc,d]))));
     }
     for(const [a,b] of sideEdges.values()){
       const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
