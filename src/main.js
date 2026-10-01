@@ -147,7 +147,7 @@ function captureWaterDiagnostic(){
      ndc.set(-1+2*(ix+.5)/30,1-2*(iy+.5)/18);raycaster.setFromCamera(ndc,cam);depthProbe.counts.sampled++;
      const waterHits=raycaster.intersectObject(transport.object,true),wh=waterHits[0];if(!wh)continue;depthProbe.counts.waterHit++;depthProbe.multiplicity[waterHits.length]=(depthProbe.multiplicity[waterHits.length]||0)+1;
      const th=raycaster.intersectObject(terrain.mesh,true)[0];
-     const base={screen:[(ix+.5)/30,(iy+.5)/18],ndc:[ndc.x,ndc.y],waterDistance:wh.distance,waterPoint:wh.point.toArray(),waterIntersections:waterHits.length,waterDistances:waterHits.slice(0,16).map(h=>h.distance),waterFaces:waterHits.slice(0,16).map(h=>h.faceIndex),terrainDistance:th?.distance??null,terrainPoint:th?.point?.toArray?.()??null};
+     const base={screen:[(ix+.5)/30,(iy+.5)/18],ndc:[ndc.x,ndc.y],waterDistance:wh.distance,waterPoint:wh.point.toArray(),waterIntersections:waterHits.length,waterDistances:waterHits.slice(0,16).map(h=>h.distance),waterFaces:waterHits.slice(0,16).map(h=>h.faceIndex),waterNormals:waterHits.slice(0,16).map(h=>h.face?.normal?.toArray?.()??null),waterFrontFacing:waterHits.slice(0,16).map(h=>h.face?.normal?raycaster.ray.direction.dot(h.face.normal)<0:null),terrainDistance:th?.distance??null,terrainPoint:th?.point?.toArray?.()??null};
      if(!th){depthProbe.counts.noTerrain++;push("noTerrain",base);continue}
      const delta=wh.distance-th.distance;base.deltaWaterMinusTerrain=delta;
      if(delta>depthProbe.epsilon){depthProbe.counts.terrainFirst++;push("terrainFirst",base)}
