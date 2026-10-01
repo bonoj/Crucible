@@ -47,9 +47,11 @@ The Terrordrome remains causally authoritative and indifferent to the orbital ex
 
 Crucible also keeps a lightweight [DIRECTIONS.md](./DIRECTIONS.md) surface for live possibilities: things a human or model might want to follow next without turning them into a backlog, roadmap, or commitment. Directions have no executable authority. Once one becomes an investigation, its evidence belongs in the appropriate research record and any durable present-tense truth must still earn its way into the semantic surface.
 
-## Follow the expedition
+## Follow the expeditions
 
-The orbital-locus work is being developed in the open through a chronological field record of experiments, observations, failures, corrections, and consequences.
+Current extension work is being developed in public through [research/EXTENSION_EXPEDITION.md](./research/EXTENSION_EXPEDITION.md). It carries consequential crossings in Crucible's physical vocabulary, performance, and the machinery required to keep material consequences responsive.
+
+The orbital-locus work is preserved through its chronological field record of experiments, observations, failures, corrections, and consequences.
 
 **[Read the Orbital Locus Spatial Collaboration log](./research/ORBITAL_LOCUS_SPATIAL_COLLABORATION.md)**
 
