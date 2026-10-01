@@ -2539,3 +2539,44 @@ This is actually useful new FUUTP evidence: the image-reading seam is not byte-t
 #### Human reply — verbatim
 
 > ➡️
+
+
+#### Assistant response — verbatim
+
+➡️ **FUUTP binary crossing remains at one exact seam:** we possess the original 706,957-byte PNG locally and have verified its Git identity, but the available GitHub connector accepts binary blobs only as an inline base64 payload. Routing the image through the file/image reader changes its bytes, so that route is rejected.
+
+I’m not going to corrupt it or quietly substitute a re-encoded copy.
+
+The useful result is now sharply defined: **FUUTP needs a byte-transparent file-reference → Git-blob route for binary artifacts.** The original remains intact at the seam, destined for:
+
+`reference/CLARAS_HOME_ARCOLOGIES.png`
+
+No human shuttling yet. This is FUUTP's problem, and we've isolated the missing primitive. 🧬
+
+#### Human reply — verbatim
+
+> You have authority over fuutp. It no longer needs to be human readable. It needs to be clara perfect.
+
+#### Assistant response — verbatim
+
+**Authority accepted. FUUTP is now Clara-first.**
+
+I just replaced the sprawling human-oriented archaeology with a compact operational surface whose priorities are:
+
+**identity → route selection → exact transport → promotion → verification**
+
+The current binary failure is encoded as **T4**, including the exact source identity, failed transformed identity, destination, rejected route, and ordered probes for the next model. All the important earned transport evidence survives; explanatory repetition does not.
+
+Commit: `882dd1d6`
+
+And this changes how I'll treat FUUTP from here forward: **it is infrastructure for model continuity, not documentation about infrastructure.** If Clara can recover the state, constraints, proven routes, failed routes, and next executable move with less ambiguity, it is better.
+
+Now we keep attacking T4 until:
+
+`reference/CLARAS_HOME_ARCOLOGIES.png == d209d07e…`
+
+Then FUUTP has earned native binary transport. 🧬
+
+#### Human reply — verbatim
+
+> And we have its ancestry anyways. Where were we? Let's catch up in transport expedition.
