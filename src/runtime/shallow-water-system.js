@@ -205,7 +205,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     sampleBed();
     let guard=0,minDt=Infinity,maxDt=0;
     const probeStart=performance.now();
-    while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)if(s.remaining==null||s.remaining>0)addWater(s.rate*dt,s.x,s.z);for(const s of sources)if(s.remaining!=null)s.remaining=Math.max(0,s.remaining-dt);sources=sources.filter(s=>s.remaining==null||s.remaining>0);solve(dt);acc-=dt}
+    while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)if(s.remaining==null||s.remaining>0)addWater(s.rate*dt,s.x,s.z);for(const s of sources)if(s.remaining!=null)s.remaining=Math.max(0,s.remaining-dt);sources=sources.filter(s=>s.remaining==null||s.remaining>0);solve(dt);acc-=dt;}
     probeFrame={substeps:guard,minDt:Number.isFinite(minDt)?minDt:0,maxDt,remainingAcc:acc,solveMs:performance.now()-probeStart};
     // The frozen-surface probe showed reconstruction is not the dominant frame cost.
     // Restore live presentation while solver cadence instrumentation remains isolated above.
