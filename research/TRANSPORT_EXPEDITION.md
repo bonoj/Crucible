@@ -2303,3 +2303,36 @@ The Chronicler has noticed the pixel. Now the pixel gets no secrets. 🐉🔥�
 #### Human reply — verbatim
 
 > Yes. Do all simultaneously and give me a disposable new set of tools in a container above the existing tools. Tell me exactly what you need me to do. Dracarys.
+
+
+#### Assistant response — verbatim
+
+**Dracarys. 🐉🔥**
+
+The disposable Aeon aperture exists. Candidate `fa645efe` is building now.
+
+Open Aeon candidate: https://bonoj.github.io/Crucible/preview/?build=fa645efe
+
+You'll see a **separate 🐉 control above the ordinary tools**. It is deliberately outside the normal DevUI grammar and disposable after the crossing.
+
+One press performs the whole autopsy: full framebuffer, water-only reality, unlit-water reality, no-curtain reality, curtain-only reality, framebuffer-wide anomaly search, exact rays through the 128 strongest candidate pixels, surface/curtain/terrain intersections, complete water state, and triangle geometry including area, aspect and vertex normals. Then normal reality is restored. No persistent frame tax.
+
+### Your orders
+
+Once that candidate loads and you can see 🐉:
+
+1. Arrange the camera so **the cyan witch and unquestionably ordinary blue water are both visible**.
+2. Don't modify terrain, water, or simulation after framing it.
+3. Tap **🐉 exactly once**.
+4. It should download `crucible-aeon-forensics-….json`.
+5. Send me that file.
+
+That's all I need from you.
+
+**Do not tap 📋.** We have left Taran's microscope on the bench for this crossing.
+
+One button. Five realities. The Chronicler looks. 🔥
+
+#### Human reply — verbatim
+
+> We will keep 🐉.  No need to build it again. I think I know where we're heading now.
