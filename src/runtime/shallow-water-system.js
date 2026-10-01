@@ -222,8 +222,13 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function setDisplayDensity(v){displayDensity=THREE.MathUtils.clamp(v|0,1,25);refresh();return inspect().display}
   function hasWater(){for(let k=0;k<K;k++)if(h[k]>DRY)return true;return false}
   function sampleStateInto(x,z,out){
-    const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz),fx=gx-x0,fz=gz-z0;
+    const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz);
     if(x0<0||z0<0||x0>=N-1||z0>=N-1)return false;
+    const k00=idx(x0,z0),k10=k00+1,k01=k00+N,k11=k01+1;
+    // Most grains are nowhere near liquid. Reject a fully dry interpolation
+    // neighborhood before doing weights, bed reads, velocity division, or allocation.
+    if(h[k00]<=DRY&&h[k10]<=DRY&&h[k01]<=DRY&&h[k11]<=DRY)return false;
+    const fx=gx-x0,fz=gz-z0;
     let depth=0,eta=0,u=0,v=0,w=0,k,q,hh;
     k=idx(x0,z0);q=(1-fx)*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
     k=idx(x0+1,z0);q=fx*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
