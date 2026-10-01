@@ -11,7 +11,7 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   let sources=[{x:0,z:0,rate:.9}],viscosityLevel=THREE.MathUtils.clamp(initialViscosity|0,1,26);
 
   const geometry=new THREE.BufferGeometry();
-  const material=new THREE.MeshBasicMaterial({color:look?.color??0x318fb2,transparent:true,opacity:look?.opacity??.72,depthWrite:false,side:THREE.DoubleSide});
+  const material=new THREE.MeshBasicMaterial({color:look?.color??0x318fb2,vertexColors:!!look?.depthAccents,transparent:true,opacity:look?.opacity??.72,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name=`shallow-${kind}-free-surface`;surface.renderOrder=4;scene.add(surface);
   const waterLooks=[
     ["A",0x07191d,.10],["B",0x173b45,.18],["C",0x315f69,.25],["D",0x174d59,.35],["E",0x245565,.45],["F",0x173d4a,.60],["G",0x102a30,.78],["H",0x071b20,.92],
@@ -160,7 +160,7 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   function refresh(){
     const refreshStart=performance.now();
     buildPresentation();
-    const pos=[],ind=[],sidePos=[],sideInd=[];let vi=0,sideVi=0;
+    const pos=[],colors=[],ind=[],sidePos=[],sideInd=[];let vi=0,sideVi=0;
     const samples=new Map(),sample=(x,z)=>{const key=x.toFixed(6)+","+z.toFixed(6);if(samples.has(key))return samples.get(key);const r=renderSample(x,z),p={x,z,y:r.surface,depth:r.depth};samples.set(key,p);return p};
     const sideEdges=new Map();
     const edgeKey=(a,b)=>{const ak=a.x.toFixed(6)+","+a.z.toFixed(6),bk=b.x.toFixed(6)+","+b.z.toFixed(6);return ak<bk?ak+"|"+bk:bk+"|"+ak};
@@ -183,7 +183,18 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
         const dx=verts[i].x-verts[j].x,dz=verts[i].z-verts[j].z;
         if(dx*dx+dz*dz>maxSpan2)return;
       }
-      const base=vi;for(const p of verts){pos.push(p.x,p.y,p.z);vi++}
+      const base=vi;for(const p of verts){
+        pos.push(p.x,p.y,p.z);
+        if(look?.depthAccents){
+          const rs=renderSample(p.x,p.z),flow={depth:0,u:0,v:0};flowInto(p.x,p.z,flow);
+          const depth=Math.max(0,rs.depth),speed=Math.hypot(flow.u,flow.v);
+          const edge=1-THREE.MathUtils.smoothstep(depth,.025,.28),moving=THREE.MathUtils.smoothstep(speed,.08,.8);
+          const heat=THREE.MathUtils.clamp(edge*.82+moving*.28,0,1);
+          const cold=new THREE.Color(look.deepColor??0x260300),hot=new THREE.Color(look.hotColor??0xff8a18);
+          cold.lerp(hot,heat);colors.push(cold.r,cold.g,cold.b);
+        }
+        vi++
+      }
       for(let j=1;j+1<verts.length;j++)ind.push(base,base+j+1,base+j);
       rememberSideEdges(verts);
     };
@@ -195,7 +206,7 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
       const ba=terrain.groundHeight(a.x,a.z),bb=terrain.groundHeight(b.x,b.z);if(!Number.isFinite(ba)||!Number.isFinite(bb))continue;
       const base=sideVi;sidePos.push(a.x,ba,a.z,a.x,a.y,a.z,b.x,b.y,b.z,b.x,bb,b.z);sideInd.push(base,base+1,base+2,base,base+2,base+3);sideVi+=4;
     }
-    geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));geometry.setIndex(ind);geometry.computeBoundingSphere();surface.visible=enabled;
+    geometry.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));if(look?.depthAccents)geometry.setAttribute("color",new THREE.Float32BufferAttribute(colors,3));geometry.setIndex(ind);geometry.computeBoundingSphere();surface.visible=enabled;
     sideGeometry.setAttribute("position",new THREE.Float32BufferAttribute(sidePos,3));sideGeometry.setIndex(sideInd);sideGeometry.computeBoundingSphere();waterSide.visible=enabled&&sidePos.length>0;
     presentationProbe={refreshMs:performance.now()-refreshStart,vertices:pos.length/3,triangles:ind.length/3,sideTriangles:sideInd.length/3};
   }
