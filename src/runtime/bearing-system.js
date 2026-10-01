@@ -27,11 +27,11 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const probe={updateMs:0,waterMs:0,terrainMs:0,stackMs:0,projectionMs:0,renderPrepMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now(),probePhase=(probe.phase??0)%5;let waterMs=0,terrainMs=0,stackMs=0,projectionMs=0,renderPrepMs=0;
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1,waterActive=water?.hasWater?.()??false;let rendered=0;
     for(let i=0;i<count;i++){
       // Evaluate material forces before integration. The waterline cuts a sphere, so
       // submerged volume is the spherical-cap fraction t^2(3-2t), not linear height.
-      const waterStart=probePhase===0?performance.now():0,ws=water?.sampleState?.(bx[i],bz[i]);if(probePhase===0)waterMs+=performance.now()-waterStart;
+      const waterStart=probePhase===0?performance.now():0,ws=waterActive?water.sampleState(bx[i],bz[i]):null;if(probePhase===0)waterMs+=performance.now()-waterStart;
       let submerged=0;
       if(ws&&ws.depth>0){
         const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
