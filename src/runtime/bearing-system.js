@@ -23,12 +23,14 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     return 1;
   }
   const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0};
+  const probe={updateMs:0,waterMs:0,terrainMs:0,stackMs:0,projectionMs:0,renderPrepMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
+    const updateStart=performance.now();let waterMs=0,terrainMs=0,stackMs=0,projectionMs=0,renderPrepMs=0;
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       // Evaluate material forces before integration. The waterline cuts a sphere, so
       // submerged volume is the spherical-cap fraction t^2(3-2t), not linear height.
-      const ws=water?.sampleState?.(bx[i],bz[i]);
+      const waterStart=performance.now(),ws=water?.sampleState?.(bx[i],bz[i]);waterMs+=performance.now()-waterStart;
       let submerged=0;
       if(ws&&ws.depth>0){
         const t=THREE.MathUtils.clamp((ws.surface-(by[i]-BALL_R))/(BALL_R*2),0,1);
@@ -45,12 +47,13 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
         bvx[i]+=((ws.u??0)-bvx[i])*follow;bvz[i]+=((ws.v??0)-bvz[i])*follow;
       }
       bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
-      contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
-      const gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}
-      const qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;
-      if((i%renderStride)===0&&rendered<MAX_RENDERED){dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);}
+      const terrainStart=performance.now();contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);terrainMs+=performance.now()-terrainStart;bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
+      const stackStart=performance.now(),gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const stack=Math.min(28,pile[pileIndex(bx[i],bz[i])]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;const eps=.7,hx=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]),hz=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}stackMs+=performance.now()-stackStart;
+      const projectionStart=performance.now(),qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;projectionMs+=performance.now()-projectionStart;
+      if((i%renderStride)===0&&rendered<MAX_RENDERED){const renderStart=performance.now();dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);renderPrepMs+=performance.now()-renderStart;}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
+    probe.updateMs=performance.now()-updateStart;probe.waterMs=waterMs;probe.terrainMs=terrainMs;probe.stackMs=stackMs;probe.projectionMs=projectionMs;probe.renderPrepMs=renderPrepMs;probe.count=count;probe.rendered=rendered;probe.renderStride=renderStride;
   }
   function applyField(center,{radius=4.2,strength=2.1,lift=.10}={}){
     if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.z))return;
@@ -82,5 +85,5 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   function clear(){count=0;pile.fill(0);projection.fill(0);mesh.count=0;mesh.instanceMatrix.needsUpdate=true}
   function restore(state){clear();if(!state)return 0;count=Math.min(state.count??0,maxBearings);bx.set(state.bx.subarray(0,count));by.set(state.by.subarray(0,count));bz.set(state.bz.subarray(0,count));bvx.set(state.bvx.subarray(0,count));bvy.set(state.bvy.subarray(0,count));bvz.set(state.bvz.subarray(0,count));return count}
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count,waterCoupling:!!water,relativeDensity:BEARING_RELATIVE_DENSITY})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count,waterCoupling:!!water,relativeDensity:BEARING_RELATIVE_DENSITY,probe:{...probe}})};
 }
