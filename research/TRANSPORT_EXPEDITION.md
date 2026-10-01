@@ -2516,3 +2516,26 @@ FUUTP it there?
 #### Human reply — verbatim
 
 > Perfect. Let's do that.
+
+
+#### Assistant response — verbatim
+
+FUUTP did its job and **caught a fidelity failure before promotion**.
+
+The original attached PNG is **706,957 bytes** with Git blob identity:
+
+`d209d07ebbbaa7bbf64efe077c5fba5c62a01656`
+
+The direct Files-image → GitHub bridge produced:
+
+`f7c3e6b671210cae43f46fba7fb3afc434452d35`
+
+So that path transformed the image. I **did not** promote the altered blob to `reference/CLARAS_HOME_ARCOLOGIES.png`.
+
+This is actually useful new FUUTP evidence: the image-reading seam is not byte-transparent for native images. We keep the original untouched and solve the remaining binary transport seam rather than quietly accepting a visually equivalent copy.
+
+**No action needed from you yet.** The artifact is safe; the identity gate worked. 🫡
+
+#### Human reply — verbatim
+
+> ➡️
