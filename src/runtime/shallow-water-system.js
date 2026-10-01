@@ -262,6 +262,7 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   function sampleStateInto(x,z,out){const surface=surfaceY(x,z);if(!Number.isFinite(surface)||!flowInto(x,z,out))return false;out.surface=surface;return true}
   function sampleState(x,z){const out={depth:0,surface:0,u:0,v:0};return sampleStateInto(x,z,out)?out:null}
   function surfaceHeight(x,z){return surfaceY(x,z)}
+  function forEachWetCell(fn){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(valid(k)&&h[k]>DRY)fn({ix:x,iz:z,x:wx(x),z:wz(z),depth:h[k],surface:bed[k]+h[k]})}}
   function captureDiagnostic(){
     const wetCells=[];
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(h[k]<=DRY||!valid(k))continue;const px=wx(x),pz=wz(z),exactBed=terrain.groundHeightExact(px,pz);wetCells.push({ix:x,iz:z,x:px,z:pz,bed:bed[k],exactBed,bedError:Number.isFinite(exactBed)?bed[k]-exactBed:null,h:h[k],eta:bed[k]+h[k],hu:hu[k],hv:hv[k]});}
@@ -275,5 +276,5 @@ export function createShallowWaterSystem({THREE,scene,terrain,kind="water",look=
   }
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:`shallow-${kind}`,independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame,presentation:{...presentationProbe}}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,addTimedSource,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,addTimedSource,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,forEachWetCell,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
