@@ -2922,3 +2922,32 @@ That's our T0.
 #### Human reply — verbatim
 
 > Okay, back to transport expedition. What is up with the build not passing?
+
+
+#### Assistant response — verbatim
+
+Found a much sharper boundary. 🐉
+
+I compared `fa645efe` directly against the immediately preceding successful publication, `70b7b5e9`.
+
+The **same Pages workflow**, same `actions/deploy-pages@v4`, same Node-24 compatibility warning, and same deployment mechanism successfully published `70b7b5e9` in about **16 seconds**:
+
+`created → updating_pages → success`
+
+For `fa645efe`, GitHub accepts the uploaded artifact and creates the deployment successfully, then its status is **blank from the very first poll** and stays blank for ten minutes:
+
+`created → "" → "" → "" ... → timeout`
+
+That largely kills two suspects: the Node warning is not sufficient to explain it, and our general stable+preview workflow is demonstrably capable of publishing.
+
+So the discriminating variable has narrowed to **this candidate publication / deployment identity**, not “Aeon JS crashes the build.”
+
+There is another clue: immediately before Aeon, **four separate Pages runs for `70b7b5e9` all succeeded within seconds of each other**. We had a burst of overlapping publication activity, and then `fa645efe` became the first deployment to enter this pathological state.
+
+My next move is to inspect the deployment records themselves and determine whether `fa645efe` is stuck/canceled server-side or colliding with that burst. **No code mutation yet.**
+
+We finally have the bug pinned below our artifact and above our runtime. 🔬
+
+#### Human reply — verbatim
+
+> ➡️
