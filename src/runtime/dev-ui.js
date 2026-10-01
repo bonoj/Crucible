@@ -20,6 +20,7 @@ export function createDevUI({mount,statusMount,build,actions}){
       {id:"terrain-next",text:"⛰️",label:"Next deterministic terrain",on:actions.terrainNext},
       {id:"time",text:"⌛️",label:"Simulation speed 1 times",on:actions.timeScale},
       {id:"water-look",text:"E",label:"Cycle water appearance A through Z",on:actions.waterLook},
+      {id:"water-viscosity",text:"1",label:"Cycle water viscosity 1 through 26",on:actions.waterViscosity},
       {id:"save",text:"📋",label:"Capture current water diagnostic evidence",on:actions.terrainEvidence},
       {id:"refresh",text:"🔄",label:"Refresh",on:actions.refresh}
     ]}
