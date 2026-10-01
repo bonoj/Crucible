@@ -8,7 +8,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const wallNx=new Float32Array(K),wallNz=new Float32Array(K),wallNear=new Uint8Array(K);
   function cacheBoundary(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),b=terrain.materialBoundary(wx(x),wz(z));wallNx[k]=b.nx;wallNz[k]=b.nz;wallNear[k]=b.inside&&b.distance<=DX*1.5?1:0;}}
   let enabled=false,lastNow=null,acc=0,steps=0,probeFrame={substeps:0,minDt:0,maxDt:0,remainingAcc:0,solveMs:0},totalInjected=0,totalEscaped=0,totalDryLoss=0,displayDensity=25,lastRefresh=0; const presentationEta=new Float32Array(K),presentationSupport=new Uint8Array(K);
-  let sources=[{x:0,z:0,rate:.9}];
+  let sources=[{x:0,z:0,rate:.9}],viscosityLevel=1;
 
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshBasicMaterial({color:0x318fb2,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide});
@@ -81,7 +81,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     for(let k=0;k<K;k++){
       if(!valid(k)){h[k]=hu[k]=hv[k]=0;continue}
       h[k]=Math.max(0,nh[k]);
-      if(h[k]<=DRY){h[k]=hu[k]=hv[k]=0}else{const damp=Math.exp(-.22*dt);hu[k]=nhu[k]*damp;hv[k]=nhv[k]*damp;const sp=Math.hypot(hu[k]/h[k],hv[k]/h[k]),max=12;if(sp>max){hu[k]*=max/sp;hv[k]*=max/sp}}
+      if(h[k]<=DRY){h[k]=hu[k]=hv[k]=0}else{const drag=.22*Math.pow(2,(viscosityLevel-1)/3),damp=Math.exp(-drag*dt);hu[k]=nhu[k]*damp;hv[k]=nhv[k]*damp;const sp=Math.hypot(hu[k]/h[k],hv[k]/h[k]),max=12;if(sp>max){hu[k]*=max/sp;hv[k]*=max/sp}}
     }
     // The material octagon is a geometric slip wall. State remains Cartesian, but
     // boundary-cell momentum obeys the actual nearest octagonal plane normal.
@@ -215,6 +215,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function setSources(a=[]){sources=a.map(s=>({x:s.x??0,z:s.z??0,rate:Math.max(0,s.rate??0)}));return sources.map(s=>({...s}))}
   function inject(q=1,x=sources[0]?.x??0,z=sources[0]?.z??0){return addWater(q,x,z)}
   function fillRegion({x=0,z=0,radius=1,amount=1}={}){const cells=[];for(let iz=0;iz<N;iz++)for(let ix=0;ix<N;ix++)if(Math.hypot(wx(ix)-x,wz(iz)-z)<=radius&&valid(idx(ix,iz)))cells.push(idx(ix,iz));if(!cells.length)return 0;const dh=amount/(cells.length*DX*DX);for(const k of cells)h[k]+=dh;totalInjected+=amount;return amount}
+  function cycleViscosity(){viscosityLevel=viscosityLevel>=26?1:viscosityLevel+1;return{level:viscosityLevel,drag:.22*Math.pow(2,(viscosityLevel-1)/3)}}
   function cycleDisplayDensity(){displayDensity=displayDensity>=25?1:displayDensity+1;refresh();return inspect().display}
   function setDisplayDensity(v){displayDensity=THREE.MathUtils.clamp(v|0,1,25);refresh();return inspect().display}
   function sampleState(x,z){
@@ -237,7 +238,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     }
     return{kind:"crucible-water-diagnostic",version:1,grid:{n:N,size:SIZE,dx:DX,min:MIN,dry:DRY},solver:{enabled,steps,sources:sources.map(s=>({...s})),wetCells},surface:{vertices,indices,triangles},inspect:inspect()};
   }
-  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
+  function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,waterLook:()=>applyWaterLook(),sampleState,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),sampleState,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
