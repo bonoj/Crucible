@@ -27,7 +27,7 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   const probe={updateMs:0,waterMs:0,terrainMs:0,stackMs:0,projectionMs:0,renderPrepMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now(),probePhase=(probe.phase??0)%5;let waterMs=0,terrainMs=0,stackMs=0,projectionMs=0,renderPrepMs=0;
-    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);projection.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
+    dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
       // Evaluate material forces before integration. The waterline cuts a sphere, so
       // submerged volume is the spherical-cap fraction t^2(3-2t), not linear height.
@@ -50,11 +50,10 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
       bvx[i]*=.998;bvz[i]*=.998;bx[i]+=bvx[i]*dt;by[i]+=bvy[i]*dt;bz[i]+=bvz[i]*dt;
       const terrainStart=probePhase===1?performance.now():0;contact.x=bx[i];contact.y=by[i];contact.z=bz[i];contact.vx=bvx[i];contact.vy=bvy[i];contact.vz=bvz[i];terrain.collideBearingState(contact,BALL_R,.28,.86);if(probePhase===1)terrainMs+=performance.now()-terrainStart;bx[i]=contact.x;by[i]=contact.y;bz[i]=contact.z;bvx[i]=contact.vx;bvy[i]=contact.vy;bvz[i]=contact.vz;
       const stackStart=probePhase===2?performance.now():0,gh=terrain.groundHeight(bx[i],bz[i]);if(Number.isFinite(gh)){const pi=pileIndex(bx[i],bz[i]),stack=Math.min(28,pile[pi]++)*BALL_R*.34,floor=gh+BALL_R+stack;if(by[i]<floor){by[i]=floor;bvy[i]=Math.abs(bvy[i])*.13;bvx[i]*=.82;bvz[i]*=.82;if(slopeStamp[pi]!==slopeFrame){const eps=.7;slopeX[pi]=terrain.groundHeight(bx[i]+eps,bz[i])-terrain.groundHeight(bx[i]-eps,bz[i]);slopeZ[pi]=terrain.groundHeight(bx[i],bz[i]+eps)-terrain.groundHeight(bx[i],bz[i]-eps);slopeStamp[pi]=slopeFrame}const hx=slopeX[pi],hz=slopeZ[pi];if(Number.isFinite(hx))bvx[i]-=hx*.08;if(Number.isFinite(hz))bvz[i]-=hz*.08}}if(probePhase===2)stackMs+=performance.now()-stackStart;
-      const projectionStart=probePhase===3?performance.now():0,qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++;if(probePhase===3)projectionMs+=performance.now()-projectionStart;
       if((i%renderStride)===0&&rendered<MAX_RENDERED){const renderStart=probePhase===4?performance.now():0;dummy.position.set(bx[i],by[i],bz[i]);dummy.rotation.set(0,0,0);dummy.scale.setScalar(renderStride>1?.78:1);dummy.updateMatrix();mesh.setMatrixAt(rendered++,dummy.matrix);if(probePhase===4)renderPrepMs+=performance.now()-renderStart;}
     }
     mesh.count=rendered;mesh.instanceMatrix.needsUpdate=true;
-    probe.updateMs=performance.now()-updateStart;if(probePhase===0)probe.waterMs=waterMs;if(probePhase===1)probe.terrainMs=terrainMs;if(probePhase===2)probe.stackMs=stackMs;if(probePhase===3)probe.projectionMs=projectionMs;if(probePhase===4)probe.renderPrepMs=renderPrepMs;probe.phase=probePhase+1;probe.count=count;probe.rendered=rendered;probe.renderStride=renderStride;
+    probe.updateMs=performance.now()-updateStart;if(probePhase===0)probe.waterMs=waterMs;if(probePhase===1)probe.terrainMs=terrainMs;if(probePhase===2)probe.stackMs=stackMs;if(probePhase===3)probe.projectionMs=0;if(probePhase===4)probe.renderPrepMs=renderPrepMs;probe.phase=probePhase+1;probe.count=count;probe.rendered=rendered;probe.renderStride=renderStride;
   }
   function applyField(center,{radius=4.2,strength=2.1,lift=.10}={}){
     if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.z))return;
@@ -77,6 +76,8 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     for(let i=0;i<count;i++){const dx=bx[i]-c.x,dy=by[i]-c.y,dz=bz[i]-c.z,d2=dx*dx+dy*dy+dz*dz;if(d2>=power*power||d2<=.0001)continue;const d=Math.sqrt(d2),fall=1-d/power,q=fall*strength/d;bvx[i]+=dx*q;bvy[i]+=Math.abs(dy*q)+strength*.55*fall;bvz[i]+=dz*q;}
   }
   function sampleDensity(x,z,radius=0){
+    projection.fill(0);
+    for(let i=0;i<count;i++){const qx=Math.floor((bx[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID),qz=Math.floor((bz[i]-PROJECTION_MIN)/PROJECTION_SPAN*PROJECTION_GRID);if(qx>=0&&qx<PROJECTION_GRID&&qz>=0&&qz<PROJECTION_GRID)projection[qx+PROJECTION_GRID*qz]++}
     const cell=PROJECTION_SPAN/PROJECTION_GRID,r=Math.max(0,radius),minX=Math.max(0,Math.floor((x-r-PROJECTION_MIN)/cell)),maxX=Math.min(PROJECTION_GRID-1,Math.floor((x+r-PROJECTION_MIN)/cell)),minZ=Math.max(0,Math.floor((z-r-PROJECTION_MIN)/cell)),maxZ=Math.min(PROJECTION_GRID-1,Math.floor((z+r-PROJECTION_MIN)/cell));
     let grains=0,cells=0;
     for(let iz=minZ;iz<=maxZ;iz++)for(let ix=minX;ix<=maxX;ix++){const cx=PROJECTION_MIN+(ix+.5)*cell,cz=PROJECTION_MIN+(iz+.5)*cell;if(r&&((cx-x)*(cx-x)+(cz-z)*(cz-z)>r*r))continue;grains+=projection[ix+PROJECTION_GRID*iz];cells++;}
