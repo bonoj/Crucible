@@ -24,9 +24,11 @@ permissions:
   id-token: write
 
 concurrency:
-  # A build completion must publish its own artifact. Do not let a later-finishing
-  # older build cancel or overwrite publication for a newer source commit.
-  group: crucible-pages-${{ github.event_name }}-${{ github.event.workflow_run.id || github.run_id }}
+  # GitHub Pages is a single deployment surface. Serialize every publication so
+  # candidate completions cannot overlap inside the Pages deployment state machine.
+  # Keep queued publications rather than canceling them; each workflow_run still
+  # resolves and publishes its own immutable candidate artifact.
+  group: crucible-pages
   cancel-in-progress: false
 
 jobs:
