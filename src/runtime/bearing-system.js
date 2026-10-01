@@ -1,4 +1,4 @@
-export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,water=null,maxBearings=1000000}){
+export function createBearingSystem({world,components,THREE,scene,terrain,locus,impacts,water=null,liquids=null,maxBearings=1000000}){
   const BALL_R=.055,BEARING_RELATIVE_DENSITY=.55,PG=96,MAX_RENDERED=180000,PROJECTION_GRID=64,PROJECTION_MIN=-10,PROJECTION_SPAN=20;
   const projection=new Uint32Array(PROJECTION_GRID*PROJECTION_GRID);
   const bx=new Float32Array(maxBearings),by=new Float32Array(maxBearings),bz=new Float32Array(maxBearings);
@@ -23,18 +23,18 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
     bvx[i]=velocity?.x??0;bvy[i]=velocity?.y??0;bvz[i]=velocity?.z??0;
     return 1;
   }
-  const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0},waterSample={depth:0,surface:0,u:0,v:0};
+  const contact={x:0,y:0,z:0,vx:0,vy:0,vz:0},liquidSample={depth:0,surface:0,u:0,v:0},liquidFields=liquids??(water?[water]:[]);
   const probe={updateMs:0,count:0,rendered:0,renderStride:1};
   function update(dt){
     const updateStart=performance.now();
     dt=Math.min(.15,Math.max(.001,dt));pile.fill(0);slopeFrame++;if(slopeFrame===0){slopeStamp.fill(0);slopeFrame=1}const g=-8.5,renderStride=count>500000?8:count>250000?5:count>100000?3:count>50000?2:1;let rendered=0;
     for(let i=0;i<count;i++){
-      const waterY=water?.surfaceY?.(bx[i],bz[i])??NaN;
       let submerged=0,ws=null;
-      if(Number.isFinite(waterY)&&by[i]-BALL_R<waterY){
-        const t=THREE.MathUtils.clamp((waterY-(by[i]-BALL_R))/(BALL_R*2),0,1);
-        submerged=t*t*(3-2*t);
-        if(submerged>0&&water.flowInto?.(bx[i],bz[i],waterSample))ws=waterSample;
+      for(const liquid of liquidFields){
+        const surfaceY=liquid?.surfaceY?.(bx[i],bz[i])??NaN;if(!Number.isFinite(surfaceY)||by[i]-BALL_R>=surfaceY)continue;
+        const t=THREE.MathUtils.clamp((surfaceY-(by[i]-BALL_R))/(BALL_R*2),0,1),q=t*t*(3-2*t);
+        if(q<=submerged)continue;
+        if(liquid.flowInto?.(bx[i],bz[i],liquidSample)){submerged=q;ws={u:liquidSample.u,v:liquidSample.v}}
       }
       bvy[i]+=g*dt;
       if(submerged>0){
@@ -84,5 +84,5 @@ export function createBearingSystem({world,components,THREE,scene,terrain,locus,
   function clear(){count=0;pile.fill(0);projection.fill(0);mesh.count=0;mesh.instanceMatrix.needsUpdate=true}
   function restore(state){clear();if(!state)return 0;count=Math.min(state.count??0,maxBearings);bx.set(state.bx.subarray(0,count));by.set(state.by.subarray(0,count));bz.set(state.bz.subarray(0,count));bvx.set(state.bvx.subarray(0,count));bvy.set(state.bvy.subarray(0,count));bvz.set(state.bvz.subarray(0,count));return count}
   const unsubscribe=impacts?.subscribe(applyImpact);
-  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count,waterCoupling:!!water,relativeDensity:BEARING_RELATIVE_DENSITY,probe:{...probe}})};
+  return{entity,mesh,spawnBatch,spawnOne,update,applyField,applyImpact,sampleDensity,snapshot,clear,restore,dispose:()=>unsubscribe?.(),inspect:()=>({kind:"foundry-bearing-batch",count,maxBearings,radius:BALL_R,rendered:mesh.count,liquidCoupling:liquidFields.length,relativeDensity:BEARING_RELATIVE_DENSITY,probe:{...probe}})};
 }
