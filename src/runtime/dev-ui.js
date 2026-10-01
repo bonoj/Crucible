@@ -13,14 +13,11 @@ export function createDevUI({mount,statusMount,build,actions}){
     ]},
     {kind:"choice",label:"Transport tools",items:[
       {id:"source",text:"💧",label:"Place transport source at tapped point",tool:"source"},
-      {id:"source-thick",text:"🩸",label:"Place thicker transport source at tapped point",tool:"source-thick"}
     ]},
     {kind:"controls",items:[
       {id:"science",text:"🔬",label:"Toggle Science mode",on:actions.science},
       {id:"terrain-next",text:"⛰️",label:"Next deterministic terrain",on:actions.terrainNext},
       {id:"time",text:"⌛️",label:"Simulation speed 1 times",on:actions.timeScale},
-      {id:"water-look",text:"E",label:"Cycle water appearance A through Z",on:actions.waterLook},
-      {id:"water-viscosity",text:"1",label:"Cycle water viscosity 1 through 26",on:actions.waterViscosity},
       {id:"save",text:"📋",label:"Capture current water diagnostic evidence",on:actions.terrainEvidence},
       {id:"refresh",text:"🔄",label:"Refresh",on:actions.refresh}
     ]}
