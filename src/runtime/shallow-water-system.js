@@ -13,6 +13,14 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const geometry=new THREE.BufferGeometry();
   const material=new THREE.MeshBasicMaterial({color:0x318fb2,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide});
   const surface=new THREE.Mesh(geometry,material);surface.name="shallow-water-free-surface";surface.renderOrder=4;scene.add(surface);
+  const waterLooks=[
+    ["A",0x07191d,.10],["B",0x173b45,.18],["C",0x315f69,.25],["D",0x174d59,.35],["E",0x245565,.45],["F",0x173d4a,.60],["G",0x102a30,.78],["H",0x071b20,.92],
+    ["I",0x78949a,.12],["J",0x3b8290,.22],["K",0x386b5d,.32],["L",0x17636a,.42],["M",0x526f78,.52],["N",0x287c91,.62],["O",0x68745e,.72],["P",0x29383a,.85],
+    ["Q",0xb7c9c8,.08],["R",0x2a91a8,.15],["S",0x0b2228,.25],["T",0x53624b,.40],["U",0x9bb8b7,.60],["V",0x24454d,.70],["W",0x0d3438,.88],["X",0x56b8c4,.30],["Y",0x59656a,.50],["Z",0x11191b,.95]
+  ];let waterLookIndex=4;
+  function applyWaterLook(){const [letter,color,opacity]=waterLooks[waterLookIndex];material.color.setHex(color);material.opacity=opacity;material.needsUpdate=true;return{letter,color:"#"+color.toString(16).padStart(6,"0"),opacity}}
+  function cycleWaterLook(){waterLookIndex=(waterLookIndex+1)%waterLooks.length;return applyWaterLook()}
+  applyWaterLook();
   // Cheap cutaway companion: the solver already knows the water column. Render that
   // knowledge only where the finite material octagon exposes its side.
   const sideGeometry=new THREE.BufferGeometry();
@@ -231,5 +239,5 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   }
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,sampleState,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,waterLook:()=>applyWaterLook(),sampleState,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
