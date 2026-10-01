@@ -32,11 +32,11 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const uL=h[kL]>DRY?hu[kL]/h[kL]:0,vL=h[kL]>DRY?hv[kL]/h[kL]:0;
     const uR=h[kR]>DRY?hu[kR]/h[kR]:0,vR=h[kR]>DRY?hv[kR]/h[kR]:0;
     const a=Math.max(Math.abs(uL)+Math.sqrt(G*HL),Math.abs(uR)+Math.sqrt(G*HR));
-    return[
+    return{flux:[
       .5*(HL*uL+HR*uR)-.5*a*(HR-HL),
       .5*(HL*uL*uL+.5*G*HL*HL+HR*uR*uR+.5*G*HR*HR)-.5*a*(HR*uR-HL*uL),
       .5*(HL*uL*vL+HR*uR*vR)-.5*a*(HR*vR-HL*vL)
-    ];
+    ],pressureL:.5*G*(h[kL]*h[kL]-HL*HL),pressureR:.5*G*(h[kR]*h[kR]-HR*HR)};
   }
   function fluxZ(kD,kU){
     const bD=bed[kD],bU=bed[kU],etaD=bD+h[kD],etaU=bU+h[kU],bs=Math.max(bD,bU);
@@ -44,11 +44,11 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     const uD=h[kD]>DRY?hu[kD]/h[kD]:0,vD=h[kD]>DRY?hv[kD]/h[kD]:0;
     const uU=h[kU]>DRY?hu[kU]/h[kU]:0,vU=h[kU]>DRY?hv[kU]/h[kU]:0;
     const a=Math.max(Math.abs(vD)+Math.sqrt(G*HD),Math.abs(vU)+Math.sqrt(G*HU));
-    return[
+    return{flux:[
       .5*(HD*vD+HU*vU)-.5*a*(HU-HD),
       .5*(HD*uD*vD+HU*uU*vU)-.5*a*(HU*uU-HD*uD),
       .5*(HD*vD*vD+.5*G*HD*HD+HU*vU*vU+.5*G*HU*HU)-.5*a*(HU*vU-HD*vD)
-    ];
+    ],pressureD:.5*G*(h[kD]*h[kD]-HD*HD),pressureU:.5*G*(h[kU]*h[kU]-HU*HU)};
   }
   function stableDt(){
     let s=0;for(let k=0;k<K;k++)if(h[k]>DRY&&valid(k)){const u=hu[k]/h[k],v=hv[k]/h[k];s=Math.max(s,Math.abs(u)+Math.sqrt(G*h[k]),Math.abs(v)+Math.sqrt(G*h[k]))}
@@ -58,23 +58,18 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     nh.set(h);nhu.set(hu);nhv.set(hv);
     const scale=dt/DX;
     for(let z=0;z<N;z++)for(let x=0;x<N-1;x++){
-      const L=idx(x,z),R=idx(x+1,z);if(!valid(L)||!valid(R))continue;const f=fluxX(L,R);
-      nh[L]-=scale*f[0];nhu[L]-=scale*f[1];nhv[L]-=scale*f[2];
-      nh[R]+=scale*f[0];nhu[R]+=scale*f[1];nhv[R]+=scale*f[2];
+      const L=idx(x,z),R=idx(x+1,z);if(!valid(L)||!valid(R))continue;const q=fluxX(L,R),f=q.flux;
+      nh[L]-=scale*f[0];nhu[L]-=scale*(f[1]+q.pressureL);nhv[L]-=scale*f[2];
+      nh[R]+=scale*f[0];nhu[R]+=scale*(f[1]+q.pressureR);nhv[R]+=scale*f[2];
     }
     for(let z=0;z<N-1;z++)for(let x=0;x<N;x++){
-      const D=idx(x,z),U=idx(x,z+1);if(!valid(D)||!valid(U))continue;const f=fluxZ(D,U);
-      nh[D]-=scale*f[0];nhu[D]-=scale*f[1];nhv[D]-=scale*f[2];
-      nh[U]+=scale*f[0];nhu[U]+=scale*f[1];nhv[U]+=scale*f[2];
+      const D=idx(x,z),U=idx(x,z+1);if(!valid(D)||!valid(U))continue;const q=fluxZ(D,U),f=q.flux;
+      nh[D]-=scale*f[0];nhu[D]-=scale*f[1];nhv[D]-=scale*(f[2]+q.pressureD);
+      nh[U]+=scale*f[0];nhu[U]+=scale*f[1];nhv[U]+=scale*(f[2]+q.pressureU);
     }
-    // Bed-pressure source term balances hydrostatic pressure across varying terrain.
-    for(let z=1;z<N-1;z++)for(let x=1;x<N-1;x++){const k=idx(x,z);if(!valid(k)||nh[k]<=DRY)continue;
-      // Invalid neighbors are closed octagonal walls, not bed elevations.
-      // Mirror this cell's bed into those ghost samples so pressure stays finite.
-      const xp=idx(x+1,z),xm=idx(x-1,z),zp=idx(x,z+1),zm=idx(x,z-1),bk=bed[k];
-      const dbx=((valid(xp)?bed[xp]:bk)-(valid(xm)?bed[xm]:bk))/(2*DX),dbz=((valid(zp)?bed[zp]:bk)-(valid(zm)?bed[zm]:bk))/(2*DX);
-      nhu[k]-=dt*G*nh[k]*dbx;nhv[k]-=dt*G*nh[k]*dbz;
-    }
+    // Bed pressure is balanced at each reconstructed interface above. Keeping a
+    // second centered -g*h*grad(bed) source here double-counts the slope and
+    // destroys the lake-at-rest balance on steep terrain.
     for(let k=0;k<K;k++){
       if(!valid(k)){h[k]=hu[k]=hv[k]=0;continue}
       h[k]=Math.max(0,nh[k]);
