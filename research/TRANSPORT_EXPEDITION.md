@@ -2153,3 +2153,32 @@ If normal water gives ~1–2 intersections while cyan gives a pile, we have our 
 #### Human reply — verbatim
 
 > [Uploaded \`crucible-water-diagnostic-1790820154261.json\` with no additional text.]
+
+
+#### Assistant response — verbatim
+
+**Nope. Smoking gun falsified.** 😂
+
+This capture is exceptionally clean:
+
+- 540 camera rays sampled.
+- 61 hit water.
+- **Every single water ray has exactly 1 water intersection.**
+- Multiplicity histogram: **\`{"1": 61}\`**.
+- All 61 are still \`waterFirst\`; zero terrain-first, zero missing-terrain, zero ties.
+
+So the cyan is **not heavily stacked translucent planes**. There aren't even two reconstructed surface crossings on any sampled water ray.
+
+That gives us another hard constraint: **cyan is a property of a single visible water surface**, not alpha accumulation from overlapping geometry.
+
+And your earlier terrain surgery remains important. The cyan selectively persists along that strange rightward feature while newly created shallow concavities don't acquire it. So we're back to something *specific about those water triangles/cells*, rather than generic transparency, depth, stacking, or shallowness.
+
+Turn logged at \`a9ff3ae\`. 🫡
+
+**Next I want to interrogate the color itself.** Before touching physics or geometry, determine what can make one single water fragment render cyan while another fragment of the same mesh renders ordinary blue: normals, lighting, material response, vertex geometry, or something encoded into the reconstructed surface.
+
+We've now killed enough ghosts that the remaining suspect list is getting pleasantly small. 🔬💧
+
+#### Human reply — verbatim
+
+> Oh that is brilliant. A pixel witch hunt. You are the black cauldron, Clara! ➡️
