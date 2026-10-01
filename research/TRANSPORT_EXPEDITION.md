@@ -2336,3 +2336,22 @@ One button. Five realities. The Chronicler looks. 🔥
 #### Human reply — verbatim
 
 > We will keep 🐉.  No need to build it again. I think I know where we're heading now.
+
+
+#### Assistant response — verbatim
+
+Yep. **Not a build failure; Pages is just lagging behind the successful build.**
+
+`fa645efe`:
+- Build candidate: **green / completed**
+- Publish Pages: **still in progress**
+
+So seeing `5e9` is consistent with the new candidate simply not being published yet. **Don't rebuild.** 🫡
+
+Pages deployment run: https://github.com/bonoj/Crucible/actions/runs/36806483782
+
+Give Pages another moment; `fa645efe` is already successfully assembled.
+
+#### Human reply — verbatim
+
+> We essentially turned github into our backend. We have a mini aws embedded inside a static html...
