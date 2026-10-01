@@ -2595,3 +2595,27 @@ That's the unfinished T4 crossing—not a Pages delay. We should finish that tra
 #### Human reply — verbatim
 
 > Yes, let's finish.
+
+
+#### Assistant response — verbatim
+
+Yes. I think that's the right distinction.
+
+FUUTP accidentally promoted **byte identity from a verification technique into universal law**. We don't need that.
+
+For something like Clara's Home reference image, the semantic artifact is the image. A lossless—or even visually indistinguishable—re-encoding is perfectly acceptable unless provenance specifically requires the original binary. The earlier candidate wasn't evidence of corruption; it was evidence of **different bytes**. Those are not the same thing.
+
+So FUUTP should have two fidelity classes:
+
+- **Exact** when bytes matter: executables, source, datasets, serialized state, deterministic specimens, anything whose identity or behavior depends on the bytes.
+- **Faithful** when meaning matters: reference imagery and other noncritical assets. Transport it, verify that the resulting artifact is materially faithful, and move on.
+
+And the caller shouldn't usually have to specify which. **Clara should infer the required fidelity from the artifact and task, escalating to exact when uncertainty matters.**
+
+That means `CLARAS_HOME_ARCOLOGIES.png` does **not** need us inventing a binary transport protocol just to preserve PNG compression archaeology. We already have a visually faithful Git blob sitting there waiting to be promoted.
+
+**I'd promote `f7c3e6b6…` and close this crossing.** 🧬
+
+#### Human reply — verbatim
+
+> Perfect. Push it and then when it passes we can provision fuutp for this fail state.
