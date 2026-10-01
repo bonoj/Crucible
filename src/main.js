@@ -173,7 +173,7 @@ function captureWaterDiagnostic(){
      else{depthProbe.counts.tie++;push("tie",base)}
    }
  }
- const e={...transport.captureDiagnostic(),build:globalThis.__CRUCIBLE_BUILD__,capturedAt:new Date().toISOString(),view:cam?{position:cam.position.toArray(),quaternion:cam.quaternion.toArray(),fov:cam.fov,aspect:cam.aspect,near:cam.near,far:cam.far}:null,terrain:terrain.inspect(),depthProbe};
+ const e={...transport.captureDiagnostic(),build:globalThis.__CRUCIBLE_BUILD__,capturedAt:new Date().toISOString(),view:cam?{position:cam.position.toArray(),quaternion:cam.quaternion.toArray(),fov:cam.fov,aspect:cam.aspect,near:cam.near,far:cam.far}:null,terrain:terrain.inspect(),bearings:bearings.inspect(),depthProbe};
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(e)],{type:"application/json"}));a.download=`crucible-water-diagnostic-${Date.now()}.json`;a.click();URL.revokeObjectURL(a.href);
  return{wetCells:e.solver.wetCells.length,triangles:e.surface.triangles.length,depthProbe:depthProbe.counts}
 }
