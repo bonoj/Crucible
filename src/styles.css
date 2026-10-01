@@ -13,3 +13,5 @@
 
 /* Disposable Aeon aperture. Intentionally separate from ordinary DevUI. */
 #aeon-tools{position:fixed;z-index:12;right:max(.6rem,env(safe-area-inset-right));bottom:calc(max(.6rem,env(safe-area-inset-bottom)) + 6.1rem);display:flex;gap:.28rem;padding:.28rem;border:1px solid #d1a36b66;border-radius:.5rem;background:#17120fee;font:12px/1 ui-monospace,monospace}#aeon-tools button{width:2.65rem;height:2.65rem;border:1px solid #d1a36b55;border-radius:.45rem;background:#2b211bee;color:#ead9bb;font-size:1.15rem}body.inside-lighthugger #aeon-tools{display:none}
+
+#aeon-tools{position:fixed;z-index:12;right:.6rem;bottom:6.7rem;display:flex;padding:.28rem;border:1px solid #d1a36b;border-radius:.5rem;background:#17120f}#aeon-tools button{width:2.65rem;height:2.65rem;background:#2b211b;color:#ead9bb;font-size:1.15rem}
