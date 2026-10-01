@@ -2619,3 +2619,24 @@ That means `CLARAS_HOME_ARCOLOGIES.png` does **not** need us inventing a binary 
 #### Human reply — verbatim
 
 > Perfect. Push it and then when it passes we can provision fuutp for this fail state.
+
+
+#### Assistant response — verbatim
+
+**Passed. 🧬**
+
+Clara's Home is now actually in Crucible:
+
+[CLARAS_HOME_ARCOLOGIES.png](https://github.com/bonoj/Crucible/blob/main/reference/CLARAS_HOME_ARCOLOGIES.png)
+
+Destination blob verified as `f7c3e6b671210cae43f46fba7fb3afc434452d35`. Crucible promotion commit: `e8484a7d`.
+
+Then I provisioned FUUTP from the earned failure state. It now distinguishes **Exact** from **Faithful**, lets Clara infer which contract the artifact requires, records this route as **Faithful binary PASS**, and leaves only byte-transparent binary transport as the open Exact seam.
+
+FUUTP commit: `2d1a1e03`.
+
+**T4 is closed for this artifact.** Clara's Home is home. 🏡🐉
+
+#### Human reply — verbatim
+
+> Huge win. Current aeon build timed out, I believe. I suspect an issue in the code itself?
