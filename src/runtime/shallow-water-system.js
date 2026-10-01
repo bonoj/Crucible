@@ -184,12 +184,12 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
   function captureDiagnostic(){
     const wetCells=[];
-    for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(h[k]<=DRY||!valid(k))continue;wetCells.push({ix:x,iz:z,x:wx(x),z:wz(z),bed:bed[k],h:h[k],eta:bed[k]+h[k],hu:hu[k],hv:hv[k]});}
+    for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(h[k]<=DRY||!valid(k))continue;const px=wx(x),pz=wz(z),exactBed=terrain.groundHeightExact(px,pz);wetCells.push({ix:x,iz:z,x:px,z:pz,bed:bed[k],exactBed,bedError:Number.isFinite(exactBed)?bed[k]-exactBed:null,h:h[k],eta:bed[k]+h[k],hu:hu[k],hv:hv[k]});}
     const p=geometry.getAttribute("position"),index=geometry.getIndex(),vertices=p?Array.from(p.array):[],indices=index?Array.from(index.array):[];
     const triangles=[];for(let i=0;i<indices.length;i+=3){const ia=indices[i],ib=indices[i+1],ic=indices[i+2],a=ia*3,b=ib*3,c=ic*3;
       const ax=vertices[a],ay=vertices[a+1],az=vertices[a+2],bx=vertices[b],by=vertices[b+1],bz=vertices[b+2],cx=vertices[c],cy=vertices[c+1],cz=vertices[c+2];
       const abx=bx-ax,aby=by-ay,abz=bz-az,acx=cx-ax,acy=cy-ay,acz=cz-az,nx=aby*acz-abz*acy,ny=abz*acx-abx*acz,nz=abx*acy-aby*acx;
-      triangles.push({i:i/3,indices:[ia,ib,ic],a:[ax,ay,az],b:[bx,by,bz],c:[cx,cy,cz],normal:[nx,ny,nz],spanXZ:Math.max(Math.hypot(ax-bx,az-bz),Math.hypot(bx-cx,bz-cz),Math.hypot(cx-ax,cz-az)),y:[Math.min(ay,by,cy),Math.max(ay,by,cy)]});
+      const ea=terrain.groundHeightExact(ax,az),eb=terrain.groundHeightExact(bx,bz),ec=terrain.groundHeightExact(cx,cz);triangles.push({i:i/3,indices:[ia,ib,ic],a:[ax,ay,az],b:[bx,by,bz],c:[cx,cy,cz],exactTerrain:[ea,eb,ec],clearance:[ay-ea,by-eb,cy-ec],normal:[nx,ny,nz],spanXZ:Math.max(Math.hypot(ax-bx,az-bz),Math.hypot(bx-cx,bz-cz),Math.hypot(cx-ax,cz-az)),y:[Math.min(ay,by,cy),Math.max(ay,by,cy)]});
     }
     return{kind:"crucible-water-diagnostic",version:1,grid:{n:N,size:SIZE,dx:DX,min:MIN,dry:DRY},solver:{enabled,steps,sources:sources.map(s=>({...s})),wetCells},surface:{vertices,indices,triangles},inspect:inspect()};
   }
