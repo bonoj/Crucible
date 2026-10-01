@@ -17,7 +17,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     ["A",0x07191d,.10],["B",0x173b45,.18],["C",0x315f69,.25],["D",0x174d59,.35],["E",0x245565,.45],["F",0x173d4a,.60],["G",0x102a30,.78],["H",0x071b20,.92],
     ["I",0x78949a,.12],["J",0x3b8290,.22],["K",0x386b5d,.32],["L",0x17636a,.42],["M",0x526f78,.52],["N",0x287c91,.62],["O",0x68745e,.72],["P",0x29383a,.85],
     ["Q",0xb7c9c8,.08],["R",0x2a91a8,.15],["S",0x0b2228,.25],["T",0x53624b,.40],["U",0x9bb8b7,.60],["V",0x24454d,.70],["W",0x0d3438,.88],["X",0x56b8c4,.30],["Y",0x59656a,.50],["Z",0x11191b,.95]
-  ];let waterLookIndex=4;
+  ];let waterLookIndex=11;
   function applyWaterLook(){const [letter,color,opacity]=waterLooks[waterLookIndex];material.color.setHex(color);material.opacity=opacity;material.needsUpdate=true;return{letter,color:"#"+color.toString(16).padStart(6,"0"),opacity}}
   function cycleWaterLook(){waterLookIndex=(waterLookIndex+1)%waterLooks.length;return applyWaterLook()}
   applyWaterLook();
