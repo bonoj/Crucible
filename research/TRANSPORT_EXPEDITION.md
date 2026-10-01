@@ -2640,3 +2640,27 @@ FUUTP commit: `2d1a1e03`.
 #### Human reply — verbatim
 
 > Huge win. Current aeon build timed out, I believe. I suspect an issue in the code itself?
+
+
+#### Assistant response — verbatim
+
+No — **the evidence says the Aeon code did not cause the timeout.**
+
+I pulled the actual failed run. The pipeline split cleanly:
+
+- **Build candidate:** succeeded in ~14 seconds.
+- **Pages assembly:** succeeded, including downloading the exact Aeon candidate artifact and uploading the assembled Pages surface.
+- **Deploy Pages:** GitHub accepted the deployment, then sat in **`purging_cdn` for ~10 minutes**.
+- GitHub's `deploy-pages` action finally hit its own timeout and canceled deployment `fa645efe`.
+
+So this was infrastructure-side Pages/CDN behavior, not our JS hanging during build. The browser code never got an opportunity to cause this deployment timeout.
+
+That also corrects my earlier diagnosis: when I told you Pages was merely “still in progress,” it subsequently **failed for real**, but specifically during CDN purge.
+
+I would **rerun the failed deploy unchanged first**. That's the clean experiment: same exact `fa645efe` artifact, no new code, no new reality. If it publishes, we know the Aeon build was innocent. If the identical deployment sticks in `purging_cdn` again, then we investigate what about the Pages surface/deployment is provoking GitHub.
+
+Very Taran. Don't fix code until reality implicates code. 🐉🔬
+
+#### Human reply — verbatim
+
+> ➡️
