@@ -220,31 +220,36 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function cycleViscosity(){viscosityLevel=viscosityLevel>=26?1:viscosityLevel+1;return{level:viscosityLevel,drag:.22*Math.pow(2,(viscosityLevel-1)/3)}}
   function cycleDisplayDensity(){displayDensity=displayDensity>=25?1:displayDensity+1;refresh();return inspect().display}
   function setDisplayDensity(v){displayDensity=THREE.MathUtils.clamp(v|0,1,25);refresh();return inspect().display}
-  function hasWater(){for(let k=0;k<K;k++)if(h[k]>DRY)return true;return false}
-  function couplingBounds(){
-    let minX=N,minZ=N,maxX=-1,maxZ=-1;
-    for(let z=0;z<N;z++)for(let x=0;x<N;x++)if(h[idx(x,z)]>DRY){if(x<minX)minX=x;if(x>maxX)maxX=x;if(z<minZ)minZ=z;if(z>maxZ)maxZ=z}
-    if(maxX<0)return null;
-    // Expand one cell because bilinear sampling can couple a grain to a wet neighbor.
-    return{minX:MIN+(minX-1)*DX,maxX:MIN+(maxX+2)*DX,minZ:MIN+(minZ-1)*DX,maxZ:MIN+(maxZ+2)*DX};
+  // Scalar field: cheap liquid free-surface truth at a world column.
+  // NaN means this column has no liquid support. This deliberately does not
+  // derive flow; consumers earn richer fluid state only after surface contact.
+  function surfaceY(x,z){
+    const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz);
+    if(x0<0||z0<0||x0>=N-1||z0>=N-1)return NaN;
+    const fx=gx-x0,fz=gz-z0;
+    let eta=0,w=0,k,q,hh;
+    k=idx(x0,z0);q=(1-fx)*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){eta+=(bed[k]+hh)*q;w+=q}
+    k=idx(x0+1,z0);q=fx*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){eta+=(bed[k]+hh)*q;w+=q}
+    k=idx(x0,z0+1);q=(1-fx)*fz;hh=h[k];if(valid(k)&&hh>DRY){eta+=(bed[k]+hh)*q;w+=q}
+    k=idx(x0+1,z0+1);q=fx*fz;hh=h[k];if(valid(k)&&hh>DRY){eta+=(bed[k]+hh)*q;w+=q}
+    return w>1e-6?eta/w:NaN;
   }
-  function sampleStateInto(x,z,out){
+  // Rich field: local fluid state for consumers already known to intersect water.
+  function flowInto(x,z,out){
     const gx=(x-MIN)/DX-.5,gz=(z-MIN)/DX-.5,x0=Math.floor(gx),z0=Math.floor(gz);
     if(x0<0||z0<0||x0>=N-1||z0>=N-1)return false;
-    const k00=idx(x0,z0),k10=k00+1,k01=k00+N,k11=k01+1;
-    // Most grains are nowhere near liquid. Reject a fully dry interpolation
-    // neighborhood before doing weights, bed reads, velocity division, or allocation.
-    if(h[k00]<=DRY&&h[k10]<=DRY&&h[k01]<=DRY&&h[k11]<=DRY)return false;
     const fx=gx-x0,fz=gz-z0;
-    let depth=0,eta=0,u=0,v=0,w=0,k,q,hh;
-    k=idx(x0,z0);q=(1-fx)*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
-    k=idx(x0+1,z0);q=fx*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
-    k=idx(x0,z0+1);q=(1-fx)*fz;hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
-    k=idx(x0+1,z0+1);q=fx*fz;hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;eta+=(bed[k]+hh)*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
-    if(w<=1e-6)return false;out.depth=depth/w;out.surface=eta/w;out.u=u/w;out.v=v/w;return true;
+    let depth=0,u=0,v=0,w=0,k,q,hh;
+    k=idx(x0,z0);q=(1-fx)*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
+    k=idx(x0+1,z0);q=fx*(1-fz);hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
+    k=idx(x0,z0+1);q=(1-fx)*fz;hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
+    k=idx(x0+1,z0+1);q=fx*fz;hh=h[k];if(valid(k)&&hh>DRY){depth+=hh*q;u+=(hu[k]/hh)*q;v+=(hv[k]/hh)*q;w+=q}
+    if(w<=1e-6)return false;out.depth=depth/w;out.u=u/w;out.v=v/w;return true;
   }
+  // Compatibility surface for diagnostics and existing non-hot consumers.
+  function sampleStateInto(x,z,out){const surface=surfaceY(x,z);if(!Number.isFinite(surface)||!flowInto(x,z,out))return false;out.surface=surface;return true}
   function sampleState(x,z){const out={depth:0,surface:0,u:0,v:0};return sampleStateInto(x,z,out)?out:null}
-  function surfaceHeight(x,z){return sampleState(x,z)?.surface??NaN}
+  function surfaceHeight(x,z){return surfaceY(x,z)}
   function captureDiagnostic(){
     const wetCells=[];
     for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);if(h[k]<=DRY||!valid(k))continue;const px=wx(x),pz=wz(z),exactBed=terrain.groundHeightExact(px,pz);wetCells.push({ix:x,iz:z,x:px,z:pz,bed:bed[k],exactBed,bedError:Number.isFinite(exactBed)?bed[k]-exactBed:null,h:h[k],eta:bed[k]+h[k],hu:hu[k],hv:hv[k]});}
@@ -258,5 +263,5 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   }
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame,presentation:{...presentationProbe}}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),hasWater,couplingBounds,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
