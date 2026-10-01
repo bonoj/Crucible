@@ -33,6 +33,26 @@ A useful expedition could compare evolved handles with conventional paraphrase, 
 **Question:** can a tiny shared sign accumulate enough history to remain generative rather than merely referential?
 
 
+### 🦋 Moth
+
+Treat memory as **mediated salience rather than stored cognition**. A Moth does not need a continuously thinking agent or an internal autobiography. Its experienced trajectory can alter what becomes salient before a fresh inference encounters the present world.
+
+The resulting decision is therefore both **post hoc** and **a priori**: inference happens now, but the aperture through which the present becomes cognitively available has already been shaped by prior experience.
+
+Crucible now makes a stronger experiment possible: **N Moths** can inhabit sibling trajectories while sharing the same executable substrate. Different histories can later be collapsed onto the same present conditions.
+
+A minimal discrimination has the form:
+
+**same model + same present world + different experienced past → different a-priori salience → fresh post-hoc inference**
+
+Useful controls can invert individual terms: same history and present, different histories with equalized salience, selective forgetting, exchanged salience residue, or sibling trajectories separated by one small consequential event.
+
+This is not a requirement to build persistent agent daemons, personality systems, or a Moth application. Run the executable encounters inside Crucible. Keep Moth's accumulating experimental data and trajectory residue siloed behind its own repository boundary so developmental evidence can persist without becoming Crucible's world authority.
+
+🐉 constructs an aperture for uncertainty. 🦋 asks what happens when an aperture acquires history.
+
+**Question:** can mediated salience make discontinuous instances of the same model develop measurably different ways of encountering the same present without storing cognition inside the model?
+
 ### 🧬 Semantic reflow
 
 Enter unfamiliar domains without deciding their canonical application or representation in advance. Let pressure from the material cause useful tools, views, spatializations, perturbables, controls, and derived representations to precipitate.
@@ -55,13 +75,13 @@ Reflow matters as much as extension: changed bodies, sensors, connectivity, fail
 
 ### Shared pressure
 
-🐉 concerns **observation**. 🪨 concerns **invocation and shaping**. 🧬 concerns **representation**. 🐝 concerns **action**.
+🐉 concerns **observation**. 🪨 concerns **invocation and shaping**. 🦋 concerns **developmental salience**. 🧬 concerns **representation**. 🐝 concerns **action**.
 
 Do not force these into one framework. Their common pressure is currently enough:
 
 **keep truth inspectable, authority bounded, and the machinery between intention and consequence malleable. Preserve what reality earns; let temporary machinery disappear.**
 
-The glyphs are compression handles, not categories. 🐉 and 🪨 are first-class carries from earned collaboration; 🧬 and 🐝 have not yet earned the same executable density and may disappear if fieldwork does not support them.
+The glyphs are compression handles, not categories. 🐉, 🪨, and 🦋 are first-class carries from earned collaboration; 🧬 and 🐝 have not yet earned the same executable density and may disappear if fieldwork does not support them.
 
 ## Scientific workbench
 
