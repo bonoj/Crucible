@@ -3170,3 +3170,58 @@ Everything else stays fixed, including the corrected upward winding from `d29cf1
 #### Human reply — verbatim
 
 > 🐉 crashed the crucible!
+
+
+---
+
+## Fieldwork recovery and expedition close
+
+The strict verbatim field log above ends during the Aeon water-rendering crossing. Subsequent work continued in the live repository and conversation, but was not appended reliably turn-for-turn; one earlier logging attempt also introduced duplicated historical material. Rather than manufacture a false verbatim chronology after the fact, this closing section records the repository-backed outcomes and explicitly marks the missing interval as a provenance gap.
+
+### Recovered outcomes after the last reliable verbatim turn
+
+The apparent 🐉 “crash” was corrected by observation: the forensic scan had hijacked the main thread rather than crashed Crucible. The ray scan was then bounded to the projected water region (`0024c39d`) so the permanent Aeon aperture could remain usable without scanning the full framebuffer.
+
+Aeon material counterfactuals were split further (`7133c8bb`). With the corrected aperture preserving lights and admitting only ray-confirmed water coverage, the experiment showed that the same live water geometry could render dark/brown through the lit transparent material while an unlit counterfactual retained the expected water color. The previously corrected triangle winding was a genuine defect, but not the cause of the surviving color pathology.
+
+Production therefore stopped asking the free surface to participate in scene lighting. Commit `ff702aaa` moved the solved water surface to transparent unlit `MeshBasicMaterial` without changing hydrostatics, terrain interaction, or solver state. This removed the lighting-path pathology but exposed the raw reconstructed geometry as visually bumpy and pointed through canyons.
+
+Commit `79b32e89` separated solver truth more clearly from presentation truth. A weighted neighborhood reconstruction produced a calmer visual surface while retaining exact wet/support/terrain clipping, and the exposed material-boundary curtain became a darker unlit companion. Field inspection judged the resulting world visually successful but exposed a small raised shoreline facet and low frame rate in large wetted states.
+
+Commit `0a17e377` made the presentation reconstruction cheaper: neighborhood smoothing is precomputed once per solver cell, shoreline smoothing fades with wet-neighbor support, unused normal generation was removed, and presentation geometry is rebuilt at approximately 30 Hz rather than display cadence. The small shoreline tent was thereby addressed without increasing global smoothing.
+
+The initial apparent performance comparison was then falsified. A roughly 34 FPS observation had occurred while the wetted region was still small; the later 15–20 FPS observations occurred after water had spread through much more of the basin. Crucible had already tended toward that range as the water volume expanded. The fieldwork therefore did **not** establish that the smoothed presentation caused a 34→15 FPS regression.
+
+A temporary A-Z visual audition (`239bd02f` through `21618295`) explored broad water colors and radical opacity variation. A separate 1-26 damping audition (`c044de45` through `9a1414c2`) explored phenomenological “viscosity” by varying momentum damping exponentially. The accepted standing water is look **L**, surface `#17636a` at opacity `0.42`, with the original damping baseline retained as viscosity level **1**. The audition controls and the visible thicker-source `🩸` control were then stowed; the cheap tuning vocabulary remains latent in the water system.
+
+The repository semantic surface was reconciled at `2a4e9a1e`. It now records the independent 64×64 shallow-water solver, hydrostatic reconstruction, exact-terrain presentation clipping, shoreline-aware smoothed skin, unlit surface and boundary curtain, accepted L/1 tuning, Aeon counterfactual instrumentation, current diagnostic vocabulary, Pages serialization, and the unresolved performance evidence.
+
+### What Transport earned
+
+Transport crossed from a visual/scalar transport question into executable liquid world vocabulary.
+
+Crucible now has an independent depth-averaged shallow-water state with volumetric injection, momentum, gravity-driven propagation over mutable terrain, hydrostatic interface reconstruction, wet/dry behavior, exact material-boundary handling, and a presentation surface that is deliberately allowed to be finer and calmer than the solver grid while remaining derived from it.
+
+The crossing also earned a reusable debugging vocabulary. **Taran Wanderer** permits observation to move to whatever abstraction level discriminates the current realities. **Aeon Chronicler** preserves competing histories rather than rewriting failed explanations away. The permanent 🐉 aperture demonstrated executable counterfactual observation: alter one rendering assumption around the same live geometry and let the result collapse the hypothesis space. It also demonstrated why the instrument itself must remain falsifiable.
+
+Transport additionally earned cheap malleability. Water appearance and momentum damping can now be explored across deliberately extreme ranges without redesigning the solver or UI. The accepted visual and damping choices are defaults, not ontology.
+
+### Deliberately unfinished
+
+The expedition closes without claiming a 60 FPS water solution. Large wetted worlds still tend toward approximately **15–20 FPS on the tested mobile device**, and the dominant scaling term has not been isolated. The next clean performance aperture should correlate frame rate with wet-cell count, solver time, presentation/reconstruction time, generated triangle count, and visible water coverage. That evidence can distinguish solver cost, reconstruction cost, and transparent fill/overdraw before another optimization is attempted.
+
+The legacy bounded sea volume also remains provisional. Transport has earned a credible fluid representation, but this expedition did not perform the explicit removal/subsumption pass needed to prove that every useful role of the legacy sea has been replaced.
+
+The current shallow-water solver still resamples the full 64×64 terrain bed each enabled update and solves across the full grid. Presentation still reconstructs/clips the whole candidate surface at its ~30 Hz cadence. These are concrete scaling characteristics, not declared defects; the unfinished performance aperture exists to determine which ones matter.
+
+The turn-for-turn record itself has one known provenance defect: a historical logging write duplicated unrelated earlier material, and the final rendering/tuning sequence was not captured verbatim as it happened. This close does not rewrite those records into invented chronology. The malformed historical material is left as historical evidence; this recovery section is explicitly a later summary.
+
+## Expedition status: CLOSED WITH OPEN PERFORMANCE SEAM
+
+The Transport Expedition reached its architectural finish line: Crucible possesses executable shallow water whose solver, terrain relationship, presentation reconstruction, diagnostics, and tuning vocabulary are explicit and repository-owned.
+
+The remaining frame-budget work is real, bounded, and measurable, but it is no longer necessary to answer whether Crucible can carry water.
+
+**It can.**
+
+Transport is therefore closed. Future performance work may reopen the water system from the semantic surface and this record without reopening the expedition's solved ontology.
