@@ -3104,3 +3104,24 @@ Next incision is tiny: trace the free-surface triangle winding / `computeVertexN
 #### Human reply — verbatim
 
 > 🔥 🐉
+
+
+#### Assistant response — verbatim
+
+🔥🐉 **Incision made.**
+
+The source was exactly where Aeon pointed us: surface polygons are ordered CCW in the **x/z plane**, but in Three.js's right-handed coordinates that fan generated the free-surface faces toward **−Y**. Then `computeVertexNormals()` faithfully turned the bad winding into bad lighting.
+
+I reversed only the surface triangle fan:
+
+`(base, j, j+1)` → `(base, j+1, j)`
+
+Commit **`d29cf139` — Correct water surface triangle winding**
+
+No solver changes. No hydrostatics changes. No terrain changes. No curtain changes.
+
+Now the build gets to answer whether 🐉 actually slew the dragon. 🔥🐉
+
+#### Human reply — verbatim
+
+> Not quite yet. We applied the cortical electrodes but were unable to get a neural reaction from either patient.
