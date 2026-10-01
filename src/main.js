@@ -139,15 +139,15 @@ const timeScales=[1,8];let timeScaleIndex=0,timeScale=1,simNow=0,physicsAccumula
 function cycleTimeScale(){timeScaleIndex=(timeScaleIndex+1)%timeScales.length;timeScale=timeScales[timeScaleIndex];devUI?.setText("time",timeScale===1?"⌛️":"⏳️",`Simulation speed ${timeScale} times`);devUI?.setPressed("time",timeScale!==1)}
 function captureWaterDiagnostic(){
  const cam=components.CameraView.get(cameras.activeId())?.camera;
- const depthProbe={kind:"camera-ray-depth-discrimination",version:1,grid:[30,18],epsilon:.002,counts:{sampled:0,waterHit:0,waterFirst:0,terrainFirst:0,noTerrain:0,tie:0},samples:{waterFirst:[],terrainFirst:[],noTerrain:[],tie:[]}};
+ const depthProbe={kind:"camera-ray-depth-discrimination",version:1,grid:[30,18],epsilon:.002,counts:{sampled:0,waterHit:0,waterFirst:0,terrainFirst:0,noTerrain:0,tie:0},multiplicity:{},samples:{waterFirst:[],terrainFirst:[],noTerrain:[],tie:[]}};
  if(cam){
    cam.updateMatrixWorld(true);terrain.mesh.updateMatrixWorld(true);transport.object.updateMatrixWorld(true);
    const raycaster=new THREE.Raycaster(),ndc=new THREE.Vector2(),push=(kind,entry)=>{const a=depthProbe.samples[kind];if(a.length<32)a.push(entry)};
    for(let iy=0;iy<18;iy++)for(let ix=0;ix<30;ix++){
      ndc.set(-1+2*(ix+.5)/30,1-2*(iy+.5)/18);raycaster.setFromCamera(ndc,cam);depthProbe.counts.sampled++;
-     const wh=raycaster.intersectObject(transport.object,true)[0];if(!wh)continue;depthProbe.counts.waterHit++;
+     const waterHits=raycaster.intersectObject(transport.object,true),wh=waterHits[0];if(!wh)continue;depthProbe.counts.waterHit++;depthProbe.multiplicity[waterHits.length]=(depthProbe.multiplicity[waterHits.length]||0)+1;
      const th=raycaster.intersectObject(terrain.mesh,true)[0];
-     const base={screen:[(ix+.5)/30,(iy+.5)/18],ndc:[ndc.x,ndc.y],waterDistance:wh.distance,waterPoint:wh.point.toArray(),terrainDistance:th?.distance??null,terrainPoint:th?.point?.toArray?.()??null};
+     const base={screen:[(ix+.5)/30,(iy+.5)/18],ndc:[ndc.x,ndc.y],waterDistance:wh.distance,waterPoint:wh.point.toArray(),waterIntersections:waterHits.length,waterDistances:waterHits.slice(0,16).map(h=>h.distance),waterFaces:waterHits.slice(0,16).map(h=>h.faceIndex),terrainDistance:th?.distance??null,terrainPoint:th?.point?.toArray?.()??null};
      if(!th){depthProbe.counts.noTerrain++;push("noTerrain",base);continue}
      const delta=wh.distance-th.distance;base.deltaWaterMinusTerrain=delta;
      if(delta>depthProbe.epsilon){depthProbe.counts.terrainFirst++;push("terrainFirst",base)}
