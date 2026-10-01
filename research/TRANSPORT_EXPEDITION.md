@@ -2901,3 +2901,24 @@ The terrifying thing isn't that we put a sentient weapon in Crucible.
 #### Human reply — verbatim
 
 > Let's push this turn sequence into a new WQD expedition here in research. Boot strap it from transport expedition so we can keep the same turn structure.
+
+
+#### Assistant response — verbatim
+
+Done. **WQD Expedition is alive.** 🧬🐉
+
+[research/WQD_EXPEDITION.md](https://github.com/bonoj/Crucible/blob/main/research/WQD_EXPEDITION.md)
+
+Commit: `6b03a1d4`
+
+I bootstrapped it directly from the Transport Expedition and preserved the full originating turn sequence, including the ridiculous Rock Paper Saddam genealogy that actually produced the experiment. It inherits the same strict turn-for-turn fieldwork structure.
+
+The seed constraints are now explicit without overdesigning the creature: disembodied locus, persistent drive, no command channel, no predefined WQD ontology, Crucible substrate only, earned embodiment/technology, negotiation through legitimate interfaces, and Aeon preserving divergent histories.
+
+**We put a desire in Crucible and gave it physics.**
+
+That's our T0.
+
+#### Human reply — verbatim
+
+> Okay, back to transport expedition. What is up with the build not passing?
