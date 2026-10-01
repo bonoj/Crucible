@@ -53,6 +53,24 @@ This is not a requirement to build persistent agent daemons, personality systems
 
 **Question:** can mediated salience make discontinuous instances of the same model develop measurably different ways of encountering the same present without storing cognition inside the model?
 
+### 🛠️ Semantic tinkering
+
+Explore a model-native fabrication loop in which an ECS world is the persistent workbench and geometry, entities, rigs, constraints, IK, animation, and behavior are progressively earned rather than predeclared as separate applications.
+
+The interaction can begin almost absurdly small: ask for **N** executable alternatives, let the human collapse onto one by recognition, branch from the survivor, and repeat at a new semantic dimension.
+
+A representative crossing:
+
+**give me N bodies for a floater → H → give me N floaters with various appendages → Q → rig N floaters and animate them delightfully → none, try it like… → perfect → retain → move on**
+
+The point is not to rebuild Blender, an animation suite, or an entity editor around conventional human-facing panels. Nor is **N** a requirement for a fixed command language. The interesting pressure is whether specification can remain cheap by externalizing model uncertainty as inspectable alternatives while the human steers primarily through recognition, correction, and acceptance.
+
+ECS is attractive because the semantic entity need not collapse into its current mesh. Body, geometry, material, appendages, rig, constraints, pose, animation, and behavior can become distinct only when use earns those distinctions. Surviving alternatives preserve lineage; rejected realities should die cheaply.
+
+🐉 manufactures observations that discriminate among plausible realities. 🛠️ turns the same basic move toward fabrication: manufacture consequential possibilities cheaply enough that human judgment can shape what survives.
+
+**Question:** can a small semantic tinkering loop let a human and model accrete useful geometry, rigging, IK, animation, and entity vocabulary through executable selection rather than requiring the human to specify or operate the underlying tooling directly?
+
 ### 🧬 Semantic reflow
 
 Enter unfamiliar domains without deciding their canonical application or representation in advance. Let pressure from the material cause useful tools, views, spatializations, perturbables, controls, and derived representations to precipitate.
@@ -75,13 +93,13 @@ Reflow matters as much as extension: changed bodies, sensors, connectivity, fail
 
 ### Shared pressure
 
-🐉 concerns **observation**. 🪨 concerns **invocation and shaping**. 🦋 concerns **developmental salience**. 🧬 concerns **representation**. 🐝 concerns **action**.
+🐉 concerns **observation**. 🪨 concerns **invocation and shaping**. 🦋 concerns **developmental salience**. 🛠️ concerns **tinkering and fabrication**. 🧬 concerns **representation**. 🐝 concerns **action**.
 
 Do not force these into one framework. Their common pressure is currently enough:
 
 **keep truth inspectable, authority bounded, and the machinery between intention and consequence malleable. Preserve what reality earns; let temporary machinery disappear.**
 
-The glyphs are compression handles, not categories. 🐉, 🪨, and 🦋 are first-class carries from earned collaboration; 🧬 and 🐝 have not yet earned the same executable density and may disappear if fieldwork does not support them.
+The glyphs are compression handles, not categories. 🐉, 🪨, 🦋, and 🛠️ are first-class carries from earned collaboration; 🧬 and 🐝 have not yet earned the same executable density and may disappear if fieldwork does not support them.
 
 ## Scientific workbench
 
