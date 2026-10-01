@@ -205,7 +205,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
     sampleBed();
     let guard=0,minDt=Infinity,maxDt=0;
     const probeStart=performance.now();
-    while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)addWater(s.rate*dt,s.x,s.z);solve(dt);acc-=dt}
+    while(acc>1e-5&&guard++<16){const dt=Math.min(acc,stableDt());minDt=Math.min(minDt,dt);maxDt=Math.max(maxDt,dt);for(const s of sources)if(s.remaining==null||s.remaining>0)addWater(s.rate*dt,s.x,s.z);for(const s of sources)if(s.remaining!=null)s.remaining=Math.max(0,s.remaining-dt);sources=sources.filter(s=>s.remaining==null||s.remaining>0);solve(dt);acc-=dt}
     probeFrame={substeps:guard,minDt:Number.isFinite(minDt)?minDt:0,maxDt,remainingAcc:acc,solveMs:performance.now()-probeStart};
     // The frozen-surface probe showed reconstruction is not the dominant frame cost.
     // Restore live presentation while solver cadence instrumentation remains isolated above.
@@ -214,7 +214,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   function reset(){h.fill(0);hu.fill(0);hv.fill(0);totalInjected=totalEscaped=totalDryLoss=steps=0;acc=0;sampleBed();refresh()}
   function setEnabled(v){enabled=!!v;lastNow=null;refresh();return enabled}
   function setSource({x=sources[0]?.x??0,z=sources[0]?.z??0,rate=sources[0]?.rate??0}={}){sources=[{x,z,rate:Math.max(0,rate)}];return{...sources[0]}}
-  function setSources(a=[]){sources=a.map(s=>({x:s.x??0,z:s.z??0,rate:Math.max(0,s.rate??0)}));return sources.map(s=>({...s}))}
+  function setSources(a=[]){sources=a.map(s=>({x:s.x??0,z:s.z??0,rate:Math.max(0,s.rate??0)}));return sources.map(s=>({...s}))}\n  function addTimedSource({x=0,z=0,rate=.9,duration=3}={}){const source={x,z,rate:Math.max(0,rate),remaining:Math.max(0,duration)};sources.push(source);return{...source}}
   function inject(q=1,x=sources[0]?.x??0,z=sources[0]?.z??0){return addWater(q,x,z)}
   function fillRegion({x=0,z=0,radius=1,amount=1}={}){const cells=[];for(let iz=0;iz<N;iz++)for(let ix=0;ix<N;ix++)if(Math.hypot(wx(ix)-x,wz(iz)-z)<=radius&&valid(idx(ix,iz)))cells.push(idx(ix,iz));if(!cells.length)return 0;const dh=amount/(cells.length*DX*DX);for(const k of cells)h[k]+=dh;totalInjected+=amount;return amount}
   function cycleViscosity(){viscosityLevel=viscosityLevel>=26?1:viscosityLevel+1;return{level:viscosityLevel,drag:.22*Math.pow(2,(viscosityLevel-1)/3)}}
@@ -263,5 +263,5 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   }
   function inspect(){let volume=0,wet=0,maxDepth=0,maxSpeed=0;for(let k=0;k<K;k++)if(h[k]>DRY){wet++;volume+=h[k]*DX*DX;maxDepth=Math.max(maxDepth,h[k]);maxSpeed=Math.max(maxSpeed,Math.hypot(hu[k],hv[k])/h[k])}return{kind:"shallow-water",independent:true,enabled,grid:[N,N],cellSize:DX,sources:sources.map(s=>({...s})),display:{density:displayDensity,level:displayDensity,max:25},viscosity:{level:viscosityLevel,max:26,drag:.22*Math.pow(2,(viscosityLevel-1)/3)},water:{injected:totalInjected,volume,maxDepth,maxSpeed,escaped:totalEscaped,dryLoss:totalDryLoss,accounted:volume+totalEscaped+totalDryLoss,balanceError:totalInjected-(volume+totalEscaped+totalDryLoss)},wetCells:wet,steps,probe:probeFrame,presentation:{...presentationProbe}}}
   cacheBoundary();sampleBed();refresh();
-  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
+  return{update,setEnabled,reset,inject,fillRegion,setSource,setSources,addTimedSource,cycleDisplayDensity,setDisplayDensity,cycleWaterLook,cycleViscosity,waterLook:()=>applyWaterLook(),surfaceY,flowInto,sampleState,sampleStateInto,surfaceHeight,captureDiagnostic,inspect,object:surface,sideObject:waterSide};
 }
