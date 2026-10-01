@@ -95,7 +95,7 @@ function updateSteam(dt){
  for(let i=steamPuffs.length-1;i>=0;i--){const p=steamPuffs[i];p.age+=dt;p.mesh.position.y+=p.vy*dt;p.mesh.scale.multiplyScalar(1+dt*.7);p.mesh.material.opacity=.42*Math.max(0,1-p.age/p.life);if(p.age>=p.life){steamGroup.remove(p.mesh);p.mesh.material.dispose();steamPuffs.splice(i,1)}}
  for(const [key,t] of steamContactCooldown)if(now-t>2)steamContactCooldown.delete(key);
 }
-const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts,water:transport});
+const bearings=createBearingSystem({world,components,THREE,scene:three.scene,terrain,locus,impacts,liquids:[transport,lavaTransport]});
 let nextLavaPopAt=0;
 function updateLavaPops(){
  if(simNow<nextLavaPopAt)return;
