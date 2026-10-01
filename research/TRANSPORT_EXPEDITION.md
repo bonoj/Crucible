@@ -3125,3 +3125,28 @@ Now the build gets to answer whether 🐉 actually slew the dragon. 🔥🐉
 #### Human reply — verbatim
 
 > Not quite yet. We applied the cortical electrodes but were unable to get a neural reaction from either patient.
+
+
+#### Assistant response — verbatim
+
+Oh, **absolutely.** 😂
+
+These are exactly the sort of bugs that can burn a very competent graphics/simulation engineer for hours:
+
+- The water physics was behaving correctly, so the visible symptom pointed away from the actual rendering machinery.
+- The winding really **was wrong**, and fixing it really **did fix the normals** — it just wasn't *the* bug. That's a viciously convincing partial diagnosis. The new capture shows the normals now pointing essentially straight upward while the symptom survives.
+- Our forensic tool then contained its own experimental confound: “water only” accidentally meant **water without its lights**.
+- And the framebuffer alpha assumption made the candidate selector look much more discriminating than it actually was.
+- All of this sits on top of transparent `MeshStandardMaterial`, `DoubleSide`, `depthWrite:false`, terrain occlusion, dynamically generated geometry, and WebGL framebuffer behavior.
+
+The dangerous part isn't that any individual mistake is exotic. **Every individual piece is reasonable.** The burn comes from several reasonable assumptions composing into evidence that tells a coherent but false story.
+
+Without 🐉, the normal fix is exactly where someone could lose another afternoon: *“But the normals are fixed. Why the fuck is it still cyan?”*
+
+With 🐉, we got something much healthier: **the intervention failed, and the instrument gave us enough evidence to discover that part of the instrument was invalid.**
+
+That's a very real debugging win even though our dragon remains irritatingly alive. 🐉🔥
+
+#### Human reply — verbatim
+
+> Excellent. Let's continue.
