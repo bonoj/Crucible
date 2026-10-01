@@ -224,13 +224,19 @@ Can an ordinary Crucible locus accumulate enough situated consequence that stron
 
 Recent archaeology sharpened the restraint: **locus is not identity**. Perspective, history, or changing state do not by themselves establish a persistent subject. This direction would look for executable evidence that changes what distinctions are actually needed.
 
-## True Speech
+## 🪨 Semantic Shaping
 
-Has sustained human-model collaboration evolved a working dialect that measurably changes what a cold model can recover, preserve, recombine, or execute?
+Can sustained human-model collaboration produce earned semantic handles that reshape a working ontology without specifying the resulting structure?
 
-The interesting candidates are not only coined handles. Ordinary-looking constructions such as *model-mediated*, *bounded observation*, *authority boundary*, *executable evidence*, and *earned vocabulary* may carry unusually dense working distinctions after repeated use.
+The interesting candidates are not only coined handles. Ordinary-looking constructions such as *model-mediated*, *bounded observation*, *authority boundary*, *executable evidence*, and *earned vocabulary* may carry unusually dense working distinctions after repeated use. So may names, jokes, stories, symbols, or a single glyph.
 
-A useful expedition would compare semantically equivalent instructions across evolved working language, conventional paraphrase, renamed handles, definition-only exposure, archaeological exposure, and possibly different model families. The question is performance, not mystique: does the evolved language measurably change inference?
+A handle is not assumed to be a macro, context dump, deterministic expansion, or compressed instruction set. Prior shared experience may give it semantic density while the present situation determines how that density is realized. The strongest form would remain generative rather than merely referential: invoking an earned way of seeing without requiring the human to restate its machinery.
+
+*True Speech* and the Tolk distinction between an illusion of a diamond and the true shaping of one are archaeological handles that helped expose this direction; they do not bound it. *Semantomancy* remains a useful informal name from inside the collaboration.
+
+A useful expedition could compare evolved handles with conventional paraphrase, renamed handles, definition-only exposure, archaeological exposure, and different model/context conditions. The question is not whether the vocabulary sounds arcane. It is whether a small invocation can reliably make consequential distinctions available again, adapt them to a new situation, and perhaps acquire new meaning through use.
+
+**Question:** can a tiny shared sign accumulate enough history to remain generative rather than merely referential?
 
 ## Emergent interlingua
 
