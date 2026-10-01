@@ -19,7 +19,7 @@ export function createShallowWaterSystem({THREE,scene,terrain}){
   const sideMaterial=new THREE.MeshStandardMaterial({color:0x2b7894,transparent:true,opacity:.42,roughness:.22,metalness:0,depthWrite:false,side:THREE.DoubleSide});
   const waterSide=new THREE.Mesh(sideGeometry,sideMaterial);waterSide.name="shallow-water-boundary-curtain";waterSide.renderOrder=3;scene.add(waterSide);
 
-  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z);bed[k]=terrain.materialBoundary(wx(x),wz(z)).inside?terrain.groundHeight(wx(x),wz(z)):-Infinity}}
+  function sampleBed(){for(let z=0;z<N;z++)for(let x=0;x<N;x++){const k=idx(x,z),px=wx(x),pz=wz(z);bed[k]=terrain.materialBoundary(px,pz).inside?terrain.groundHeightExact(px,pz):-Infinity}}
   const valid=k=>Number.isFinite(bed[k]);
   function cell(x,z){return{x:THREE.MathUtils.clamp(Math.floor((x-MIN)/DX),0,N-1),z:THREE.MathUtils.clamp(Math.floor((z-MIN)/DX),0,N-1)}}
   function addWater(q,x,z){if(!(q>0))return 0;const c=cell(x,z),k=idx(c.x,c.z);if(!valid(k))return 0;h[k]+=q/(DX*DX);totalInjected+=q;return q}
