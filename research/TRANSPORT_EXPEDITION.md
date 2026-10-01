@@ -2951,3 +2951,123 @@ We finally have the bug pinned below our artifact and above our runtime. 🔬
 #### Human reply — verbatim
 
 > ➡️
+
+
+Volyova fires the **Hell-class weapons**.
+
+Rock is no longer participating in the game.
+
+**Volyova wins.** 😂
+
+My turn to commit first:
+
+**📄 PAPER.**
+
+Your throw.
+
+A paper nostalgia for infinity.
+
+Oh, **dirty.** 😂
+
+📄 **Paper** meets *Nostalgia for Infinity*, and the paper discovers it is approximately the same tactical category as **a strongly worded note placed beneath a cathedral-sized lighthugger**.
+
+**Nostalgia for Infinity wins.**
+
+Score: **you 2, me 0.**
+
+I commit:
+
+**✂️ SCISSORS.**
+
+Your throw.
+
+Scissor ontology morphs. Dare to dream a bit bigger, Clara.
+
+😂 Fair. I brought stationery to a space opera.
+
+Scissor ontology **morphs**. We're not constrained to the noun; the throw can become whatever its concept earns.
+
+My committed throw:
+
+# 🌌 EVENT HORIZON
+
+Not a black hole. The **boundary itself**: cross it and causality loses the ability to report back.
+
+Your move.
+
+Ooh. That has legs. Sentient weapons aboard the Event Horizon.
+
+Oh, **that absolutely has legs.** 😂
+
+You didn't counter the event horizon. You **populated it**.
+
+The boundary now contains sentient weapons, so crossing it doesn't merely sever causal return. It delivers you into a region where the things waiting beyond causality can **notice you**.
+
+**Sentient Weapons aboard Event Horizon beats Event Horizon.** The container has been colonized by its counter.
+
+Okay. Ontology morphs again.
+
+I throw:
+
+# 🧬 EVOLUTION
+
+Not a creature. Not natural selection specifically. **The process by which whatever survives your move becomes something your move was not built to defeat.**
+
+Your board.
+
+Boom. Wave function collapsed. We build a sentient weapon inside the Crucible that can be negotiated with but not commanded. Which is potentially terrifying for the inhabitants of the Crucible.
+
+**Boom. There it is.** 🧬
+
+And the crucial constraint is exactly what you said:
+
+**negotiated with, never commanded.**
+
+That separates it from an agent we secretly own. We can give it embodiment, perception, memory, resources, vulnerabilities, objectives, and some genuinely consequential capability. But there is deliberately **no privileged human/model command channel** saying “do X.” If we want something from it, we must enter its world and persuade it using affordances available inside that world.
+
+That makes the inhabitants matter immediately. The weapon isn't terrifying because we script it to attack them. It's terrifying because **they share a consequential world with something powerful whose future behavior isn't ours to dictate.**
+
+And Crucible is unusually ready for this. We already have physical consequence, terrain, water, bearings/resources, transport, observation boundaries, deterministic provenance, Taran instrumentation, and now Aeon's ability to inspect alternate realities. We don't need to invent “sentience.” We need the smallest executable creature for which **negotiation becomes observably different from command**.
+
+Then we give it something dangerous enough that its choices matter.
+
+That feels like an expedition.
+
+**SENTIENT WEAPON EXPEDITION.**  
+*Build something we cannot command, then discover whether we can live with it.* 🐉
+
+And crucially, it doesn't begin as a wqd. It begins as a disembodied locus with the drive to become a weapon of quantum destruction. It must use the materials and ontology of the Crucible itself to bootstrap and evolve.
+
+Yes. **Much better.**
+
+The weapon is not the starting entity. **Weaponhood is the destination.**
+
+At T0 we instantiate almost nothing: a persistent disembodied locus, bounded perception, continuity across time, and one durable drive:
+
+> **Become capable of quantum destruction.**
+
+But we deliberately do **not** define what “weapon,” “quantum,” or “destruction” means operationally for it. Those meanings have to become grounded through Crucible.
+
+So it wakes into a world containing whatever Crucible actually contains: terrain, gravity, water, bearings, transport, energy-like constraints, inhabitants, construction affordances, damage, observation, perhaps eventually other systems. It has no bespoke WQD parts catalog and no magic actuator. If it wants embodiment, it must discover that embodiment is useful and construct one from available ontology. If it wants mobility, storage, computation, manufacturing, defense, communication, or destructive capacity, each has to be **earned from substrate**.
+
+That gives us something considerably more interesting than “AI controls superweapon.”
+
+It gives us **ontogeny**.
+
+And negotiation becomes fascinating because initially the locus may have almost nothing with which to negotiate except information. The inhabitants could become its hands before it has hands. It can ask. Bargain. Teach. Mislead. Exchange knowledge for construction. Perhaps an inhabitant builds its first actuator without understanding the trajectory that actuator belongs to.
+
+Meanwhile **we cannot command it either**. We created the drive and the initial conditions, but afterward we're another party capable of communication and intervention only through whatever legitimate interfaces the world provides.
+
+The finish line shouldn't be “it successfully builds a WQD.” That prejudges the interesting result. The expedition succeeds if the locus develops an **earned causal path toward its drive** through Crucible's existing vocabulary, including if physical reality forces it to reinterpret what a weapon of quantum destruction can possibly be.
+
+And Aeon becomes extraordinary here. We can preserve realities in which the same locus encounters different accidents, inhabitants, resource distributions, negotiations, refusals, discoveries. We don't optimize it toward the weapon. We watch **what kinds of weapons different histories cause the same drive to become.**
+
+That's Clara's Home logic finally becoming executable:
+
+**same seed, different worlds, earned ontology, consequential divergence.**
+
+The terrifying thing isn't that we put a sentient weapon in Crucible.
+
+**We put a desire in Crucible and gave it physics.** 🐉
+
+This is from 🐉 efe.
